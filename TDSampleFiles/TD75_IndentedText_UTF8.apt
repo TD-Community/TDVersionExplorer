@@ -1,0 +1,371 @@
+Application Description: Gupta SQLWindows
+		Standard Application Template
+	Outline Version - 4.0.59
+	Design-time Settings
+		Outline Window State: Normal
+		Outline Window Location and Size
+		Options Box Location
+		Class Editor Location
+		Tool Palette Location
+		Fully Qualified External References? Yes
+		Reject Multiple Window Instances? No
+		Enable Runtime Checks Of External References? Yes
+		Use Release 4.0 Scope Rules? No
+		Edit Fields Read Only On Disable? No
+		Assembly Symbol File:
+	Libraries
+	Global Declarations
+		Window Defaults
+			Tool Bar
+				Display Style? Etched
+				Font Name: Microsoft Sans Serif
+				Font Size: System Default
+				Font Enhancement: System Default
+				Text Color: System Default
+				Background Color: System Default
+			Form Window
+				Display Style? Etched
+				Font Name: Microsoft Sans Serif
+				Font Size: System Default
+				Font Enhancement: System Default
+				Text Color: System Default
+				Background Color: System Default
+			Dialog Box
+				Display Style? Etched
+				Font Name: Microsoft Sans Serif
+				Font Size: System Default
+				Font Enhancement: System Default
+				Text Color: System Default
+				Background Color: System Default
+			Top Level Table Window
+				Font Name: Microsoft Sans Serif
+				Font Size: System Default
+				Font Enhancement: System Default
+				Text Color: System Default
+				Background Color: System Default
+			Top Level Grid Window
+				Font Name: Microsoft Sans Serif
+				Font Size: System Default
+				Font Enhancement: System Default
+				Text Color: System Default
+				Background Color: System Default
+			Data Field
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Multiline Field
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Spin Field
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+			Background Text
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Pushbutton
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+			Radio Button
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Check Box
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Option Button
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+			Group Box
+				GroupBox Style: Etched
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Line Color: Use Parent
+				Flow Direction: Default
+			Child Table Window
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+			List Box
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Combo Box
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Line
+				Line Color: Use Parent
+			Frame
+				Border Color: Use Parent
+				Background Color: Use Parent
+			Picture
+				Border Color: Use Parent
+				Background Color: Use Parent
+			Date Time Picker
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+			Child Grid Window
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+			Rich Text Control
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Date Picker
+				Font Name: Use Parent
+				Font Size: Use Parent
+			Tree Control
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Flow Direction: Default
+			Navigation Bar
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Pane Separator
+			Tab Bar
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+			Progress Bar
+				Background Color: Use Parent
+		Formats
+			Number: 0'%'
+			Number: #0
+			Number: ###000
+			Number: ###000;'('###000')'
+			Date/Time: hh:mm:ss AMPM
+			Date/Time: M/d/yy
+			Date/Time: MM-dd-yy
+			Date/Time: dd-MMM-yyyy
+			Date/Time: MMM d, yyyy
+			Date/Time: MMM d, yyyy hh:mm AMPM
+			Date/Time: MMMM d, yyyy hh:mm AMPM
+		External Functions
+		External Assemblies
+		Constants
+			System
+			User
+			Enumerations
+		Resources
+		Variables
+		Internal Functions
+		Named Exceptions
+		Named Toolbars
+		Named Menus
+			Menu: menuEdit
+				Resource Id: 14195
+				Picture File Name:
+				Title: &Edit
+				Status Text: Undo, Cut, Copy, Paste, Clear
+				Description: Simple Edit menu with Undo, Cut, Copy, Paste, Clear.
+				Enabled when:
+				Menu Item Name:
+				Menu Item: Undomenu
+					Resource Id: 14196
+					Title: &Undo
+					Picture File Name:
+					Status Text: Reverses the last action
+					ToolTip:
+					Keyboard Accelerator: Alt+BkSp
+					Menu Item Name:
+					Menu Settings
+						Enabled when: SalEditCanUndo()
+						Checked when:
+					Menu Actions
+						Call SalEditUndo()
+				Menu Separator
+				Menu Item: Cutmenu
+					Resource Id: 14197
+					Title: Cu&t
+					Picture File Name:
+					Status Text: Cuts the selection and puts it on the clipboard
+					ToolTip:
+					Keyboard Accelerator: Shift+Del
+					Menu Item Name:
+					Menu Settings
+						Enabled when: SalEditCanCut()
+						Checked when:
+					Menu Actions
+						Call SalEditCut()
+				Menu Item: Copymenu
+					Resource Id: 14198
+					Title: &Copy
+					Picture File Name:
+					Status Text: Copies the selection and puts it on the clipboard
+					ToolTip:
+					Keyboard Accelerator: Ctrl+Ins
+					Menu Item Name:
+					Menu Settings
+						Enabled when: SalEditCanCut()
+						Checked when:
+					Menu Actions
+						Call SalEditCopy()
+				Menu Item: Pastemenu
+					Resource Id: 14199
+					Title: &Paste
+					Picture File Name:
+					Status Text: Inserts the Clipboard contents at the insertion point
+					ToolTip:
+					Keyboard Accelerator: Shift+Ins
+					Menu Item Name:
+					Menu Settings
+						Enabled when: SalEditCanPaste()
+						Checked when:
+					Menu Actions
+						Call SalEditPaste()
+				Menu Item: Clearmenu
+					Resource Id: 14200
+					Title: C&lear
+					Picture File Name:
+					Status Text: Clears the selection
+					ToolTip:
+					Keyboard Accelerator: Del
+					Menu Item Name:
+					Menu Settings
+						Enabled when: SalEditCanCut()
+						Checked when:
+					Menu Actions
+						Call SalEditClear()
+			Windows Menu: menuMDIWindows
+				Resource Id: 14201
+				Picture File Name:
+				Title: &Window
+				Status Text: Manage MDI child windows
+				Menu Item Name:
+				Description: Menu to manage MDI child windows.
+				Enabled when:
+				Menu Item: TileVerticalmenu
+					Resource Id: 14202
+					Title: &Tile Vertical
+					Picture File Name:
+					Status Text: Arrange MDI child windows in a vertical tiled format
+					ToolTip:
+					Keyboard Accelerator: (none)
+					Menu Item Name:
+					Menu Settings
+						Enabled when:
+						Checked when:
+					Menu Actions
+						Call SalMDITile( hWndMDI, TRUE )
+				Menu Item: TileHorizontalmenu
+					Resource Id: 14203
+					Title: &Tile Horizontal
+					Picture File Name:
+					Status Text: Arrange MDI child windows in a horizontal tiled format
+					ToolTip:
+					Keyboard Accelerator: (none)
+					Menu Item Name:
+					Menu Settings
+						Enabled when:
+						Checked when:
+					Menu Actions
+						Call SalMDITile( hWndMDI, FALSE )
+				Menu Item: Cascademenu
+					Resource Id: 14204
+					Title: &Cascade
+					Picture File Name:
+					Status Text: Arrange MDI child windows in a cascaded format
+					ToolTip:
+					Keyboard Accelerator: (none)
+					Menu Item Name:
+					Menu Settings
+						Enabled when:
+						Checked when:
+					Menu Actions
+						Call SalMDICascade( hWndMDI )
+				Menu Item: ArrangeIconsmenu
+					Resource Id: 14205
+					Title: &Arrange Icons
+					Picture File Name:
+					Status Text: Arrange minimized MDI child windows
+					ToolTip:
+					Keyboard Accelerator: (none)
+					Menu Item Name:
+					Menu Settings
+						Enabled when:
+						Checked when:
+					Menu Actions
+						Call SalMDIArrangeIcons( hWndMDI )
+		Class Definitions
+		Default Classes
+			MDI Window: cBaseMDI
+			Form Window:
+			Dialog Box:
+			Table Window:
+			Grid Window:
+			Quest Window:
+			Data Field:
+			Spin Field:
+			Multiline Field:
+			Pushbutton:
+			Radio Button:
+			Option Button:
+			Child Grid:
+			Rich Text Control:
+			Separator:
+			Tree Control:
+			Navigation Bar:
+			Pane Separator:
+			Progress Bar:
+			Check Box:
+			Child Table:
+			Quest Child Window: cQuickDatabase
+			List Box:
+			Combo Box:
+			Picture:
+			Vertical Scroll Bar:
+			Horizontal Scroll Bar:
+			Column:
+			Background Text:
+			Group Box:
+			Line:
+			Frame:
+			Custom Control:
+			ActiveX:
+			Date Picker:
+			Date Time Picker:
+			Tab Bar:
+		Application Actions

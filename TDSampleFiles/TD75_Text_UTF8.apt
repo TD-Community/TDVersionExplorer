@@ -1,0 +1,371 @@
+.head 0 +  Application Description: Gupta SQLWindows
+Standard Application Template
+.head 1 -  Outline Version - 4.0.59
+.head 1 +  Design-time Settings
+.head 2 -  Outline Window State: Normal
+.head 2 -  Outline Window Location and Size
+.head 2 -  Options Box Location
+.head 2 -  Class Editor Location
+.head 2 -  Tool Palette Location
+.head 2 -  Fully Qualified External References? Yes
+.head 2 -  Reject Multiple Window Instances? No
+.head 2 -  Enable Runtime Checks Of External References? Yes
+.head 2 -  Use Release 4.0 Scope Rules? No
+.head 2 -  Edit Fields Read Only On Disable? No
+.head 2 -  Assembly Symbol File:
+.head 1 -  Libraries
+.head 1 +  Global Declarations
+.head 2 +  Window Defaults
+.head 3 +  Tool Bar
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: Microsoft Sans Serif
+.head 4 -  Font Size: System Default
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Form Window
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: Microsoft Sans Serif
+.head 4 -  Font Size: System Default
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Dialog Box
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: Microsoft Sans Serif
+.head 4 -  Font Size: System Default
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Top Level Table Window
+.head 4 -  Font Name: Microsoft Sans Serif
+.head 4 -  Font Size: System Default
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Top Level Grid Window
+.head 4 -  Font Name: Microsoft Sans Serif
+.head 4 -  Font Size: System Default
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Data Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 4 -  Flow Direction: Default
+.head 3 +  Multiline Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 4 -  Flow Direction: Default
+.head 3 +  Spin Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Background Text
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 4 -  Flow Direction: Default
+.head 3 +  Pushbutton
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 3 +  Radio Button
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 4 -  Flow Direction: Default
+.head 3 +  Check Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 4 -  Flow Direction: Default
+.head 3 +  Option Button
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 3 +  Group Box
+.head 4 -  GroupBox Style: Etched
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 4 -  Line Color: Use Parent
+.head 4 -  Flow Direction: Default
+.head 3 +  Child Table Window
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  List Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 4 -  Flow Direction: Default
+.head 3 +  Combo Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 4 -  Flow Direction: Default
+.head 3 +  Line
+.head 4 -  Line Color: Use Parent
+.head 3 +  Frame
+.head 4 -  Border Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Picture
+.head 4 -  Border Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Date Time Picker
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 3 +  Child Grid Window
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Rich Text Control
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 4 -  Flow Direction: Default
+.head 3 +  Date Picker
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 3 +  Tree Control
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Flow Direction: Default
+.head 3 +  Navigation Bar
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 4 -  Flow Direction: Default
+.head 3 -  Pane Separator
+.head 3 +  Tab Bar
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Progress Bar
+.head 4 -  Background Color: Use Parent
+.head 2 +  Formats
+.head 3 -  Number: 0'%'
+.head 3 -  Number: #0
+.head 3 -  Number: ###000
+.head 3 -  Number: ###000;'('###000')'
+.head 3 -  Date/Time: hh:mm:ss AMPM
+.head 3 -  Date/Time: M/d/yy
+.head 3 -  Date/Time: MM-dd-yy
+.head 3 -  Date/Time: dd-MMM-yyyy
+.head 3 -  Date/Time: MMM d, yyyy
+.head 3 -  Date/Time: MMM d, yyyy hh:mm AMPM
+.head 3 -  Date/Time: MMMM d, yyyy hh:mm AMPM
+.head 2 -  External Functions
+.head 2 -  External Assemblies
+.head 2 +  Constants
+.head 3 -  System
+.head 3 -  User
+.head 3 -  Enumerations
+.head 2 -  Resources
+.head 2 -  Variables
+.head 2 -  Internal Functions
+.head 2 -  Named Exceptions
+.head 2 -  Named Toolbars
+.head 2 +  Named Menus
+.head 3 +  Menu: menuEdit
+.head 4 -  Resource Id: 14195
+.head 4 -  Picture File Name:
+.head 4 -  Title: &Edit
+.head 4 -  Status Text: Undo, Cut, Copy, Paste, Clear
+.head 4 -  Description: Simple Edit menu with Undo, Cut, Copy, Paste, Clear.
+.head 4 -  Enabled when:
+.head 4 -  Menu Item Name:
+.head 4 +  Menu Item: Undomenu
+.head 5 -  Resource Id: 14196
+.head 5 -  Title: &Undo
+.head 5 -  Picture File Name:
+.head 5 -  Status Text: Reverses the last action
+.head 5 -  ToolTip:
+.head 5 -  Keyboard Accelerator: Alt+BkSp
+.head 5 -  Menu Item Name:
+.head 5 +  Menu Settings
+.head 6 -  Enabled when: SalEditCanUndo()
+.head 6 -  Checked when:
+.head 5 +  Menu Actions
+.head 6 -  Call SalEditUndo()
+.head 4 -  Menu Separator
+.head 4 +  Menu Item: Cutmenu
+.head 5 -  Resource Id: 14197
+.head 5 -  Title: Cu&t
+.head 5 -  Picture File Name:
+.head 5 -  Status Text: Cuts the selection and puts it on the clipboard
+.head 5 -  ToolTip:
+.head 5 -  Keyboard Accelerator: Shift+Del
+.head 5 -  Menu Item Name:
+.head 5 +  Menu Settings
+.head 6 -  Enabled when: SalEditCanCut()
+.head 6 -  Checked when:
+.head 5 +  Menu Actions
+.head 6 -  Call SalEditCut()
+.head 4 +  Menu Item: Copymenu
+.head 5 -  Resource Id: 14198
+.head 5 -  Title: &Copy
+.head 5 -  Picture File Name:
+.head 5 -  Status Text: Copies the selection and puts it on the clipboard
+.head 5 -  ToolTip:
+.head 5 -  Keyboard Accelerator: Ctrl+Ins
+.head 5 -  Menu Item Name:
+.head 5 +  Menu Settings
+.head 6 -  Enabled when: SalEditCanCut()
+.head 6 -  Checked when:
+.head 5 +  Menu Actions
+.head 6 -  Call SalEditCopy()
+.head 4 +  Menu Item: Pastemenu
+.head 5 -  Resource Id: 14199
+.head 5 -  Title: &Paste
+.head 5 -  Picture File Name:
+.head 5 -  Status Text: Inserts the Clipboard contents at the insertion point
+.head 5 -  ToolTip:
+.head 5 -  Keyboard Accelerator: Shift+Ins
+.head 5 -  Menu Item Name:
+.head 5 +  Menu Settings
+.head 6 -  Enabled when: SalEditCanPaste()
+.head 6 -  Checked when:
+.head 5 +  Menu Actions
+.head 6 -  Call SalEditPaste()
+.head 4 +  Menu Item: Clearmenu
+.head 5 -  Resource Id: 14200
+.head 5 -  Title: C&lear
+.head 5 -  Picture File Name:
+.head 5 -  Status Text: Clears the selection
+.head 5 -  ToolTip:
+.head 5 -  Keyboard Accelerator: Del
+.head 5 -  Menu Item Name:
+.head 5 +  Menu Settings
+.head 6 -  Enabled when: SalEditCanCut()
+.head 6 -  Checked when:
+.head 5 +  Menu Actions
+.head 6 -  Call SalEditClear()
+.head 3 +  Windows Menu: menuMDIWindows
+.head 4 -  Resource Id: 14201
+.head 4 -  Picture File Name:
+.head 4 -  Title: &Window
+.head 4 -  Status Text: Manage MDI child windows
+.head 4 -  Menu Item Name:
+.head 4 -  Description: Menu to manage MDI child windows.
+.head 4 -  Enabled when:
+.head 4 +  Menu Item: TileVerticalmenu
+.head 5 -  Resource Id: 14202
+.head 5 -  Title: &Tile Vertical
+.head 5 -  Picture File Name:
+.head 5 -  Status Text: Arrange MDI child windows in a vertical tiled format
+.head 5 -  ToolTip:
+.head 5 -  Keyboard Accelerator: (none)
+.head 5 -  Menu Item Name:
+.head 5 +  Menu Settings
+.head 6 -  Enabled when:
+.head 6 -  Checked when:
+.head 5 +  Menu Actions
+.head 6 -  Call SalMDITile( hWndMDI, TRUE )
+.head 4 +  Menu Item: TileHorizontalmenu
+.head 5 -  Resource Id: 14203
+.head 5 -  Title: &Tile Horizontal
+.head 5 -  Picture File Name:
+.head 5 -  Status Text: Arrange MDI child windows in a horizontal tiled format
+.head 5 -  ToolTip:
+.head 5 -  Keyboard Accelerator: (none)
+.head 5 -  Menu Item Name:
+.head 5 +  Menu Settings
+.head 6 -  Enabled when:
+.head 6 -  Checked when:
+.head 5 +  Menu Actions
+.head 6 -  Call SalMDITile( hWndMDI, FALSE )
+.head 4 +  Menu Item: Cascademenu
+.head 5 -  Resource Id: 14204
+.head 5 -  Title: &Cascade
+.head 5 -  Picture File Name:
+.head 5 -  Status Text: Arrange MDI child windows in a cascaded format
+.head 5 -  ToolTip:
+.head 5 -  Keyboard Accelerator: (none)
+.head 5 -  Menu Item Name:
+.head 5 +  Menu Settings
+.head 6 -  Enabled when:
+.head 6 -  Checked when:
+.head 5 +  Menu Actions
+.head 6 -  Call SalMDICascade( hWndMDI )
+.head 4 +  Menu Item: ArrangeIconsmenu
+.head 5 -  Resource Id: 14205
+.head 5 -  Title: &Arrange Icons
+.head 5 -  Picture File Name:
+.head 5 -  Status Text: Arrange minimized MDI child windows
+.head 5 -  ToolTip:
+.head 5 -  Keyboard Accelerator: (none)
+.head 5 -  Menu Item Name:
+.head 5 +  Menu Settings
+.head 6 -  Enabled when:
+.head 6 -  Checked when:
+.head 5 +  Menu Actions
+.head 6 -  Call SalMDIArrangeIcons( hWndMDI )
+.head 2 -  Class Definitions
+.head 2 +  Default Classes
+.head 3 -  MDI Window: cBaseMDI
+.head 3 -  Form Window:
+.head 3 -  Dialog Box:
+.head 3 -  Table Window:
+.head 3 -  Grid Window:
+.head 3 -  Quest Window:
+.head 3 -  Data Field:
+.head 3 -  Spin Field:
+.head 3 -  Multiline Field:
+.head 3 -  Pushbutton:
+.head 3 -  Radio Button:
+.head 3 -  Option Button:
+.head 3 -  Child Grid:
+.head 3 -  Rich Text Control:
+.head 3 -  Separator:
+.head 3 -  Tree Control:
+.head 3 -  Navigation Bar:
+.head 3 -  Pane Separator:
+.head 3 -  Progress Bar:
+.head 3 -  Check Box:
+.head 3 -  Child Table:
+.head 3 -  Quest Child Window: cQuickDatabase
+.head 3 -  List Box:
+.head 3 -  Combo Box:
+.head 3 -  Picture:
+.head 3 -  Vertical Scroll Bar:
+.head 3 -  Horizontal Scroll Bar:
+.head 3 -  Column:
+.head 3 -  Background Text:
+.head 3 -  Group Box:
+.head 3 -  Line:
+.head 3 -  Frame:
+.head 3 -  Custom Control:
+.head 3 -  ActiveX:
+.head 3 -  Date Picker:
+.head 3 -  Date Time Picker:
+.head 3 -  Tab Bar:
+.head 2 -  Application Actions
