@@ -1,8 +1,10 @@
-Application Description: Gupta SQLWindows Standard Application Template
+Application Description: Original Version:	TD 3.1
+		Original Format:	INDENTED TEXT
+		Original Encoding:	UTF8/ASCII
 	Outline Version - 4.0.32
 	Design-time Settings
 .data VIEWINFO
-0000: 6F00000001000000 FFFF01000D004347 5458566965775374 6174650400002000
+0000: 6F00000001000000 FFFF01000D004347 5458566965775374 6174650400010000
 0020: 0000000000A50000 002C000000020000 0003000000FFFFFF FFFFFFFFFFF8FFFF
 0040: FFE1FFFFFFFFFFFF FF000000007C0200 004D010000010000 0001000000010000
 0060: 000F4170706C6963 6174696F6E497465 6D00000000
@@ -179,12 +181,28 @@ Application Description: Gupta SQLWindows Standard Application Template
 .enddata
 			System
 			User
+				Number: ncCONSTANT	= 1
 			Enumerations
 		Resources
 		Variables
+			String: sGGlobalVar
 		Internal Functions
+			Function: TestFunction
+				Description:
+				Returns
+				Parameters
+				Static Variables
+				Local variables
+				Actions
+					Call SalMessageBox( "This is a test function", "Msg", MB_Ok )
 		Named Menus
 		Class Definitions
+			Functional Class: cfcTestClass
+				Description:
+				Derived From
+				Class Variables
+				Instance Variables
+				Functions
 		Default Classes
 			MDI Window: cBaseMDI
 			Form Window:
@@ -213,3 +231,92 @@ Application Description: Gupta SQLWindows Standard Application Template
 			Custom Control:
 			ActiveX:
 		Application Actions
+			On SAM_AppStartup
+				Call SalCreateWindow( frmTest, hWndNULL )
+	Form Window: frmTest
+		Class:
+		Property Template:
+		Class DLL Name:
+		Title: Test form
+		Icon File:
+		Accessories Enabled? No
+		Visible? Yes
+		Display Settings
+			Display Style? Default
+			Visible at Design time? Yes
+			Automatically Created at Runtime? No
+			Initial State: Normal
+			Maximizable? Yes
+			Minimizable? Yes
+			Allow Child Docking? No
+			Docking Orientation: All
+			System Menu? Yes
+			Resizable? Yes
+			Window Location and Size
+				Left: 1.563"
+				Top: 0.958"
+				Width:  7.617"
+				Width Editable? Yes
+				Height: 3.155"
+				Height Editable? Yes
+			Form Size
+				Width:  Default
+				Height: Default
+				Number of Pages: Dynamic
+			Font Name: Default
+			Font Size: Default
+			Font Enhancement: Default
+			Text Color: Default
+			Background Color: Default
+		Description:
+		Named Menus
+		Menu
+		Tool Bar
+			Display Settings
+				Display Style? Default
+				Location? Top
+				Visible? Yes
+				Size: Default
+				Size Editable? Yes
+				Docking Toolbar? No
+				Toolbar Docking Orientation: Top | Bottom
+				Font Name: Default
+				Font Size: Default
+				Font Enhancement: Default
+				Text Color: Default
+				Background Color: Default
+				Resizable? No
+			Contents
+		Contents
+			Pushbutton: pbTest
+				Class Child Ref Key: 0
+				Class ChildKey: 0
+				Class:
+				Property Template:
+				Class DLL Name:
+				Title: Test
+				Window Location and Size
+					Left: 0.5"
+					Top: 0.381"
+					Width:  1.2"
+					Width Editable? Yes
+					Height: 0.298"
+					Height Editable? Yes
+				Visible? Yes
+				Keyboard Accelerator: (none)
+				Font Name: Default
+				Font Size: Default
+				Font Enhancement: Default
+				Picture File Name:
+				Picture Transparent Color: None
+				Image Style: Single
+				Text Color: Default
+				Background Color: Default
+				Button Appearance: Standard
+				Message Actions
+					On SAM_Click
+						Call TestFunction( )
+		Functions
+		Window Parameters
+		Window Variables
+		Message Actions

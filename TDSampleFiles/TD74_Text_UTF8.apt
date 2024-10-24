@@ -1,11 +1,12 @@
-.head 0 +  Application Description: Gupta SQLWindows
-Standard Application Template
+.head 0 +  Application Description: Original Version:	TD 74
+Original Format:	TEXT
+Original Encoding:	UTF8
 .head 1 -  Outline Version - 4.0.57
 .head 1 +  Design-time Settings
 .data VIEWINFO
 0000: 6F00000001000000 FFFF01000D004347 5458566965775374 6174650400010000
-0020: 0000000000C20000 002C000000020000 0003000000FFFFFF FFFFFFFFFFF8FFFF
-0040: FFE1FFFFFF320000 00320000008A0200 00EF010000010000 0001000000010000
+0020: 0000000000A50000 002C000000020000 0003000000FFFFFF FFFFFFFFFFF8FFFF
+0040: FFE1FFFFFFFFFFFF FF000000007C0200 004D010000010000 0001000000010000
 0060: 00FFFEFF0F410070 0070006C00690063 006100740069006F 006E004900740065
 0080: 006D0000000000
 .enddata
@@ -25,33 +26,33 @@ Standard Application Template
 .head 2 +  Window Defaults
 .head 3 +  Tool Bar
 .head 4 -  Display Style? Etched
-.head 4 -  Font Name: Microsoft Sans Serif
-.head 4 -  Font Size: System Default
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
 .head 4 -  Font Enhancement: System Default
 .head 4 -  Text Color: System Default
 .head 4 -  Background Color: System Default
 .head 3 +  Form Window
 .head 4 -  Display Style? Etched
-.head 4 -  Font Name: Microsoft Sans Serif
-.head 4 -  Font Size: System Default
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
 .head 4 -  Font Enhancement: System Default
 .head 4 -  Text Color: System Default
 .head 4 -  Background Color: System Default
 .head 3 +  Dialog Box
 .head 4 -  Display Style? Etched
-.head 4 -  Font Name: Microsoft Sans Serif
-.head 4 -  Font Size: System Default
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
 .head 4 -  Font Enhancement: System Default
 .head 4 -  Text Color: System Default
 .head 4 -  Background Color: System Default
 .head 3 +  Top Level Table Window
-.head 4 -  Font Name: Microsoft Sans Serif
-.head 4 -  Font Size: System Default
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
 .head 4 -  Font Enhancement: System Default
 .head 4 -  Text Color: System Default
 .head 4 -  Background Color: System Default
 .head 3 +  Top Level Grid Window
-.head 4 -  Font Name: Microsoft Sans Serif
+.head 4 -  Font Name: System Default
 .head 4 -  Font Size: System Default
 .head 4 -  Font Enhancement: System Default
 .head 4 -  Text Color: System Default
@@ -138,7 +139,7 @@ Standard Application Template
 .head 4 -  Line Color: Use Parent
 .head 3 +  Frame
 .head 4 -  Border Color: Use Parent
-.head 4 -  Background Color: Use Parent
+.head 4 -  Background Color: 3D Face Color
 .head 3 +  Picture
 .head 4 -  Border Color: Use Parent
 .head 4 -  Background Color: Use Parent
@@ -182,7 +183,7 @@ Standard Application Template
 .head 3 -  Number: 0'%'
 .head 3 -  Number: #0
 .head 3 -  Number: ###000
-.head 3 -  Number: ###000;'('###000')'
+.head 3 -  Number: ###000;'($'###000')'
 .head 3 -  Date/Time: hh:mm:ss AMPM
 .head 3 -  Date/Time: M/d/yy
 .head 3 -  Date/Time: MM-dd-yy
@@ -193,150 +194,39 @@ Standard Application Template
 .head 2 -  External Functions
 .head 2 -  External Assemblies
 .head 2 +  Constants
+.data CCDATA
+0000: 3000000000000000 0000000000000000 00000000
+.enddata
+.data CCSIZE
+0000: 1400
+.enddata
 .head 3 -  System
-.head 3 -  User
+.head 3 +  User
+.head 4 -  Number: ncCONSTANT	= 1
 .head 3 -  Enumerations
 .head 2 -  Resources
-.head 2 -  Variables
-.head 2 -  Internal Functions
+.head 2 +  Variables
+.head 3 -  String: sGGlobalVar
+.head 2 +  Internal Functions
+.head 3 +  Function: TestFunction
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 -  Local variables
+.head 4 +  Actions
+.head 5 -  Call SalMessageBox( "This is a test function", "Msg", MB_Ok )
 .head 2 -  Named Exceptions
 .head 2 -  Named Toolbars
-.head 2 +  Named Menus
-.head 3 +  Menu: menuEdit
-.head 4 -  Resource Id: 14195
-.head 4 -  Picture File Name:
-.head 4 -  Title: &Edit
-.head 4 -  Status Text: Undo, Cut, Copy, Paste, Clear
-.head 4 -  Description: Simple Edit menu with Undo, Cut, Copy, Paste, Clear.
-.head 4 -  Enabled when:
-.head 4 -  Menu Item Name:
-.head 4 +  Menu Item: Undomenu
-.head 5 -  Resource Id: 14196
-.head 5 -  Title: &Undo
-.head 5 -  Picture File Name:
-.head 5 -  Status Text: Reverses the last action
-.head 5 -  ToolTip:
-.head 5 -  Keyboard Accelerator: Alt+BkSp
-.head 5 -  Menu Item Name:
-.head 5 +  Menu Settings
-.head 6 -  Enabled when: SalEditCanUndo()
-.head 6 -  Checked when:
-.head 5 +  Menu Actions
-.head 6 -  Call SalEditUndo()
-.head 4 -  Menu Separator
-.head 4 +  Menu Item: Cutmenu
-.head 5 -  Resource Id: 14197
-.head 5 -  Title: Cu&t
-.head 5 -  Picture File Name:
-.head 5 -  Status Text: Cuts the selection and puts it on the clipboard
-.head 5 -  ToolTip:
-.head 5 -  Keyboard Accelerator: Shift+Del
-.head 5 -  Menu Item Name:
-.head 5 +  Menu Settings
-.head 6 -  Enabled when: SalEditCanCut()
-.head 6 -  Checked when:
-.head 5 +  Menu Actions
-.head 6 -  Call SalEditCut()
-.head 4 +  Menu Item: Copymenu
-.head 5 -  Resource Id: 14198
-.head 5 -  Title: &Copy
-.head 5 -  Picture File Name:
-.head 5 -  Status Text: Copies the selection and puts it on the clipboard
-.head 5 -  ToolTip:
-.head 5 -  Keyboard Accelerator: Ctrl+Ins
-.head 5 -  Menu Item Name:
-.head 5 +  Menu Settings
-.head 6 -  Enabled when: SalEditCanCut()
-.head 6 -  Checked when:
-.head 5 +  Menu Actions
-.head 6 -  Call SalEditCopy()
-.head 4 +  Menu Item: Pastemenu
-.head 5 -  Resource Id: 14199
-.head 5 -  Title: &Paste
-.head 5 -  Picture File Name:
-.head 5 -  Status Text: Inserts the Clipboard contents at the insertion point
-.head 5 -  ToolTip:
-.head 5 -  Keyboard Accelerator: Shift+Ins
-.head 5 -  Menu Item Name:
-.head 5 +  Menu Settings
-.head 6 -  Enabled when: SalEditCanPaste()
-.head 6 -  Checked when:
-.head 5 +  Menu Actions
-.head 6 -  Call SalEditPaste()
-.head 4 +  Menu Item: Clearmenu
-.head 5 -  Resource Id: 14200
-.head 5 -  Title: C&lear
-.head 5 -  Picture File Name:
-.head 5 -  Status Text: Clears the selection
-.head 5 -  ToolTip:
-.head 5 -  Keyboard Accelerator: Del
-.head 5 -  Menu Item Name:
-.head 5 +  Menu Settings
-.head 6 -  Enabled when: SalEditCanCut()
-.head 6 -  Checked when:
-.head 5 +  Menu Actions
-.head 6 -  Call SalEditClear()
-.head 3 +  Windows Menu: menuMDIWindows
-.head 4 -  Resource Id: 14201
-.head 4 -  Picture File Name:
-.head 4 -  Title: &Window
-.head 4 -  Status Text: Manage MDI child windows
-.head 4 -  Menu Item Name:
-.head 4 -  Description: Menu to manage MDI child windows.
-.head 4 -  Enabled when:
-.head 4 +  Menu Item: TileVerticalmenu
-.head 5 -  Resource Id: 14202
-.head 5 -  Title: &Tile Vertical
-.head 5 -  Picture File Name:
-.head 5 -  Status Text: Arrange MDI child windows in a vertical tiled format
-.head 5 -  ToolTip:
-.head 5 -  Keyboard Accelerator: (none)
-.head 5 -  Menu Item Name:
-.head 5 +  Menu Settings
-.head 6 -  Enabled when:
-.head 6 -  Checked when:
-.head 5 +  Menu Actions
-.head 6 -  Call SalMDITile( hWndMDI, TRUE )
-.head 4 +  Menu Item: TileHorizontalmenu
-.head 5 -  Resource Id: 14203
-.head 5 -  Title: &Tile Horizontal
-.head 5 -  Picture File Name:
-.head 5 -  Status Text: Arrange MDI child windows in a horizontal tiled format
-.head 5 -  ToolTip:
-.head 5 -  Keyboard Accelerator: (none)
-.head 5 -  Menu Item Name:
-.head 5 +  Menu Settings
-.head 6 -  Enabled when:
-.head 6 -  Checked when:
-.head 5 +  Menu Actions
-.head 6 -  Call SalMDITile( hWndMDI, FALSE )
-.head 4 +  Menu Item: Cascademenu
-.head 5 -  Resource Id: 14204
-.head 5 -  Title: &Cascade
-.head 5 -  Picture File Name:
-.head 5 -  Status Text: Arrange MDI child windows in a cascaded format
-.head 5 -  ToolTip:
-.head 5 -  Keyboard Accelerator: (none)
-.head 5 -  Menu Item Name:
-.head 5 +  Menu Settings
-.head 6 -  Enabled when:
-.head 6 -  Checked when:
-.head 5 +  Menu Actions
-.head 6 -  Call SalMDICascade( hWndMDI )
-.head 4 +  Menu Item: ArrangeIconsmenu
-.head 5 -  Resource Id: 14205
-.head 5 -  Title: &Arrange Icons
-.head 5 -  Picture File Name:
-.head 5 -  Status Text: Arrange minimized MDI child windows
-.head 5 -  ToolTip:
-.head 5 -  Keyboard Accelerator: (none)
-.head 5 -  Menu Item Name:
-.head 5 +  Menu Settings
-.head 6 -  Enabled when:
-.head 6 -  Checked when:
-.head 5 +  Menu Actions
-.head 6 -  Call SalMDIArrangeIcons( hWndMDI )
-.head 2 -  Class Definitions
+.head 2 -  Named Menus
+.head 2 +  Class Definitions
+.head 3 +  Functional Class: cfcTestClass
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 -  Constructor/Destructor
+.head 4 -  Functions
 .head 2 +  Default Classes
 .head 3 -  MDI Window: cBaseMDI
 .head 3 -  Form Window:
@@ -350,7 +240,10 @@ Standard Application Template
 .head 3 -  Pushbutton:
 .head 3 -  Radio Button:
 .head 3 -  Option Button:
+.head 3 -  Date Picker:
+.head 3 -  Date Time Picker:
 .head 3 -  Child Grid:
+.head 3 -  Tab Bar:
 .head 3 -  Rich Text Control:
 .head 3 -  Separator:
 .head 3 -  Tree Control:
@@ -372,7 +265,123 @@ Standard Application Template
 .head 3 -  Frame:
 .head 3 -  Custom Control:
 .head 3 -  ActiveX:
-.head 3 -  Date Picker:
-.head 3 -  Date Time Picker:
-.head 3 -  Tab Bar:
-.head 2 -  Application Actions
+.head 2 +  Application Actions
+.head 3 +  On SAM_AppStartup
+.head 4 -  Call SalCreateWindow( frmTest, hWndNULL )
+.head 1 +  Form Window: frmTest
+.head 2 -  Class:
+.head 2 -  Property Template:
+.head 2 -  Class DLL Name:
+.head 2 -  Title: Test form
+.head 2 -  Icon File:
+.head 2 -  Accessories Enabled? No
+.head 2 -  Visible? Yes
+.head 2 -  Display Settings
+.head 3 -  Display Style? Default
+.head 3 -  Visible at Design time? Yes
+.head 3 -  Automatically Created at Runtime? No
+.head 3 -  Initial State: Normal
+.head 3 -  Maximizable? Yes
+.head 3 -  Minimizable? Yes
+.head 3 -  Allow Child Docking? No
+.head 3 -  Docking Orientation: All
+.head 3 -  System Menu? Yes
+.head 3 -  Resizable? Yes
+.head 3 -  Window Location and Size
+.head 4 -  Left: 1.563"
+.head 4 -  Top: 0.958"
+.head 4 -  Width:  7.617"
+.head 4 -  Width Editable? Yes
+.head 4 -  Height: 3.155"
+.head 4 -  Height Editable? Yes
+.head 3 -  Form Size
+.head 4 -  Width:  Default
+.head 4 -  Height: Default
+.head 4 -  Number of Pages: Dynamic
+.head 3 -  Font Name: Default
+.head 3 -  Font Size: Default
+.head 3 -  Font Enhancement: Default
+.head 3 -  Text Color: Default
+.head 3 -  Background Color: Default
+.head 2 -  XAML Style:
+.head 2 -  Background Brush:
+.head 2 -  Ribbon Bar Enabled? No
+.head 2 -  Anchoring Enabled? No
+.head 2 -  Vertical Anchor: Top
+.head 2 -  Horizontal Anchor: Left
+.head 2 -  Minimum Width: Default
+.head 2 -  Minimum Height: Default
+.head 2 -  Anchor Maximum Width: Default
+.head 2 -  Anchor Maximum Height: Default
+.head 2 -  Description:
+.head 2 -  Ribbon
+.head 2 -  Named Menus
+.head 2 -  Menu
+.head 2 +  Tool Bar
+.head 3 -  Display Settings
+.head 4 -  Display Style? Default
+.head 4 -  Location? Top
+.head 4 -  Visible? Yes
+.head 4 -  Size: Default
+.head 4 -  Size Editable? Yes
+.head 4 -  Docking Toolbar? No
+.head 4 -  Toolbar Docking Orientation: Top | Bottom
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Resizable? No
+.head 3 -  XAML Style:
+.head 3 -  Background Brush:
+.head 3 -  Anchoring Enabled? No
+.head 3 -  Minimum Width: Default
+.head 3 -  Minimum Height: Default
+.head 3 -  Anchor Maximum Width: Default
+.head 3 -  Anchor Maximum Height: Default
+.head 3 -  Contents
+.head 2 +  Contents
+.head 3 +  Pushbutton: pbTest
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Test
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.5"
+.head 5 -  Top: 0.381"
+.head 5 -  Width:  1.2"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 -  ToolTip:
+.head 4 -  Image Alignment: Default
+.head 4 -  Text Alignment: Default
+.head 4 -  Text Image Relation: Default
+.head 4 -  XAML Style:
+.head 4 -  Background Brush:
+.head 4 -  Text Brush:
+.head 4 -  Vertical Anchor: Top
+.head 4 -  Horizontal Anchor: Left
+.head 4 -  Minimum Width: Default
+.head 4 -  Minimum Height: Default
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call TestFunction( )
+.head 2 -  Background Threads:
+.head 2 -  Functions
+.head 2 -  Window Parameters
+.head 2 -  Window Variables
+.head 2 -  Message Actions

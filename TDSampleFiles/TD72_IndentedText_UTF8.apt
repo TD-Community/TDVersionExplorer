@@ -1,0 +1,371 @@
+Application Description: Original Version:	TD 7.2
+		Original Format:	INDENTED TEXT
+		Original Encoding:	UTF8
+	Outline Version - 4.0.55
+	Design-time Settings
+.data VIEWINFO
+0000: 6F00000001000000 FFFF01000D004347 5458566965775374 6174650400010000
+0020: 0000000000A50000 002C000000020000 0003000000FFFFFF FFFFFFFFFFF8FFFF
+0040: FFE1FFFFFFFFFFFF FF000000007C0200 004D010000010000 0001000000010000
+0060: 00FFFEFF0F410070 0070006C00690063 006100740069006F 006E004900740065
+0080: 006D0000000000
+.enddata
+		Outline Window State: Normal
+		Outline Window Location and Size
+		Options Box Location
+		Class Editor Location
+		Tool Palette Location
+		Fully Qualified External References? Yes
+		Reject Multiple Window Instances? No
+		Enable Runtime Checks Of External References? Yes
+		Use Release 4.0 Scope Rules? No
+		Edit Fields Read Only On Disable? No
+		Assembly Symbol File:
+	Libraries
+	Global Declarations
+		Window Defaults
+			Tool Bar
+				Display Style? Etched
+				Font Name: MS Sans Serif
+				Font Size: 8
+				Font Enhancement: System Default
+				Text Color: System Default
+				Background Color: System Default
+			Form Window
+				Display Style? Etched
+				Font Name: MS Sans Serif
+				Font Size: 8
+				Font Enhancement: System Default
+				Text Color: System Default
+				Background Color: System Default
+			Dialog Box
+				Display Style? Etched
+				Font Name: MS Sans Serif
+				Font Size: 8
+				Font Enhancement: System Default
+				Text Color: System Default
+				Background Color: System Default
+			Top Level Table Window
+				Font Name: MS Sans Serif
+				Font Size: 8
+				Font Enhancement: System Default
+				Text Color: System Default
+				Background Color: System Default
+			Top Level Grid Window
+				Font Name: System Default
+				Font Size: System Default
+				Font Enhancement: System Default
+				Text Color: System Default
+				Background Color: System Default
+			Data Field
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Multiline Field
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Spin Field
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+			Background Text
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Pushbutton
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+			Radio Button
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Check Box
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Option Button
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+			Group Box
+				GroupBox Style: Etched
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Line Color: Use Parent
+				Flow Direction: Default
+			Child Table Window
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+			List Box
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Combo Box
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Line
+				Line Color: Use Parent
+			Frame
+				Border Color: Use Parent
+				Background Color: 3D Face Color
+			Picture
+				Border Color: Use Parent
+				Background Color: Use Parent
+			Date Time Picker
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+			Child Grid Window
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+			Rich Text Control
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Date Picker
+				Font Name: Use Parent
+				Font Size: Use Parent
+			Tree Control
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Flow Direction: Default
+			Navigation Bar
+				Text Color: Use Parent
+				Background Color: Use Parent
+				Flow Direction: Default
+			Pane Separator
+			Tab Bar
+				Font Name: Use Parent
+				Font Size: Use Parent
+				Font Enhancement: Use Parent
+				Text Color: Use Parent
+				Background Color: Use Parent
+			Progress Bar
+				Background Color: Use Parent
+		Formats
+			Number: 0'%'
+			Number: #0
+			Number: ###000
+			Number: ###000;'($'###000')'
+			Date/Time: hh:mm:ss AMPM
+			Date/Time: M/d/yy
+			Date/Time: MM-dd-yy
+			Date/Time: dd-MMM-yyyy
+			Date/Time: MMM d, yyyy
+			Date/Time: MMM d, yyyy hh:mm AMPM
+			Date/Time: MMMM d, yyyy hh:mm AMPM
+		External Functions
+		External Assemblies
+		Constants
+.data CCDATA
+0000: 3000000000000000 0000000000000000 00000000
+.enddata
+.data CCSIZE
+0000: 1400
+.enddata
+			System
+			User
+				Number: ncCONSTANT	= 1
+			Enumerations
+		Resources
+		Variables
+			String: sGGlobalVar
+		Internal Functions
+			Function: TestFunction
+				Description:
+				Returns
+				Parameters
+				Static Variables
+				Local variables
+				Actions
+					Call SalMessageBox( "This is a test function", "Msg", MB_Ok )
+		Named Exceptions
+		Named Toolbars
+		Named Menus
+		Class Definitions
+			Functional Class: cfcTestClass
+				Description:
+				Derived From
+				Class Variables
+				Instance Variables
+				Constructor/Destructor
+				Functions
+		Default Classes
+			MDI Window: cBaseMDI
+			Form Window:
+			Dialog Box:
+			Table Window:
+			Grid Window:
+			Quest Window:
+			Data Field:
+			Spin Field:
+			Multiline Field:
+			Pushbutton:
+			Radio Button:
+			Option Button:
+			Date Picker:
+			Date Time Picker:
+			Child Grid:
+			Tab Bar:
+			Rich Text Control:
+			Separator:
+			Tree Control:
+			Navigation Bar:
+			Pane Separator:
+			Progress Bar:
+			Check Box:
+			Child Table:
+			Quest Child Window: cQuickDatabase
+			List Box:
+			Combo Box:
+			Picture:
+			Vertical Scroll Bar:
+			Horizontal Scroll Bar:
+			Column:
+			Background Text:
+			Group Box:
+			Line:
+			Frame:
+			Custom Control:
+			ActiveX:
+		Application Actions
+			On SAM_AppStartup
+				Call SalCreateWindow( frmTest, hWndNULL )
+	Form Window: frmTest
+		Class:
+		Property Template:
+		Class DLL Name:
+		Title: Test form
+		Icon File:
+		Accessories Enabled? No
+		Visible? Yes
+		Display Settings
+			Display Style? Default
+			Visible at Design time? Yes
+			Automatically Created at Runtime? No
+			Initial State: Normal
+			Maximizable? Yes
+			Minimizable? Yes
+			Allow Child Docking? No
+			Docking Orientation: All
+			System Menu? Yes
+			Resizable? Yes
+			Window Location and Size
+				Left: 1.563"
+				Top: 0.958"
+				Width:  7.617"
+				Width Editable? Yes
+				Height: 3.155"
+				Height Editable? Yes
+			Form Size
+				Width:  Default
+				Height: Default
+				Number of Pages: Dynamic
+			Font Name: Default
+			Font Size: Default
+			Font Enhancement: Default
+			Text Color: Default
+			Background Color: Default
+		XAML Style:
+		Background Brush:
+		Ribbon Bar Enabled? No
+		Description:
+		Ribbon
+		Named Menus
+		Menu
+		Tool Bar
+			Display Settings
+				Display Style? Default
+				Location? Top
+				Visible? Yes
+				Size: Default
+				Size Editable? Yes
+				Docking Toolbar? No
+				Toolbar Docking Orientation: Top | Bottom
+				Font Name: Default
+				Font Size: Default
+				Font Enhancement: Default
+				Text Color: Default
+				Background Color: Default
+				Resizable? No
+			XAML Style:
+			Background Brush:
+			Contents
+		Contents
+			Pushbutton: pbTest
+				Class Child Ref Key: 0
+				Class ChildKey: 0
+				Class:
+				Property Template:
+				Class DLL Name:
+				Title: Test
+				Window Location and Size
+					Left: 0.5"
+					Top: 0.381"
+					Width:  1.2"
+					Width Editable? Yes
+					Height: 0.298"
+					Height Editable? Yes
+				Visible? Yes
+				Keyboard Accelerator: (none)
+				Font Name: Default
+				Font Size: Default
+				Font Enhancement: Default
+				Picture File Name:
+				Picture Transparent Color: None
+				Image Style: Single
+				Text Color: Default
+				Background Color: Default
+				Button Appearance: Standard
+				ToolTip:
+				Image Alignment: Default
+				Text Alignment: Default
+				Text Image Relation: Default
+				XAML Style:
+				Background Brush:
+				Text Brush:
+				Message Actions
+					On SAM_Click
+						Call TestFunction( )
+		Background Threads:
+		Functions
+		Window Parameters
+		Window Variables
+		Message Actions

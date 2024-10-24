@@ -1,8 +1,10 @@
-.head 0 +  Application Description: Gupta SQLWindows Standard Application Template
+.head 0 +  Application Description: Original Version:	TD 4.2
+Original Format:	TEXT
+Original Encoding:	UTF8/ASCII
 .head 1 -  Outline Version - 4.0.35
 .head 1 +  Design-time Settings
 .data VIEWINFO
-0000: 6F00000001000000 FFFF01000D004347 5458566965775374 6174650400002000
+0000: 6F00000001000000 FFFF01000D004347 5458566965775374 6174650400010000
 0020: 0000000000A50000 002C000000020000 0003000000FFFFFF FFFFFFFFFFF8FFFF
 0040: FFE1FFFFFFFFFFFF FF000000007C0200 004D010000010000 0001000000010000
 0060: 000F4170706C6963 6174696F6E497465 6D00000000
@@ -179,13 +181,29 @@
 0000: 1400
 .enddata
 .head 3 -  System
-.head 3 -  User
+.head 3 +  User
+.head 4 -  Number: ncCONSTANT	= 1
 .head 3 -  Enumerations
 .head 2 -  Resources
-.head 2 -  Variables
-.head 2 -  Internal Functions
+.head 2 +  Variables
+.head 3 -  String: sGGlobalVar
+.head 2 +  Internal Functions
+.head 3 +  Function: TestFunction
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 -  Local variables
+.head 4 +  Actions
+.head 5 -  Call SalMessageBox( "This is a test function", "Msg", MB_Ok )
 .head 2 -  Named Menus
-.head 2 -  Class Definitions
+.head 2 +  Class Definitions
+.head 3 +  Functional Class: cfcTestClass
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 -  Functions
 .head 2 +  Default Classes
 .head 3 -  MDI Window: cBaseMDI
 .head 3 -  Form Window:
@@ -213,4 +231,93 @@
 .head 3 -  Frame:
 .head 3 -  Custom Control:
 .head 3 -  ActiveX:
-.head 2 -  Application Actions
+.head 2 +  Application Actions
+.head 3 +  On SAM_AppStartup
+.head 4 -  Call SalCreateWindow( frmTest, hWndNULL )
+.head 1 +  Form Window: frmTest
+.head 2 -  Class:
+.head 2 -  Property Template:
+.head 2 -  Class DLL Name:
+.head 2 -  Title: Test form
+.head 2 -  Icon File:
+.head 2 -  Accessories Enabled? No
+.head 2 -  Visible? Yes
+.head 2 -  Display Settings
+.head 3 -  Display Style? Default
+.head 3 -  Visible at Design time? Yes
+.head 3 -  Automatically Created at Runtime? No
+.head 3 -  Initial State: Normal
+.head 3 -  Maximizable? Yes
+.head 3 -  Minimizable? Yes
+.head 3 -  Allow Child Docking? No
+.head 3 -  Docking Orientation: All
+.head 3 -  System Menu? Yes
+.head 3 -  Resizable? Yes
+.head 3 -  Window Location and Size
+.head 4 -  Left: 1.563"
+.head 4 -  Top: 0.958"
+.head 4 -  Width:  7.617"
+.head 4 -  Width Editable? Yes
+.head 4 -  Height: 3.155"
+.head 4 -  Height Editable? Yes
+.head 3 -  Form Size
+.head 4 -  Width:  Default
+.head 4 -  Height: Default
+.head 4 -  Number of Pages: Dynamic
+.head 3 -  Font Name: Default
+.head 3 -  Font Size: Default
+.head 3 -  Font Enhancement: Default
+.head 3 -  Text Color: Default
+.head 3 -  Background Color: Default
+.head 2 -  Description:
+.head 2 -  Named Menus
+.head 2 -  Menu
+.head 2 +  Tool Bar
+.head 3 -  Display Settings
+.head 4 -  Display Style? Default
+.head 4 -  Location? Top
+.head 4 -  Visible? Yes
+.head 4 -  Size: Default
+.head 4 -  Size Editable? Yes
+.head 4 -  Docking Toolbar? No
+.head 4 -  Toolbar Docking Orientation: Top | Bottom
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Resizable? No
+.head 3 -  Contents
+.head 2 +  Contents
+.head 3 +  Pushbutton: pbTest
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Test
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.5"
+.head 5 -  Top: 0.381"
+.head 5 -  Width:  1.2"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call TestFunction( )
+.head 2 -  Functions
+.head 2 -  Window Parameters
+.head 2 -  Window Variables
+.head 2 -  Message Actions

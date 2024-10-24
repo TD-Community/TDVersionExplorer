@@ -1,11 +1,12 @@
-Application Description: Gupta SQLWindows
-		Standard Application Template
+Application Description: Original Version:	TD 74
+		Original Format:	INDENTED TEXT
+		Original Encoding:	UTF8
 	Outline Version - 4.0.57
 	Design-time Settings
 .data VIEWINFO
 0000: 6F00000001000000 FFFF01000D004347 5458566965775374 6174650400010000
-0020: 0000000000C20000 002C000000020000 0003000000FFFFFF FFFFFFFFFFF8FFFF
-0040: FFE1FFFFFF320000 00320000008A0200 00EF010000010000 0001000000010000
+0020: 0000000000A50000 002C000000020000 0003000000FFFFFF FFFFFFFFFFF8FFFF
+0040: FFE1FFFFFFFFFFFF FF000000007C0200 004D010000010000 0001000000010000
 0060: 00FFFEFF0F410070 0070006C00690063 006100740069006F 006E004900740065
 0080: 006D0000000000
 .enddata
@@ -25,33 +26,33 @@ Application Description: Gupta SQLWindows
 		Window Defaults
 			Tool Bar
 				Display Style? Etched
-				Font Name: Microsoft Sans Serif
-				Font Size: System Default
+				Font Name: MS Sans Serif
+				Font Size: 8
 				Font Enhancement: System Default
 				Text Color: System Default
 				Background Color: System Default
 			Form Window
 				Display Style? Etched
-				Font Name: Microsoft Sans Serif
-				Font Size: System Default
+				Font Name: MS Sans Serif
+				Font Size: 8
 				Font Enhancement: System Default
 				Text Color: System Default
 				Background Color: System Default
 			Dialog Box
 				Display Style? Etched
-				Font Name: Microsoft Sans Serif
-				Font Size: System Default
+				Font Name: MS Sans Serif
+				Font Size: 8
 				Font Enhancement: System Default
 				Text Color: System Default
 				Background Color: System Default
 			Top Level Table Window
-				Font Name: Microsoft Sans Serif
-				Font Size: System Default
+				Font Name: MS Sans Serif
+				Font Size: 8
 				Font Enhancement: System Default
 				Text Color: System Default
 				Background Color: System Default
 			Top Level Grid Window
-				Font Name: Microsoft Sans Serif
+				Font Name: System Default
 				Font Size: System Default
 				Font Enhancement: System Default
 				Text Color: System Default
@@ -138,7 +139,7 @@ Application Description: Gupta SQLWindows
 				Line Color: Use Parent
 			Frame
 				Border Color: Use Parent
-				Background Color: Use Parent
+				Background Color: 3D Face Color
 			Picture
 				Border Color: Use Parent
 				Background Color: Use Parent
@@ -182,7 +183,7 @@ Application Description: Gupta SQLWindows
 			Number: 0'%'
 			Number: #0
 			Number: ###000
-			Number: ###000;'('###000')'
+			Number: ###000;'($'###000')'
 			Date/Time: hh:mm:ss AMPM
 			Date/Time: M/d/yy
 			Date/Time: MM-dd-yy
@@ -193,150 +194,39 @@ Application Description: Gupta SQLWindows
 		External Functions
 		External Assemblies
 		Constants
+.data CCDATA
+0000: 3000000000000000 0000000000000000 00000000
+.enddata
+.data CCSIZE
+0000: 1400
+.enddata
 			System
 			User
+				Number: ncCONSTANT	= 1
 			Enumerations
 		Resources
 		Variables
+			String: sGGlobalVar
 		Internal Functions
+			Function: TestFunction
+				Description:
+				Returns
+				Parameters
+				Static Variables
+				Local variables
+				Actions
+					Call SalMessageBox( "This is a test function", "Msg", MB_Ok )
 		Named Exceptions
 		Named Toolbars
 		Named Menus
-			Menu: menuEdit
-				Resource Id: 14195
-				Picture File Name:
-				Title: &Edit
-				Status Text: Undo, Cut, Copy, Paste, Clear
-				Description: Simple Edit menu with Undo, Cut, Copy, Paste, Clear.
-				Enabled when:
-				Menu Item Name:
-				Menu Item: Undomenu
-					Resource Id: 14196
-					Title: &Undo
-					Picture File Name:
-					Status Text: Reverses the last action
-					ToolTip:
-					Keyboard Accelerator: Alt+BkSp
-					Menu Item Name:
-					Menu Settings
-						Enabled when: SalEditCanUndo()
-						Checked when:
-					Menu Actions
-						Call SalEditUndo()
-				Menu Separator
-				Menu Item: Cutmenu
-					Resource Id: 14197
-					Title: Cu&t
-					Picture File Name:
-					Status Text: Cuts the selection and puts it on the clipboard
-					ToolTip:
-					Keyboard Accelerator: Shift+Del
-					Menu Item Name:
-					Menu Settings
-						Enabled when: SalEditCanCut()
-						Checked when:
-					Menu Actions
-						Call SalEditCut()
-				Menu Item: Copymenu
-					Resource Id: 14198
-					Title: &Copy
-					Picture File Name:
-					Status Text: Copies the selection and puts it on the clipboard
-					ToolTip:
-					Keyboard Accelerator: Ctrl+Ins
-					Menu Item Name:
-					Menu Settings
-						Enabled when: SalEditCanCut()
-						Checked when:
-					Menu Actions
-						Call SalEditCopy()
-				Menu Item: Pastemenu
-					Resource Id: 14199
-					Title: &Paste
-					Picture File Name:
-					Status Text: Inserts the Clipboard contents at the insertion point
-					ToolTip:
-					Keyboard Accelerator: Shift+Ins
-					Menu Item Name:
-					Menu Settings
-						Enabled when: SalEditCanPaste()
-						Checked when:
-					Menu Actions
-						Call SalEditPaste()
-				Menu Item: Clearmenu
-					Resource Id: 14200
-					Title: C&lear
-					Picture File Name:
-					Status Text: Clears the selection
-					ToolTip:
-					Keyboard Accelerator: Del
-					Menu Item Name:
-					Menu Settings
-						Enabled when: SalEditCanCut()
-						Checked when:
-					Menu Actions
-						Call SalEditClear()
-			Windows Menu: menuMDIWindows
-				Resource Id: 14201
-				Picture File Name:
-				Title: &Window
-				Status Text: Manage MDI child windows
-				Menu Item Name:
-				Description: Menu to manage MDI child windows.
-				Enabled when:
-				Menu Item: TileVerticalmenu
-					Resource Id: 14202
-					Title: &Tile Vertical
-					Picture File Name:
-					Status Text: Arrange MDI child windows in a vertical tiled format
-					ToolTip:
-					Keyboard Accelerator: (none)
-					Menu Item Name:
-					Menu Settings
-						Enabled when:
-						Checked when:
-					Menu Actions
-						Call SalMDITile( hWndMDI, TRUE )
-				Menu Item: TileHorizontalmenu
-					Resource Id: 14203
-					Title: &Tile Horizontal
-					Picture File Name:
-					Status Text: Arrange MDI child windows in a horizontal tiled format
-					ToolTip:
-					Keyboard Accelerator: (none)
-					Menu Item Name:
-					Menu Settings
-						Enabled when:
-						Checked when:
-					Menu Actions
-						Call SalMDITile( hWndMDI, FALSE )
-				Menu Item: Cascademenu
-					Resource Id: 14204
-					Title: &Cascade
-					Picture File Name:
-					Status Text: Arrange MDI child windows in a cascaded format
-					ToolTip:
-					Keyboard Accelerator: (none)
-					Menu Item Name:
-					Menu Settings
-						Enabled when:
-						Checked when:
-					Menu Actions
-						Call SalMDICascade( hWndMDI )
-				Menu Item: ArrangeIconsmenu
-					Resource Id: 14205
-					Title: &Arrange Icons
-					Picture File Name:
-					Status Text: Arrange minimized MDI child windows
-					ToolTip:
-					Keyboard Accelerator: (none)
-					Menu Item Name:
-					Menu Settings
-						Enabled when:
-						Checked when:
-					Menu Actions
-						Call SalMDIArrangeIcons( hWndMDI )
 		Class Definitions
+			Functional Class: cfcTestClass
+				Description:
+				Derived From
+				Class Variables
+				Instance Variables
+				Constructor/Destructor
+				Functions
 		Default Classes
 			MDI Window: cBaseMDI
 			Form Window:
@@ -350,7 +240,10 @@ Application Description: Gupta SQLWindows
 			Pushbutton:
 			Radio Button:
 			Option Button:
+			Date Picker:
+			Date Time Picker:
 			Child Grid:
+			Tab Bar:
 			Rich Text Control:
 			Separator:
 			Tree Control:
@@ -372,7 +265,123 @@ Application Description: Gupta SQLWindows
 			Frame:
 			Custom Control:
 			ActiveX:
-			Date Picker:
-			Date Time Picker:
-			Tab Bar:
 		Application Actions
+			On SAM_AppStartup
+				Call SalCreateWindow( frmTest, hWndNULL )
+	Form Window: frmTest
+		Class:
+		Property Template:
+		Class DLL Name:
+		Title: Test form
+		Icon File:
+		Accessories Enabled? No
+		Visible? Yes
+		Display Settings
+			Display Style? Default
+			Visible at Design time? Yes
+			Automatically Created at Runtime? No
+			Initial State: Normal
+			Maximizable? Yes
+			Minimizable? Yes
+			Allow Child Docking? No
+			Docking Orientation: All
+			System Menu? Yes
+			Resizable? Yes
+			Window Location and Size
+				Left: 1.563"
+				Top: 0.958"
+				Width:  7.617"
+				Width Editable? Yes
+				Height: 3.155"
+				Height Editable? Yes
+			Form Size
+				Width:  Default
+				Height: Default
+				Number of Pages: Dynamic
+			Font Name: Default
+			Font Size: Default
+			Font Enhancement: Default
+			Text Color: Default
+			Background Color: Default
+		XAML Style:
+		Background Brush:
+		Ribbon Bar Enabled? No
+		Anchoring Enabled? No
+		Vertical Anchor: Top
+		Horizontal Anchor: Left
+		Minimum Width: Default
+		Minimum Height: Default
+		Anchor Maximum Width: Default
+		Anchor Maximum Height: Default
+		Description:
+		Ribbon
+		Named Menus
+		Menu
+		Tool Bar
+			Display Settings
+				Display Style? Default
+				Location? Top
+				Visible? Yes
+				Size: Default
+				Size Editable? Yes
+				Docking Toolbar? No
+				Toolbar Docking Orientation: Top | Bottom
+				Font Name: Default
+				Font Size: Default
+				Font Enhancement: Default
+				Text Color: Default
+				Background Color: Default
+				Resizable? No
+			XAML Style:
+			Background Brush:
+			Anchoring Enabled? No
+			Minimum Width: Default
+			Minimum Height: Default
+			Anchor Maximum Width: Default
+			Anchor Maximum Height: Default
+			Contents
+		Contents
+			Pushbutton: pbTest
+				Class Child Ref Key: 0
+				Class ChildKey: 0
+				Class:
+				Property Template:
+				Class DLL Name:
+				Title: Test
+				Window Location and Size
+					Left: 0.5"
+					Top: 0.381"
+					Width:  1.2"
+					Width Editable? Yes
+					Height: 0.298"
+					Height Editable? Yes
+				Visible? Yes
+				Keyboard Accelerator: (none)
+				Font Name: Default
+				Font Size: Default
+				Font Enhancement: Default
+				Picture File Name:
+				Picture Transparent Color: None
+				Image Style: Single
+				Text Color: Default
+				Background Color: Default
+				Button Appearance: Standard
+				ToolTip:
+				Image Alignment: Default
+				Text Alignment: Default
+				Text Image Relation: Default
+				XAML Style:
+				Background Brush:
+				Text Brush:
+				Vertical Anchor: Top
+				Horizontal Anchor: Left
+				Minimum Width: Default
+				Minimum Height: Default
+				Message Actions
+					On SAM_Click
+						Call TestFunction( )
+		Background Threads:
+		Functions
+		Window Parameters
+		Window Variables
+		Message Actions
