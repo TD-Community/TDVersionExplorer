@@ -23,8 +23,9 @@ namespace TDVersionExplorer
         private double itemsPerSecond = 0;
         private DataGridViewCell clickedCell;
         private DataGridViewRow clickedRow;
-        private ContextMenuStrip headerMenu;
+        private readonly ContextMenuStrip headerMenu;
         private ContextMenuStrip contextMenu;
+        private readonly ContextMenuStrip onlineMenu;
 
         private List<TDFileEx> TDFiles = new List<TDFileEx>();
 
@@ -48,6 +49,12 @@ namespace TDVersionExplorer
             headerMenu = new ContextMenuStrip();
             headerMenu.Items.Add("Select All", null, (s, e) => AllCheckBoxes(true));
             headerMenu.Items.Add("Deselect All", null, (s, e) => AllCheckBoxes(false));
+
+            onlineMenu = new ContextMenuStrip();
+            onlineMenu.Items.Add("TD books", null, (s, e) => OnlineMenuExecute("https://samples.tdcommunity.net/index.php?dir=Misc/TD_Books/"));
+            onlineMenu.Items.Add("TD release notes", null, (s, e) => OnlineMenuExecute("https://samples.tdcommunity.net/index.php?dir=Misc/TD_ReleaseNotes/"));
+            onlineMenu.Items.Add(new ToolStripSeparator());
+            onlineMenu.Items.Add("TD forum", null, (s, e) => OnlineMenuExecute("https://forum.tdcommunity.net/"));
 
             // Handle right-click on the DataGridView column headers
             dataGridView.ColumnHeaderMouseClick += DataGridView_ColumnHeaderMouseClick;
@@ -980,6 +987,23 @@ namespace TDVersionExplorer
                 default:
                     break;
             }
+        }
+
+        private void OnlineMenuExecute(string url)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(url);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening file in Explorer:\n{ex.Message}");
+            }
+        }
+
+        private void ButtonOnlineInfo_Click(object sender, EventArgs argEvent)
+        {
+            onlineMenu.Show(buttonOnlineInfo, new Point(buttonOnlineInfo.Width / 2, buttonOnlineInfo.Height / 2));
         }
     }
 

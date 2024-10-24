@@ -76,6 +76,7 @@
             this.buttonOpenLog = new System.Windows.Forms.Button();
             this.linkLabelFolder = new System.Windows.Forms.LinkLabel();
             this.linkLabelDestination = new System.Windows.Forms.LinkLabel();
+            this.buttonOnlineInfo = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.groupBoxAnalyze.SuspendLayout();
             this.groupBoxFilter.SuspendLayout();
@@ -252,7 +253,7 @@
             // checkBoxAllFiles
             // 
             this.checkBoxAllFiles.AutoSize = true;
-            this.checkBoxAllFiles.Location = new System.Drawing.Point(16, 22);
+            this.checkBoxAllFiles.Location = new System.Drawing.Point(35, 23);
             this.checkBoxAllFiles.Name = "checkBoxAllFiles";
             this.checkBoxAllFiles.Size = new System.Drawing.Size(58, 17);
             this.checkBoxAllFiles.TabIndex = 7;
@@ -265,7 +266,7 @@
             this.checkBoxSourceFiles.AutoSize = true;
             this.checkBoxSourceFiles.Checked = true;
             this.checkBoxSourceFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSourceFiles.Location = new System.Drawing.Point(184, 22);
+            this.checkBoxSourceFiles.Location = new System.Drawing.Point(203, 23);
             this.checkBoxSourceFiles.Name = "checkBoxSourceFiles";
             this.checkBoxSourceFiles.Size = new System.Drawing.Size(81, 17);
             this.checkBoxSourceFiles.TabIndex = 8;
@@ -276,7 +277,7 @@
             // checkBoxDynalibs
             // 
             this.checkBoxDynalibs.AutoSize = true;
-            this.checkBoxDynalibs.Location = new System.Drawing.Point(275, 22);
+            this.checkBoxDynalibs.Location = new System.Drawing.Point(294, 23);
             this.checkBoxDynalibs.Name = "checkBoxDynalibs";
             this.checkBoxDynalibs.Size = new System.Drawing.Size(66, 17);
             this.checkBoxDynalibs.TabIndex = 9;
@@ -287,7 +288,7 @@
             // checkBoxQRPs
             // 
             this.checkBoxQRPs.AutoSize = true;
-            this.checkBoxQRPs.Location = new System.Drawing.Point(351, 22);
+            this.checkBoxQRPs.Location = new System.Drawing.Point(370, 23);
             this.checkBoxQRPs.Name = "checkBoxQRPs";
             this.checkBoxQRPs.Size = new System.Drawing.Size(95, 17);
             this.checkBoxQRPs.TabIndex = 10;
@@ -328,7 +329,7 @@
             // 
             // textBoxFilter
             // 
-            this.textBoxFilter.Location = new System.Drawing.Point(452, 20);
+            this.textBoxFilter.Location = new System.Drawing.Point(471, 21);
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(131, 20);
             this.textBoxFilter.TabIndex = 14;
@@ -338,7 +339,7 @@
             // 
             this.comboBoxShowTDVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxShowTDVersion.FormattingEnabled = true;
-            this.comboBoxShowTDVersion.Location = new System.Drawing.Point(594, 20);
+            this.comboBoxShowTDVersion.Location = new System.Drawing.Point(613, 21);
             this.comboBoxShowTDVersion.Name = "comboBoxShowTDVersion";
             this.comboBoxShowTDVersion.Size = new System.Drawing.Size(135, 21);
             this.comboBoxShowTDVersion.Sorted = true;
@@ -452,7 +453,7 @@
             // checkBoxTDDllExe
             // 
             this.checkBoxTDDllExe.AutoSize = true;
-            this.checkBoxTDDllExe.Location = new System.Drawing.Point(84, 22);
+            this.checkBoxTDDllExe.Location = new System.Drawing.Point(103, 23);
             this.checkBoxTDDllExe.Name = "checkBoxTDDllExe";
             this.checkBoxTDDllExe.Size = new System.Drawing.Size(90, 17);
             this.checkBoxTDDllExe.TabIndex = 16;
@@ -474,7 +475,7 @@
             // checkBoxShowServers
             // 
             this.checkBoxShowServers.AutoSize = true;
-            this.checkBoxShowServers.Location = new System.Drawing.Point(934, 13);
+            this.checkBoxShowServers.Location = new System.Drawing.Point(295, 47);
             this.checkBoxShowServers.Name = "checkBoxShowServers";
             this.checkBoxShowServers.Size = new System.Drawing.Size(90, 17);
             this.checkBoxShowServers.TabIndex = 31;
@@ -490,6 +491,7 @@
             this.groupBoxDestination.Controls.Add(this.labelDestTDVersion);
             this.groupBoxDestination.Controls.Add(this.labelDestFormat);
             this.groupBoxDestination.Controls.Add(this.comboBoxDestEncoding);
+            this.groupBoxDestination.Controls.Add(this.checkBoxShowServers);
             this.groupBoxDestination.Controls.Add(this.labelDestTextEncoding);
             this.groupBoxDestination.Location = new System.Drawing.Point(220, 646);
             this.groupBoxDestination.Name = "groupBoxDestination";
@@ -574,17 +576,27 @@
             this.linkLabelDestination.Text = "Destination";
             this.linkLabelDestination.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelDestination_LinkClicked);
             // 
+            // buttonOnlineInfo
+            // 
+            this.buttonOnlineInfo.Location = new System.Drawing.Point(937, 9);
+            this.buttonOnlineInfo.Name = "buttonOnlineInfo";
+            this.buttonOnlineInfo.Size = new System.Drawing.Size(75, 23);
+            this.buttonOnlineInfo.TabIndex = 38;
+            this.buttonOnlineInfo.Text = "Online info";
+            this.buttonOnlineInfo.UseVisualStyleBackColor = true;
+            this.buttonOnlineInfo.Click += new System.EventHandler(this.ButtonOnlineInfo_Click);
+            // 
             // FormExplorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1036, 741);
+            this.Controls.Add(this.buttonOnlineInfo);
             this.Controls.Add(this.linkLabelDestination);
             this.Controls.Add(this.linkLabelFolder);
             this.Controls.Add(this.buttonOpenLog);
             this.Controls.Add(this.labelLogLevel);
             this.Controls.Add(this.comboBoxLogLevel);
-            this.Controls.Add(this.checkBoxShowServers);
             this.Controls.Add(this.checkBoxTDSampleFiles);
             this.Controls.Add(this.checkBoxCustomPath);
             this.Controls.Add(this.buttonSelectDestination);
@@ -665,6 +677,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnEncoding;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnResultTxt;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnObject;
+        private System.Windows.Forms.Button buttonOnlineInfo;
     }
 }
 
