@@ -63,7 +63,7 @@ namespace TDVersionExplorer
             }
 
             string DestinationFileName = convertParams.OriginalFileName;
-            bool FileSaved = false;
+            bool isFileSaved = false;
 
             if (convertParams.renameExtension)
             {
@@ -87,7 +87,24 @@ namespace TDVersionExplorer
                         break;
                 }
             }
-            
+
+            string DestinationFileNameFullPath = Path.Combine(convertParams.destinationfolder, DestinationFileName);
+            string DestinationErrFileFullPath = Path.Combine(convertParams.destinationfolder, DestinationFileName + ".err");
+
+            // Now first delete destination files to clean up...
+            try
+            {
+                if (File.Exists(DestinationFileNameFullPath))
+                    File.Delete(DestinationFileNameFullPath);
+                if (File.Exists(DestinationErrFileFullPath))
+                    File.Delete(DestinationErrFileFullPath);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogErrorEx($"Error Convert:", ex);
+                // Just continue...this is not a real issue, yet
+            }
+
             try
             {
                 if (!Directory.Exists(convertParams.destinationfolder))
@@ -294,6 +311,7 @@ namespace TDVersionExplorer
 
                     if (houtline > 0)
                     {
+                        Logger.LogDebug($"CDKLoadApp reported {MessageBoxCloser.messageBoxTexts.Count} outline errors");
                         int flags = 0;
 
                         // TD75 and up has now flags as parameter 
@@ -313,29 +331,29 @@ namespace TDVersionExplorer
                         if (convertParams.DestFormat == TDOutlineFormat.TEXT)
                         {
                             if (convertParams.DestVersion > TDVersion.TD74)
-                                FileSaved = CDKOutlineSaveAsTextUTF(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), flags);
+                                isFileSaved = CDKOutlineSaveAsTextUTF(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), flags);
                             else
-                                FileSaved = CDKOutlineSaveAsText(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), false);
-                            Logger.LogDebug($"CDKOutlineSaveAsText TEXT ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {FileSaved}");
+                                isFileSaved = CDKOutlineSaveAsText(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), false);
+                            Logger.LogDebug($"CDKOutlineSaveAsText TEXT ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {isFileSaved}");
                         }
                         else if (convertParams.DestFormat == TDOutlineFormat.TEXTINDENTED)
                         {
                             if (convertParams.DestVersion > TDVersion.TD74)
-                                FileSaved = CDKOutlineSaveAsTextUTF(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), flags);
+                                isFileSaved = CDKOutlineSaveAsTextUTF(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), flags);
                             else
-                                FileSaved = CDKOutlineSaveAsText(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), true);
-                            Logger.LogDebug($"CDKOutlineSaveAsText TEXTINDENTED ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {FileSaved}");
+                                isFileSaved = CDKOutlineSaveAsText(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), true);
+                            Logger.LogDebug($"CDKOutlineSaveAsText TEXTINDENTED ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {isFileSaved}");
                         }
                         else if (convertParams.DestFormat == TDOutlineFormat.NORMAL)
                         {
-                            FileSaved = CDKOutlineSave(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName));
-                            Logger.LogDebug($"CDKOutlineSave NORMAL ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {FileSaved}");
+                            isFileSaved = CDKOutlineSave(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName));
+                            Logger.LogDebug($"CDKOutlineSave NORMAL ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {isFileSaved}");
                         }
                             
                         ok = CDKReleaseApp(houtline);
                         Logger.LogDebug($"CDKReleaseApp -> return = {ok}");
 
-                        if (FileSaved && (convertParams.DestVersion > TDVersion.TD71 && convertParams.DestVersion < TDVersion.TD74) && (convertParams.DestFormat == TDOutlineFormat.TEXT || convertParams.DestFormat == TDOutlineFormat.TEXTINDENTED))
+                        if (isFileSaved && (convertParams.DestVersion > TDVersion.TD71 && convertParams.DestVersion < TDVersion.TD74) && (convertParams.DestFormat == TDOutlineFormat.TEXT || convertParams.DestFormat == TDOutlineFormat.TEXTINDENTED))
                         {
                             if (!ConvertFileEncodingInPlace(Path.Combine(convertParams.destinationfolder, DestinationFileName), convertParams.DestEncoding))
                                 return ConverterResult.ERROR_UTFCONVERSION;
@@ -386,20 +404,22 @@ namespace TDVersionExplorer
 
                     if (houtline > 0)
                     {
+                        Logger.LogDebug($"CDKLoadApp reported {MessageBoxCloser.messageBoxTexts.Count} outline errors");
+
                         if (convertParams.DestFormat == TDOutlineFormat.TEXT)
                         {
-                            FileSaved = CDKOutlineSaveAsTextASCII(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), false);
-                            Logger.LogDebug($"CDKOutlineSaveAsText TEXT ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {FileSaved}");
+                            isFileSaved = CDKOutlineSaveAsTextASCII(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), false);
+                            Logger.LogDebug($"CDKOutlineSaveAsText TEXT ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {isFileSaved}");
                         }
                         else if (convertParams.DestFormat == TDOutlineFormat.TEXTINDENTED)
                         {
-                            FileSaved = CDKOutlineSaveAsTextASCII(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), true);
-                            Logger.LogDebug($"CDKOutlineSaveAsText TEXTINDENTED ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {FileSaved}");
+                            isFileSaved = CDKOutlineSaveAsTextASCII(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName), true);
+                            Logger.LogDebug($"CDKOutlineSaveAsText TEXTINDENTED ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {isFileSaved}");
                         }
                         else if (convertParams.DestFormat == TDOutlineFormat.NORMAL)
                         {
-                            FileSaved = CDKOutlineSaveASCII(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName));
-                            Logger.LogDebug($"CDKOutlineSave NORMAL ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {FileSaved}");
+                            isFileSaved = CDKOutlineSaveASCII(houtline, Path.Combine(convertParams.destinationfolder, DestinationFileName));
+                            Logger.LogDebug($"CDKOutlineSave NORMAL ({Path.Combine(convertParams.destinationfolder, DestinationFileName)}) -> return = {isFileSaved}");
                         }
 
                         ok = CDKReleaseApp(houtline);
@@ -431,19 +451,19 @@ namespace TDVersionExplorer
                 return ConverterResult.ERROR_CDKLOAD;
             }
 
-            if (FileSaved)
+            if (isFileSaved)
             {
+                // When there are outline errors reported, save them to .err file
                 if (MessageBoxCloser.messageBoxTexts.Count > 0)
                 {
-                    string errFile = Path.Combine(convertParams.destinationfolder, DestinationFileName + ".err");
                     try
                     {
-                        File.WriteAllLines(errFile, MessageBoxCloser.messageBoxTexts);
-                        Logger.LogDebug($"Outline errors saved to : {errFile}");
+                        File.WriteAllLines(DestinationErrFileFullPath, MessageBoxCloser.messageBoxTexts);
+                        Logger.LogDebug($"Outline errors ({MessageBoxCloser.messageBoxTexts.Count}) saved to : {DestinationErrFileFullPath}");
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogErrorEx($"Error saving .err file: {errFile}", ex);
+                        Logger.LogErrorEx($"Error saving .err file: {DestinationErrFileFullPath}", ex);
                     }
                     return ConverterResult.CONVERTED_WITH_ERRORS;
                 }
@@ -458,7 +478,7 @@ namespace TDVersionExplorer
             // The purpose of this method is to convert using multiple steps:
             // 1) Copy or convert source file to intermediate file (TEXT format) in temp folder
             // 2) When backporting, change the outline version to the lowest one
-            // 3) Start the real conversion from intermediate to the requested desination folder
+            // 3) Start the real conversion from intermediate to the requested destination folder
 
             string InterFileName = "Intermediate.apt";
             string InterFileNameFullPath = TDFileBase.TempfolderBase + InterFileName;
