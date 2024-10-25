@@ -6,8 +6,6 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading;
-using System.Web.UI.WebControls;
-using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace TDVersionExplorer
@@ -716,7 +714,7 @@ namespace TDVersionExplorer
             string registryPath = $@"Software\Gupta\SQLWindows 7.{versionNr}\Settings";
             string valueName = "PreferUTF8Encoding";
 
-            string flagname = string.Empty;
+            string flagname;
 
             if (option == 0)
                 flagname = "save UTF16, read UTF16";
@@ -771,18 +769,12 @@ namespace TDVersionExplorer
         }
     }
 
-    // This class is used to run as thread. It will detect SqlWindows messageboxes while opening sources
+    // This class is used to run a thread. It will detect SqlWindows messageboxes while opening sources
     // Found messageboxes will automatically be closed so not blocking the conversion process.
     internal static class MessageBoxCloser
     {
         private static Thread _closeThread;
         private static bool _stopRequested = false;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr GetDlgItem(IntPtr hWnd, int nIDDlgItem);
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
@@ -796,23 +788,13 @@ namespace TDVersionExplorer
         [DllImport("kernel32.dll")]
         private static extern uint GetCurrentProcessId();
 
-        [DllImport("user32.dll")]
-        private static extern bool EnumChildWindows(IntPtr hWndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
-        [DllImport("user32.dll")]
-        private static extern bool IsWindow(IntPtr hWnd);
-
-        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
-
         private const uint BM_CLICK = 0x00F5;  // Button click message
-        private const int WM_COMMAND = 0x0111;
-        private const int IDOK = 1;
 
         public static List<string> messageBoxTexts = new List<string>();
 
@@ -825,7 +807,6 @@ namespace TDVersionExplorer
                 IsBackground = true // Optional: Makes the thread stop when the app closes
             };
             _closeThread.Start();
-            Logger.LogDebug($"MessageBoxCloser thread started");
         }
 
         public static void Stop()
@@ -840,6 +821,7 @@ namespace TDVersionExplorer
 
         private static void CloseMessageBoxes()
         {
+            Logger.LogDebug($"MessageBoxCloser thread started");
             while (!_stopRequested)
             {
                 CloseSQLWindowsMessageBox();
@@ -849,41 +831,24 @@ namespace TDVersionExplorer
             }
         }
 
-        //private static void GetMsgBoxText( IntPtr hWndMessageBox)
-        //{
-        //    IntPtr hWndStatic = GetDlgItem(hWndMessageBox, 0xFFFF);
-
-        //    if (hWndStatic != IntPtr.Zero)
-        //    {
-        //        // Prepare a StringBuilder to receive the text (up to 512 characters)
-        //        StringBuilder sText = new StringBuilder(512);
-
-        //        // Get the window text from the static control
-        //        GetWindowText(hWndStatic, sText, sText.Capacity);
-        //        messageBoxTexts.Add(sText.ToString().Replace("\t", ""));
-        //    }
-        //}
-
         private static void CloseSQLWindowsMessageBox()
         {
-            IntPtr hWndMessageBox = IntPtr.Zero;
             uint currentProcessId = GetCurrentProcessId();
             IntPtr nextWindow = IntPtr.Zero;
 
             try
             {
-                // Use FindWindowEx to search for all windows with class "#32770" (Dialog class)
                 do
                 {
+                    // Use FindWindowEx to search for all windows with class "#32770" (Dialog class)
                     nextWindow = FindWindowEx(IntPtr.Zero, nextWindow, "#32770", null);
                     if (nextWindow != IntPtr.Zero)
                     {
-                        uint windowProcessId = 0;
-                        GetWindowThreadProcessId(nextWindow, out windowProcessId);
+                        GetWindowThreadProcessId(nextWindow, out uint windowProcessId);
 
                         if (windowProcessId == currentProcessId)
                         {
-                            // Check if the dialog has the desired structure
+                            // Check if the messagebox has the desired structure. Only close the correct ones
                             IntPtr okButtonHandle = IntPtr.Zero;
                             if (IsDesiredMessageBoxStructure(nextWindow, ref okButtonHandle))
                             {
@@ -896,15 +861,19 @@ namespace TDVersionExplorer
 
                 return;
             }
-            catch
+            catch(Exception ex)
             {
+                Logger.LogErrorEx("Error CloseSQLWindowsMessageBox:", ex);
                 return;
             }
         }
 
-        // Helper method to verify the structure of the message box using FindWindowEx
         private static bool IsDesiredMessageBoxStructure(IntPtr hWnd, ref IntPtr okButtonHandle)
         {
+            // The TD messagebox has an OK and Cancel button.
+            // Two statics where one has the error text
+            // Only identify such msgboxes as we may close the wrong ones.
+
             int buttonCount = 0;
             int staticCount = 0;
             string msgtext = string.Empty;
@@ -930,27 +899,23 @@ namespace TDVersionExplorer
                     }
                     else if (buttonText.ToString() != "Cancel")
                     {
-                        return false; // Invalid if a non-expected button is found
+                        // Some other button. So this can not be the needed TD msgbox
+                        return false;
                     }
                 }
                 else if (className.ToString() == "Static")
                 {
                     if(string.IsNullOrEmpty(msgtext))
                     {
-                        // Prepare a StringBuilder to receive the text (up to 512 characters)
                         StringBuilder sText = new StringBuilder(512);
 
-                        // Get the window text from the static control
                         GetWindowText(childWindow, sText, sText.Capacity);
 
-                        // Convert to string and trim whitespace
                         string textContent = sText.ToString().Trim();
 
                         // Check if the text has meaningful content (non-whitespace)
                         if (!string.IsNullOrEmpty(textContent))
-                        {
                             msgtext = textContent.Replace("\t", "");
-                        }
                     }
 
                     staticCount++;
@@ -966,10 +931,8 @@ namespace TDVersionExplorer
             bool found = (buttonCount == 2 && staticCount == 2 && okButtonHandle != IntPtr.Zero);
 
             if (found && !string.IsNullOrEmpty(msgtext))
-            {
                 messageBoxTexts.Add(msgtext);
-            }
-            // Check that we found exactly two buttons (OK and Cancel) and two static controls
+
             return found;
         }
     }
