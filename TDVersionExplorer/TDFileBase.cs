@@ -16,6 +16,7 @@ namespace TDVersionExplorer
         UNKNOWN = 0,
         CONVERTED = 1,
         ALREADYPORTED = 2,
+        CONVERTED_WITH_ERRORS = 3,
         ERROR_ANALYZE = -1,
         ERROR_CREATEFOLDER = -2,
         ERROR_RUNTIMENOTFOUND = -3,

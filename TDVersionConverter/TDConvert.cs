@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using static System.Windows.Forms.LinkLabel;
 
 namespace TDVersionExplorer
 {
@@ -50,10 +52,11 @@ namespace TDVersionExplorer
                 convertParams.DestVersion = TDFile.TDVersionInfo.NormalVersion;
                 Logger.LogDebug($"Convert: Destination version KEEP_ORIGINAL set to {convertParams.DestVersion}");
             }
-                
+
             string TDVersionStr = convertParams.DestVersion.ToString();
 
             // Combined TD versions (having _): take the later one
+            // Eg TD41_TD42 uses the same TD version codes. We can just take the most recent runtime then. So here that would be TD42
             int lastIndex = TDVersionStr.LastIndexOf('_');
 
             if (lastIndex != -1)
@@ -61,12 +64,12 @@ namespace TDVersionExplorer
                 TDVersionStr = TDVersionStr.Substring(lastIndex + 1);
             }
 
-            string TempRuntimefolder = TDFileBase.TempfolderBase + TDVersionStr;
             string DestinationFileName = convertParams.OriginalFileName;
             bool FileSaved = false;
 
             if (convertParams.renameExtension)
             {
+                // Rename the extension based on the outline format. Libraries (apl) will not be renamed.
                 switch (convertParams.DestFormat)
                 {
                     case TDOutlineFormat.NORMAL:
@@ -113,7 +116,7 @@ namespace TDVersionExplorer
             {
                 if (TDFile.TDEncoding == TDEncoding.UNKNOWN)
                 {
-                    // Probably NORMAL format. Assume the right destination encoding
+                    // Probably NORMAL format. Assume the correct destination encoding
                     if (convertParams.DestVersion < TDVersion.TD51)
                     {
                         convertParams.DestEncoding = TDEncoding.UTF8_ASCII;
@@ -254,7 +257,7 @@ namespace TDVersionExplorer
                     if (!TryGetFunctionDelegate(cdk_dll, "CDKReleaseApp", ref CDKReleaseApp))
                         return ConverterResult.ERROR_CDKLOAD;
 
-                    // TD72 up to TD74 use registry to determine how to save sources (UTF8 or UTF16)
+                    // TD72 up to TD74 could use registry to determine how to save sources (UTF8 or UTF16)
                     if (convertParams.DestVersion > TDVersion.TD71 && convertParams.DestVersion < TDVersion.TD75 && convertParams.DestFormat != TDOutlineFormat.NORMAL)
                     {
                         HasRegValue = RegistryGetUTFOption(convertParams.DestVersion, out optionFlagUTF);
@@ -364,7 +367,7 @@ namespace TDVersionExplorer
             }
             else
             {
-                Logger.LogDebug($"Using CDK ASCII");
+                Logger.LogDebug($"Using CDK ASCII. Destination version is {convertParams.DestVersion}");
                 try
                 {
                     if (!TryGetFunctionDelegate(cdk_dll, "CDKLoadApp", ref CDKLoadAppASCII))
@@ -432,14 +435,37 @@ namespace TDVersionExplorer
                 return ConverterResult.ERROR_CDKLOAD;
             }
 
+
+
             if (FileSaved)
+            {
+                if (closer.messageBoxTexts.Count > 0)
+                {
+                    string errFile = Path.Combine(convertParams.destinationfolder, DestinationFileName + ".err");
+                    try
+                    {
+                        File.WriteAllLines(errFile, closer.messageBoxTexts);
+                        Logger.LogDebug($"Outline errors saved to : {errFile}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogErrorEx($"Error saving .err file: {errFile}", ex);
+                    }
+                    return ConverterResult.CONVERTED_WITH_ERRORS;
+                }
                 return ConverterResult.CONVERTED;
+            }
             else
                 return ConverterResult.ERROR_CDKSAVE;
         }
 
         private static ConverterResult SaveToTextIntermediate(TDFileBase TDFile, ConvertParameters convertParams, bool backport)
         {
+            // The purpose of this method is to convert using multiple steps:
+            // 1) Copy or convert source file to intermediate file (TEXT format) in temp folder
+            // 2) When backporting, change the outline version to the lowest one
+            // 3) Start the real conversion from intermediate to the requested desination folder
+
             string InterFileName = "Intermediate.apt";
             string InterFileNameFullPath = TDFileBase.TempfolderBase + InterFileName;
             string InterFileNameLVFullPath = TDFileBase.TempfolderBase + "IntermediateLowerVersion.apt";
@@ -452,6 +478,7 @@ namespace TDVersionExplorer
 
             if (TDFile.TDOutLineFormat == TDOutlineFormat.TEXT || TDFile.TDOutLineFormat == TDOutlineFormat.TEXTINDENTED)
             {
+                // The source is in TEXT/INDENTEDTEXT format. So we can just copy the file
                 try
                 {
                     File.Copy(TDFile.FileFullPath, InterFileNameFullPath, overwrite: true);
@@ -476,6 +503,7 @@ namespace TDVersionExplorer
             }
             else if (TDFile.TDOutLineFormat == TDOutlineFormat.NORMAL || TDFile.TDOutLineFormat == TDOutlineFormat.COMPILED)
             {
+                // File must first be converted from NORMAL to TEXT format before we can convert it to the destination format
                 Logger.LogDebug($"File has NORMAL outline format. Start converting to TEXT intermediate.");
                 convertParamsNew = new ConvertParameters()
                 {
@@ -500,12 +528,14 @@ namespace TDVersionExplorer
 
                 if (MyNamedPipe == convertParamsNew.DestVersion.ToString() || UseLocalConverter)
                 {
+                    // We do not need to start another converter process. This one is already the correct converter
                     ConverterResult result = ExecuteConversion(convertParamsNew);
                     if (result < ConverterResult.CONVERTED)
                         return result;
                 }
                 else
                 {
+                    // Do the actual conversion by the dedicated converter, not his one
                     ConverterResult result = TDFileBase.ExecuteConverterProcess(convertParamsNew);
                     if (result < ConverterResult.CONVERTED)
                         return result;
@@ -764,12 +794,25 @@ namespace TDVersionExplorer
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr FindWindowEx(IntPtr hWndParent, IntPtr hWndChildAfter, string lpszClass, string lpszWindow);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
+        [DllImport("kernel32.dll")]
+        private static extern uint GetCurrentProcessId();
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Ansi)]
+        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
         private const uint BM_CLICK = 0x00F5;  // Button click message
         private const int WM_COMMAND = 0x0111;
         private const int IDOK = 1;
 
+        public List<string> messageBoxTexts;
+
         public void Start()
         {
+            //messageBoxTexts = new List<string>();
+
             _stopRequested = false;
             _closeThread = new Thread(CloseMessageBoxes)
             {
@@ -793,23 +836,12 @@ namespace TDVersionExplorer
         {
             while (!_stopRequested)
             {
-                // Try finding message boxes with different titles
-                IntPtr hWndMessageBox = FindWindow("#32770", "SQLWindows");
-                if (hWndMessageBox == IntPtr.Zero)
-                {
-                    hWndMessageBox = FindWindow("#32770", "Centura SQLWindows");
-                    if (hWndMessageBox == IntPtr.Zero)
-                    {
-                        hWndMessageBox = FindWindow("#32770", "Centura SQLWindows/32");
-                        if (hWndMessageBox == IntPtr.Zero)
-                        {
-                            hWndMessageBox = FindWindow("#32770", "");
-                        }
-                    }
-                }
+                IntPtr hWndMessageBox = FindSQLWindowsMessageBox();
 
                 if (hWndMessageBox != IntPtr.Zero)
                 {
+                    //GetMsgBoxText(hWndMessageBox);
+
                     // Try finding the OK button using dlg item ID
                     IntPtr hWndButton = GetDlgItem(hWndMessageBox, IDOK);
                     if (hWndButton != IntPtr.Zero)
@@ -821,13 +853,56 @@ namespace TDVersionExplorer
                     {
                         hWndButton = FindWindowEx(hWndMessageBox, IntPtr.Zero, "Button", null);
                         if (hWndButton != IntPtr.Zero)
+                        {
                             SendMessage(hWndButton, BM_CLICK, IntPtr.Zero, IntPtr.Zero);
+                        }
                     }
                 }
 
                 // Sleep for a short time to avoid busy-waiting
                 Thread.Sleep(20);
             }
+        }
+
+        private void GetMsgBoxText( IntPtr hWndMessageBox)
+        {
+            IntPtr hWndStatic = GetDlgItem(hWndMessageBox, 0xFFFF);
+
+            if (hWndStatic != IntPtr.Zero)
+            {
+                // Prepare a StringBuilder to receive the text (up to 512 characters)
+                StringBuilder sText = new StringBuilder(512);
+
+                // Get the window text from the static control
+                GetWindowText(hWndStatic, sText, sText.Capacity);
+                messageBoxTexts.Add(sText.ToString().Replace("\t", ""));
+            }
+        }
+
+        static IntPtr FindSQLWindowsMessageBox()
+        {
+            IntPtr hWndMessageBox = IntPtr.Zero;
+            uint currentProcessId = GetCurrentProcessId();
+            IntPtr nextWindow = IntPtr.Zero;
+
+            // Use FindWindowEx to search for all windows with class "#32770"
+            do
+            {
+                nextWindow = FindWindowEx(IntPtr.Zero, nextWindow, "#32770", null); // Ignore window title by passing 'null'
+                if (nextWindow != IntPtr.Zero)
+                {
+                    // Get the process ID of the found window
+                    GetWindowThreadProcessId(nextWindow, out uint windowProcessId);
+
+                    // Check if the window belongs to the current process
+                    if (windowProcessId == currentProcessId)
+                    {
+                        return nextWindow; // Return the window handle if it belongs to the current process
+                    }
+                }
+            } while (nextWindow != IntPtr.Zero); // Keep searching until no more windows are found
+
+            return IntPtr.Zero; // Return IntPtr.Zero if no window was found in the current process
         }
     }
 }

@@ -356,6 +356,8 @@ namespace TDVersionExplorer
                         color = System.Drawing.Color.LightGreen;
                     else if (file.converterResult == ConverterResult.ALREADYPORTED)
                         color = System.Drawing.Color.LightBlue;
+                    else if (file.converterResult == ConverterResult.CONVERTED_WITH_ERRORS)
+                        color = System.Drawing.Color.Salmon;
                     else
                     {
                         color = System.Drawing.Color.Red;
