@@ -12,8 +12,17 @@ namespace TDVersionExplorer
 {
     internal class Program
     {
+        [DllImport("kernel32.dll")]
+        private static extern uint SetErrorMode(uint uMode);
+
+        private const uint SEM_NOGPFAULTERRORBOX = 0x0002;
+        private const uint SEM_FAILCRITICALERRORS = 0x0001;
+
         static void Main(string[] args)
         {
+            // Set the error mode to avoid Windows error dialogs
+            SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
+
             var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
             XmlConfigurator.Configure(logRepository);
             

@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using static System.Windows.Forms.LinkLabel;
 
 namespace TDVersionExplorer
 {
@@ -52,7 +52,7 @@ namespace TDVersionExplorer
                 convertParams.DestVersion = TDFile.TDVersionInfo.NormalVersion;
                 Logger.LogDebug($"Convert: Destination version KEEP_ORIGINAL set to {convertParams.DestVersion}");
             }
-
+                
             string TDVersionStr = convertParams.DestVersion.ToString();
 
             // Combined TD versions (having _): take the later one
@@ -224,8 +224,6 @@ namespace TDVersionExplorer
             ushort houtline = 0;
             bool ok = false;
 
-            MessageBoxCloser closer = new MessageBoxCloser();
-
             if (convertParams.DestVersion > TDVersion.TD41_TD42)
             {
                 Logger.LogDebug($"Using CDK UNICODE. Destination version is {convertParams.DestVersion}");
@@ -291,10 +289,10 @@ namespace TDVersionExplorer
                     }
 
                     // Start the thread that closes message boxes
-                    closer.Start();
+                    MessageBoxCloser.Start();
                     houtline = CDKLoadApp(TDFile.FileFullPath);
                     Logger.LogDebug($"CDKLoadApp({TDFile.FileFullPath}) -> hOutline = {houtline}");
-                    closer.Stop();
+                    MessageBoxCloser.Stop();
 
                     if (houtline > 0)
                     {
@@ -348,13 +346,13 @@ namespace TDVersionExplorer
                 }
                 catch (AccessViolationException ex)
                 {
-                    closer.Stop();
+                    MessageBoxCloser.Stop();
                     Logger.LogErrorEx($"Error Convert:", ex);
                     return ConverterResult.ERROR_CALLCDK;
                 }
                 catch (Exception ex)
                 {
-                    closer.Stop();
+                    MessageBoxCloser.Stop();
                     Logger.LogErrorEx($"Error Convert:", ex);
                     return ConverterResult.ERROR_CALLCDK;
                 }
@@ -383,10 +381,10 @@ namespace TDVersionExplorer
                         return ConverterResult.ERROR_CDKLOAD;
 
                     // Start the thread that closes message boxes
-                    closer.Start();
+                    MessageBoxCloser.Start();
                     houtline = CDKLoadAppASCII(TDFile.FileFullPath);
                     Logger.LogDebug($"CDKLoadApp({TDFile.FileFullPath}) -> hOutline = {houtline}");
-                    closer.Stop();
+                    MessageBoxCloser.Stop();
 
                     if (houtline > 0)
                     {
@@ -412,7 +410,7 @@ namespace TDVersionExplorer
                 }
                 catch (Exception ex)
                 {
-                    closer.Stop();
+                    MessageBoxCloser.Stop();
                     Logger.LogErrorEx($"Error Convert:", ex);
                     return ConverterResult.ERROR_CALLCDK;
                 }
@@ -435,16 +433,14 @@ namespace TDVersionExplorer
                 return ConverterResult.ERROR_CDKLOAD;
             }
 
-
-
             if (FileSaved)
             {
-                if (closer.messageBoxTexts.Count > 0)
+                if (MessageBoxCloser.messageBoxTexts.Count > 0)
                 {
                     string errFile = Path.Combine(convertParams.destinationfolder, DestinationFileName + ".err");
                     try
                     {
-                        File.WriteAllLines(errFile, closer.messageBoxTexts);
+                        File.WriteAllLines(errFile, MessageBoxCloser.messageBoxTexts);
                         Logger.LogDebug($"Outline errors saved to : {errFile}");
                     }
                     catch (Exception ex)
@@ -777,10 +773,10 @@ namespace TDVersionExplorer
 
     // This class is used to run as thread. It will detect SqlWindows messageboxes while opening sources
     // Found messageboxes will automatically be closed so not blocking the conversion process.
-    internal class MessageBoxCloser
+    internal static class MessageBoxCloser
     {
-        private Thread _closeThread;
-        private bool _stopRequested = false;
+        private static Thread _closeThread;
+        private static bool _stopRequested = false;
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
@@ -800,19 +796,29 @@ namespace TDVersionExplorer
         [DllImport("kernel32.dll")]
         private static extern uint GetCurrentProcessId();
 
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Ansi)]
+        [DllImport("user32.dll")]
+        private static extern bool EnumChildWindows(IntPtr hWndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+        [DllImport("user32.dll")]
+        private static extern bool IsWindow(IntPtr hWnd);
+
+        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
         private const uint BM_CLICK = 0x00F5;  // Button click message
         private const int WM_COMMAND = 0x0111;
         private const int IDOK = 1;
 
-        public List<string> messageBoxTexts;
+        public static List<string> messageBoxTexts = new List<string>();
 
-        public void Start()
+        public static void Start()
         {
-            //messageBoxTexts = new List<string>();
-
+            messageBoxTexts = new List<string>();
             _stopRequested = false;
             _closeThread = new Thread(CloseMessageBoxes)
             {
@@ -822,7 +828,7 @@ namespace TDVersionExplorer
             Logger.LogDebug($"MessageBoxCloser thread started");
         }
 
-        public void Stop()
+        public static void Stop()
         {
             _stopRequested = true;
             if (_closeThread != null && _closeThread.IsAlive)
@@ -832,77 +838,139 @@ namespace TDVersionExplorer
             }
         }
 
-        private void CloseMessageBoxes()
+        private static void CloseMessageBoxes()
         {
             while (!_stopRequested)
             {
-                IntPtr hWndMessageBox = FindSQLWindowsMessageBox();
-
-                if (hWndMessageBox != IntPtr.Zero)
-                {
-                    //GetMsgBoxText(hWndMessageBox);
-
-                    // Try finding the OK button using dlg item ID
-                    IntPtr hWndButton = GetDlgItem(hWndMessageBox, IDOK);
-                    if (hWndButton != IntPtr.Zero)
-                    {
-                        // Send the WM_COMMAND message to "click" the OK button
-                        SendMessage(hWndMessageBox, WM_COMMAND, (IntPtr)IDOK, hWndButton);
-                    }
-                    else
-                    {
-                        hWndButton = FindWindowEx(hWndMessageBox, IntPtr.Zero, "Button", null);
-                        if (hWndButton != IntPtr.Zero)
-                        {
-                            SendMessage(hWndButton, BM_CLICK, IntPtr.Zero, IntPtr.Zero);
-                        }
-                    }
-                }
+                CloseSQLWindowsMessageBox();
 
                 // Sleep for a short time to avoid busy-waiting
                 Thread.Sleep(20);
             }
         }
 
-        private void GetMsgBoxText( IntPtr hWndMessageBox)
-        {
-            IntPtr hWndStatic = GetDlgItem(hWndMessageBox, 0xFFFF);
+        //private static void GetMsgBoxText( IntPtr hWndMessageBox)
+        //{
+        //    IntPtr hWndStatic = GetDlgItem(hWndMessageBox, 0xFFFF);
 
-            if (hWndStatic != IntPtr.Zero)
-            {
-                // Prepare a StringBuilder to receive the text (up to 512 characters)
-                StringBuilder sText = new StringBuilder(512);
+        //    if (hWndStatic != IntPtr.Zero)
+        //    {
+        //        // Prepare a StringBuilder to receive the text (up to 512 characters)
+        //        StringBuilder sText = new StringBuilder(512);
 
-                // Get the window text from the static control
-                GetWindowText(hWndStatic, sText, sText.Capacity);
-                messageBoxTexts.Add(sText.ToString().Replace("\t", ""));
-            }
-        }
+        //        // Get the window text from the static control
+        //        GetWindowText(hWndStatic, sText, sText.Capacity);
+        //        messageBoxTexts.Add(sText.ToString().Replace("\t", ""));
+        //    }
+        //}
 
-        static IntPtr FindSQLWindowsMessageBox()
+        private static void CloseSQLWindowsMessageBox()
         {
             IntPtr hWndMessageBox = IntPtr.Zero;
             uint currentProcessId = GetCurrentProcessId();
             IntPtr nextWindow = IntPtr.Zero;
 
-            // Use FindWindowEx to search for all windows with class "#32770"
-            do
+            try
             {
-                nextWindow = FindWindowEx(IntPtr.Zero, nextWindow, "#32770", null); // Ignore window title by passing 'null'
-                if (nextWindow != IntPtr.Zero)
+                // Use FindWindowEx to search for all windows with class "#32770" (Dialog class)
+                do
                 {
-                    // Get the process ID of the found window
-                    GetWindowThreadProcessId(nextWindow, out uint windowProcessId);
-
-                    // Check if the window belongs to the current process
-                    if (windowProcessId == currentProcessId)
+                    nextWindow = FindWindowEx(IntPtr.Zero, nextWindow, "#32770", null);
+                    if (nextWindow != IntPtr.Zero)
                     {
-                        return nextWindow; // Return the window handle if it belongs to the current process
+                        uint windowProcessId = 0;
+                        GetWindowThreadProcessId(nextWindow, out windowProcessId);
+
+                        if (windowProcessId == currentProcessId)
+                        {
+                            // Check if the dialog has the desired structure
+                            IntPtr okButtonHandle = IntPtr.Zero;
+                            if (IsDesiredMessageBoxStructure(nextWindow, ref okButtonHandle))
+                            {
+                                SendMessage(okButtonHandle, BM_CLICK, IntPtr.Zero, IntPtr.Zero);
+                                return;
+                            }
+                        }
+                    }
+                } while (nextWindow != IntPtr.Zero);
+
+                return;
+            }
+            catch
+            {
+                return;
+            }
+        }
+
+        // Helper method to verify the structure of the message box using FindWindowEx
+        private static bool IsDesiredMessageBoxStructure(IntPtr hWnd, ref IntPtr okButtonHandle)
+        {
+            int buttonCount = 0;
+            int staticCount = 0;
+            string msgtext = string.Empty;
+
+            // Find the first child window
+            IntPtr childWindow = IntPtr.Zero;
+
+            while ((childWindow = FindWindowEx(hWnd, childWindow, null, null)) != IntPtr.Zero)
+            {
+                StringBuilder className = new StringBuilder(256);
+                GetClassName(childWindow, className, className.Capacity);
+
+                if (className.ToString() == "Button")
+                {
+                    buttonCount++;
+                    // Retrieve the button text to determine if it's "OK" or "Cancel"
+                    StringBuilder buttonText = new StringBuilder(256);
+                    GetWindowText(childWindow, buttonText, buttonText.Capacity);
+
+                    if (buttonText.ToString() == "OK")
+                    {
+                        okButtonHandle = childWindow;
+                    }
+                    else if (buttonText.ToString() != "Cancel")
+                    {
+                        return false; // Invalid if a non-expected button is found
                     }
                 }
-            } while (nextWindow != IntPtr.Zero); // Keep searching until no more windows are found
+                else if (className.ToString() == "Static")
+                {
+                    if(string.IsNullOrEmpty(msgtext))
+                    {
+                        // Prepare a StringBuilder to receive the text (up to 512 characters)
+                        StringBuilder sText = new StringBuilder(512);
 
-            return IntPtr.Zero; // Return IntPtr.Zero if no window was found in the current process
+                        // Get the window text from the static control
+                        GetWindowText(childWindow, sText, sText.Capacity);
+
+                        // Convert to string and trim whitespace
+                        string textContent = sText.ToString().Trim();
+
+                        // Check if the text has meaningful content (non-whitespace)
+                        if (!string.IsNullOrEmpty(textContent))
+                        {
+                            msgtext = textContent.Replace("\t", "");
+                        }
+                    }
+
+                    staticCount++;
+                }
+
+                // If more than the required count is detected, exit early
+                if (buttonCount > 2 || staticCount > 2)
+                {
+                    return false;
+                }
+            }
+
+            bool found = (buttonCount == 2 && staticCount == 2 && okButtonHandle != IntPtr.Zero);
+
+            if (found && !string.IsNullOrEmpty(msgtext))
+            {
+                messageBoxTexts.Add(msgtext);
+            }
+            // Check that we found exactly two buttons (OK and Cancel) and two static controls
+            return found;
         }
     }
 }

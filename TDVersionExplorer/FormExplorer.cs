@@ -492,6 +492,7 @@ namespace TDVersionExplorer
             }
             catch (OperationCanceledException)
             {
+                PopulateConvertResults();
                 MessageBox.Show("Conversion was cancelled.");
             }
             catch (Exception ex)
