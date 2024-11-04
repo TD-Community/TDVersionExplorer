@@ -349,14 +349,14 @@ namespace TDVersionExplorer
                 System.Drawing.Color colorTxt = System.Drawing.Color.Black;
                 string resultTxt = string.Empty;
 
-                if (file.converterResult != ConverterResult.UNKNOWN )
+                if (file.converterResult.resultCode != ConverterResultCode.UNKNOWN )
                 {
-                    resultTxt = file.converterResult.ToString();
-                    if (file.converterResult == ConverterResult.CONVERTED)
+                    resultTxt = file.converterResult.resultCode.ToString();
+                    if (file.converterResult.resultCode == ConverterResultCode.CONVERTED)
                         color = System.Drawing.Color.LightGreen;
-                    else if (file.converterResult == ConverterResult.ALREADYPORTED)
+                    else if (file.converterResult.resultCode == ConverterResultCode.ALREADYPORTED)
                         color = System.Drawing.Color.LightBlue;
-                    else if (file.converterResult == ConverterResult.CONVERTED_WITH_ERRORS)
+                    else if (file.converterResult.resultCode == ConverterResultCode.CONVERTED_WITH_ERRORS)
                         color = System.Drawing.Color.Salmon;
                     else
                     {
@@ -520,7 +520,7 @@ namespace TDVersionExplorer
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     TDFileEx file = (TDFileEx)row.Cells["columnObject"].Value;
-                    file.converterResult = ConverterResult.UNKNOWN;
+                    file.converterResult.resultCode = ConverterResultCode.UNKNOWN;
 
                     // Check if the row is not a new row
                     if (!row.IsNewRow && row.Cells["ColumnSelect"].Value is bool)
@@ -530,7 +530,7 @@ namespace TDVersionExplorer
 
                         if (isChecked)
                         {
-                            ConvertParameters convertParams = new ConvertParameters()
+                            ConverterParam convertParams = new ConverterParam()
                             {
                                 source = file.FileFullPath,
                                 destinationfolder = settings.destinationfolder,
@@ -549,7 +549,7 @@ namespace TDVersionExplorer
                                 progressForm.UpdateProgress(count, file.FileName);
                             }));
 
-                            ConverterResult result = file.StartConvert(convertParams);
+                            file.StartConvert(convertParams);
 
                             processed += 1;
                         }
@@ -715,16 +715,18 @@ namespace TDVersionExplorer
         {
             try
             {
-                TDFiles = new List<TDFileEx>();
+                
 
                 // Get all files from the directory
-                string[] files = Directory.GetFiles(folderPath, "*", SearchOption.TopDirectoryOnly)
-                        .Where(file => !IsHiddenOrSystem(file))
-                        .ToArray();
+                var files = Directory.EnumerateFiles(folderPath, "*", SearchOption.TopDirectoryOnly)
+                             .Where(file => !IsHiddenOrSystem(file) &&
+                                            (checkBoxInclDLLEXE.Checked || !IsExecutable(file)));
+                int fileCount = files.Count();
+                TDFiles = new List<TDFileEx>(fileCount);
 
                 progressForm.Invoke((Action)(() =>
                 {
-                    progressForm.SetMaximum(files.Length);
+                    progressForm.SetMaximum(fileCount);
                 }));
 
                 int count = 0;
@@ -760,6 +762,12 @@ namespace TDVersionExplorer
             {
                 MessageBox.Show($"Error loading files:\n{ex.Message}");
             }
+        }
+
+        private bool IsExecutable(string filePath)
+        {
+            string extension = Path.GetExtension(filePath).ToLowerInvariant();
+            return extension == ".exe" || extension == ".dll";
         }
 
         private static bool IsHiddenOrSystem(string filePath)
@@ -935,6 +943,11 @@ namespace TDVersionExplorer
                                 contextMenu.Items.Add(unavailableOption);
                             }
                         }
+                        if (!string.IsNullOrEmpty(file.converterResult.errFile))
+                        {
+                            contextMenu.Items.Add(new ToolStripSeparator());
+                            contextMenu.Items.Add($"Open err file", null, (s, e) => FileContextMenuExecute(FileContextMenu.FILE_OPEN_ERR, null));
+                        }
 
                         // Show the context menu
                         contextMenu.Show(dataGridView, argEvent.Location);
@@ -987,6 +1000,23 @@ namespace TDVersionExplorer
                         MessageBox.Show($"Error opening file in TD:\n{ex.Message}");
                     }
                     break;
+                case FileContextMenu.FILE_OPEN_ERR:
+                    startInfo = new ProcessStartInfo
+                    {
+                        FileName = "notepad.exe",
+                        Arguments = $"\"{file.converterResult.errFile}\"",
+                        UseShellExecute = false
+                    };
+
+                    try
+                    {
+                        Process process = Process.Start(startInfo);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error opening err file:\n{ex.Message}");
+                    }
+                    break;
                 default:
                     break;
             }
@@ -1014,6 +1044,7 @@ namespace TDVersionExplorer
     {
         FILE_COPY = 1,
         FILE_SHOWLOC = 2,
-        FILE_OPEN_TD = 3
+        FILE_OPEN_TD = 3,
+        FILE_OPEN_ERR = 4
     }
 }

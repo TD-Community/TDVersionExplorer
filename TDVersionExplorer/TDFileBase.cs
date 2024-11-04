@@ -11,7 +11,7 @@ using log4net.Repository.Hierarchy;
 
 namespace TDVersionExplorer
 {
-    public enum ConverterResult
+    public enum ConverterResultCode
     {
         UNKNOWN = 0,
         CONVERTED = 1,
@@ -40,7 +40,7 @@ namespace TDVersionExplorer
         SHOW_SERVERS    = 2
     }
 
-    public class ConvertParameters
+    public class ConverterParam
     {
         public string source = string.Empty;
         public string destinationfolder = string.Empty;
@@ -92,9 +92,9 @@ namespace TDVersionExplorer
         }
 
         // Method to create a shallow copy
-        public ConvertParameters Clone()
+        public ConverterParam Clone()
         {
-            return (ConvertParameters)this.MemberwiseClone();
+            return (ConverterParam)this.MemberwiseClone();
         }
 
         public string ToPipeMsg()
@@ -116,6 +116,43 @@ namespace TDVersionExplorer
             renameExtension = bool.Parse(parts[8]);
             debugMode = (DebugMode)Enum.Parse(typeof(DebugMode), parts[9]);
             loglevel = parts[10];
+        }
+    }
+
+    public class ConverterResult
+    {
+        public ConverterResultCode resultCode = ConverterResultCode.UNKNOWN;
+        public string msg = string.Empty;
+        public string errFile = string.Empty;
+
+        public string ToStr()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(string.Format("{0,-16} {1}", "ResultCode:", $"{resultCode}"));
+            sb.AppendLine(string.Format("{0,-16} {1}", "Msg:", $"{msg}"));
+            sb.AppendLine(string.Format("{0,-16} {1}", "ErrFile:", $"{errFile}"));
+
+            return sb.ToString();
+        }
+
+        // Method to create a shallow copy
+        public ConverterParam Clone()
+        {
+            return (ConverterParam)this.MemberwiseClone();
+        }
+
+        public string ToPipeMsg()
+        {
+            return $"{resultCode}|{msg}|{errFile}";
+        }
+
+        public void FromPipeMsg(string serialized)
+        {
+            var parts = serialized.Split('|');
+            resultCode = (ConverterResultCode)Enum.Parse(typeof(ConverterResultCode), parts[0]);
+            msg = parts[1];
+            errFile = parts[2];
         }
     }
 
@@ -231,7 +268,7 @@ namespace TDVersionExplorer
 
         public bool Initialised = false;
         public bool CanBeConverted = false;
-        public ConverterResult converterResult = ConverterResult.UNKNOWN;
+        public ConverterResult converterResult = new ConverterResult { resultCode = ConverterResultCode.ERROR_UTFCONVERSION };
 
         public static bool UseNamedPipes = true;
         public static bool ShowNamedPipeServers = false;
@@ -417,7 +454,7 @@ namespace TDVersionExplorer
             return path;
         }
 
-        public static ConverterResult ExecuteConverterProcess(ConvertParameters convertParams)
+        public static ConverterResult ExecuteConverterProcess(ConverterParam convertParams)
         {
             Logger.LogDebug($"Begin ExecuteConverterProcess...");
             string workerExePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TDVersionConverter.exe");
@@ -468,7 +505,10 @@ namespace TDVersionExplorer
                     catch (Exception ex)
                     {
                         Logger.LogErrorEx($"Error starting Process {workerExePath}:",ex);
-                        return ConverterResult.ERROR_STARTCONVERTERPROC;
+                        return new ConverterResult
+                        {
+                            resultCode = ConverterResultCode.ERROR_STARTCONVERTERPROC
+                        };
                     }
 
                     if (jobHandle != null)
@@ -491,7 +531,10 @@ namespace TDVersionExplorer
                     if (!NamedPipeFound)
                     {
                         Logger.LogError($"NamedPipe {convertParams.DestVersion} not found");
-                        return ConverterResult.ERROR_STARTCONVERTERPROC;
+                        return new ConverterResult
+                        {
+                            resultCode = ConverterResultCode.ERROR_STARTCONVERTERPROC
+                        };
                     }
                     else
                         Logger.LogDebug($"NamedPipe {convertParams.DestVersion} found");
@@ -513,16 +556,18 @@ namespace TDVersionExplorer
                     pipeClient.Close();
                     pipeClient.Dispose();
 
-                    if (Enum.TryParse<ConverterResult>(piperesult, true, out ConverterResult resultCode))
-                        return resultCode;
-                    else
-                        return ConverterResult.ERROR_NAMEDPIPE;
+                    ConverterResult result = new ConverterResult();
+                    result.FromPipeMsg(piperesult);
+                    return result;
                 }
 
                 catch (Exception ex)
                 {
                     Logger.LogErrorEx($"Error ExecuteConverterProcess:", ex);
-                    return ConverterResult.ERROR_NAMEDPIPE;
+                    return new ConverterResult
+                    {
+                        resultCode = ConverterResultCode.ERROR_NAMEDPIPE
+                    };
                 }
             }
             else
@@ -556,7 +601,11 @@ namespace TDVersionExplorer
                 // Get the exit code
                 int exitCode = process.ExitCode;
 
-                return (ConverterResult)exitCode;
+                return new ConverterResult
+                {
+                    resultCode = (ConverterResultCode)exitCode
+                };
+
             }
         }
 

@@ -7,7 +7,7 @@ namespace TDVersionExplorer
 {
     internal class TDFileEx:TDFileBase
     {
-        public ConverterResult StartConvert(ConvertParameters convertParams)
+        public void StartConvert(ConverterParam convertParams)
         {
             TDFileBase.ShowNamedPipeServers = (convertParams.debugMode & DebugMode.SHOW_SERVERS) == DebugMode.SHOW_SERVERS;
             
@@ -18,9 +18,9 @@ namespace TDVersionExplorer
             // No support to port to TD10 and TD11 as we do not have those CDK's
             if (convertParams.DestVersion < TDVersion.TD15)
             {
-                converterResult = ConverterResult.ERROR_CDKNOTSUPPORTED;
+                converterResult.resultCode = ConverterResultCode.ERROR_CDKNOTSUPPORTED;
                 Logger.LogError($"Error StartConvert. CDK version not supported : {convertParams.DestVersion}");
-                return converterResult;
+                return;
             }
 
             Logger.LogInfo($"********* Start Conversion to {convertParams.DestVersion}: {convertParams.source} ********* ");
@@ -38,16 +38,16 @@ namespace TDVersionExplorer
                 // First extract the source TD version
                 if (!ExtractTDRuntime(this.TDVersionInfo.NormalVersion))
                 {
-                    converterResult = ConverterResult.ERROR_EXTRACTRUNTIME;
-                    return converterResult;
+                    converterResult.resultCode = ConverterResultCode.ERROR_EXTRACTRUNTIME;
+                    return;
                 }
             }
 
             // Extract the destination TD version
             if (!ExtractTDRuntime(convertParams.DestVersion))
             {
-                converterResult = ConverterResult.ERROR_EXTRACTRUNTIME;
-                return converterResult;
+                converterResult.resultCode = ConverterResultCode.ERROR_EXTRACTRUNTIME;
+                return;
             }
 
             if (this.TDOutLineFormat == TDOutlineFormat.NORMAL && (this.TDVersionInfo.NormalVersion == TDVersion.TD10 || this.TDVersionInfo.NormalVersion == TDVersion.TD11))
@@ -56,16 +56,14 @@ namespace TDVersionExplorer
                 // Force TD15 to be extracted
                 if (!ExtractTDRuntime(TDVersion.TD15))
                 {
-                    converterResult = ConverterResult.ERROR_EXTRACTRUNTIME;
-                    return converterResult;
+                    converterResult.resultCode = ConverterResultCode.ERROR_EXTRACTRUNTIME;
+                    return;
                 }
             }
 
             converterResult = ExecuteConverterProcess(convertParams);
 
-            Logger.LogInfo($"********* Conversion result: {converterResult} for {convertParams.source} *********\n");
-
-            return converterResult;
+            Logger.LogInfo($"********* Conversion result for {convertParams.source} *********\n{converterResult.ToStr()}");
         }
 
         private static bool ExtractTDRuntime(TDVersion version)

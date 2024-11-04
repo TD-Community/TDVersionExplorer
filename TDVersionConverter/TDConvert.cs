@@ -15,7 +15,7 @@ namespace TDVersionExplorer
         public static bool UseLocalConverter = true;      // When true, no new process is started. All debugging in the same source
         public static string MyNamedPipe = string.Empty;
 
-        public static ConverterResult ExecuteConversion(ConvertParameters convertParams)
+        public static ConverterResult ExecuteConversion(ConverterParam convertParams)
         {
             TDFileBase.ShowNamedPipeServers = (convertParams.debugMode & DebugMode.SHOW_SERVERS) == DebugMode.SHOW_SERVERS;
 
@@ -26,14 +26,17 @@ namespace TDVersionExplorer
 
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
-        private static ConverterResult Convert(ConvertParameters convertParams)
+        private static ConverterResult Convert(ConverterParam convertParams)
         {
             Logger.LogDebug($"Convert with params:\n\n{convertParams.ToStr()}");
 
             TDFileBase TDFile = new TDFileBase();
 
             if (!TDFile.AnalyseFile(convertParams.source))
-                return ConverterResult.ERROR_ANALYZE;
+                return new ConverterResult
+                {
+                    resultCode = ConverterResultCode.ERROR_ANALYZE
+                };
 
             // Ok. Issue here. When source version is TD10 or TD11 and format is NORMAL we can not convert as we do not have those CDK's.
             // Solution is to take TD15 as source. So force that here
@@ -116,7 +119,11 @@ namespace TDVersionExplorer
             catch (Exception ex)
             {
                 Logger.LogErrorEx($"Error Convert:", ex);
-                return ConverterResult.ERROR_CREATEFOLDER;
+                return new ConverterResult
+                {
+                    resultCode = ConverterResultCode.ERROR_CREATEFOLDER,
+                    msg = ex.Message
+                };
             }
 
             // When KEEPORIGINAL format, take the format of the original file
@@ -169,13 +176,17 @@ namespace TDVersionExplorer
                 TDFile.TDOutLineFormat == convertParams.DestFormat &&
                 TDFile.TDEncoding == convertParams.DestEncoding)
             {
+                Logger.LogDebug($"Source attr: {TDFile.TDVersionInfo.NormalVersion},{TDFile.TDOutLineFormat},{TDFile.TDEncoding} equals destination attr {convertParams.DestVersion},{convertParams.DestFormat},{convertParams.DestEncoding}");
                 // Seems original file is already in the desired destination attributes
                 if (!convertParams.forceConversion)
                 {
-                    Logger.LogDebug($"Convert: Source and destination attributes are the same. Do not convert");
-                    return ConverterResult.ALREADYPORTED;
+                    Logger.LogDebug($"Convert: forceConversion = false. Do not convert");
+                    return new ConverterResult
+                    {
+                        resultCode = ConverterResultCode.ALREADYPORTED
+                    };
                 }
-                Logger.LogDebug($"Convert: Source and destination attributes are the same. Force is enabled so do convert");
+                Logger.LogDebug($"Convert: forceConversion = true. So do convert");
             }
 
             if (!string.IsNullOrEmpty(convertParams.alternativeFileName))
@@ -196,6 +207,7 @@ namespace TDVersionExplorer
                 {
                     // Backporting from new to older TD version
                     Logger.LogDebug($"Backporting detected: {convertParams.DestVersion} < {TDFile.TDVersionInfo.NormalVersion}");
+
                     return SaveToTextIntermediate(TDFile, convertParams, true);
                 }
                 else if ((!string.IsNullOrEmpty(convertParams.alternativeFileName) || TDFile.TDVersionInfo.NormalVersion != convertParams.DestVersion) && (TDFile.TDOutLineFormat == TDOutlineFormat.COMPILED || TDFile.TDOutLineFormat == TDOutlineFormat.NORMAL))
@@ -214,7 +226,10 @@ namespace TDVersionExplorer
             if (!System.IO.File.Exists(TDInstallation + cdk_dll))
             {
                 Logger.LogError($"Error Convert: TD runtime file not found {TDInstallation + cdk_dll}");
-                return ConverterResult.ERROR_RUNTIMENOTFOUND;
+                return new ConverterResult
+                {
+                    resultCode = ConverterResultCode.ERROR_RUNTIMENOTFOUND
+                };
             }
 
             EnvironmentVariableTarget scope = EnvironmentVariableTarget.Machine;
@@ -244,31 +259,49 @@ namespace TDVersionExplorer
                 Logger.LogDebug($"Using CDK UNICODE. Destination version is {convertParams.DestVersion}");
                 try
                 {
-                    if (!TryGetFunctionDelegate(cdk_dll, "CDKLoadApp", ref CDKLoadApp))
-                        return ConverterResult.ERROR_CDKLOAD;
+                    if (!TryGetFunctionDelegate(TDInstallation+cdk_dll, "CDKLoadApp", ref CDKLoadApp))
+                        return new ConverterResult
+                        {
+                            resultCode = ConverterResultCode.ERROR_CDKLOAD
+                        };
 
-                    if (!TryGetFunctionDelegate(cdk_dll, "CDKOutlineSave", ref CDKOutlineSave))
-                        return ConverterResult.ERROR_CDKLOAD;
+                    if (!TryGetFunctionDelegate(TDInstallation + cdk_dll, "CDKOutlineSave", ref CDKOutlineSave))
+                        return new ConverterResult
+                        {
+                            resultCode = ConverterResultCode.ERROR_CDKLOAD
+                        };
 
                     if (convertParams.DestVersion > TDVersion.TD74)
                     {
-                        if (!TryGetFunctionDelegate(cdk_dll, "CDKOutlineSaveAsText", ref CDKOutlineSaveAsTextUTF))
-                            return ConverterResult.ERROR_CDKLOAD;
+                        if (!TryGetFunctionDelegate(TDInstallation + cdk_dll, "CDKOutlineSaveAsText", ref CDKOutlineSaveAsTextUTF))
+                            return new ConverterResult
+                            {
+                                resultCode = ConverterResultCode.ERROR_CDKLOAD
+                            };
                     }
                     else
                     {
-                        if (!TryGetFunctionDelegate(cdk_dll, "CDKOutlineSaveAsText", ref CDKOutlineSaveAsText))
-                            return ConverterResult.ERROR_CDKLOAD;
+                        if (!TryGetFunctionDelegate(TDInstallation + cdk_dll, "CDKOutlineSaveAsText", ref CDKOutlineSaveAsText))
+                            return new ConverterResult
+                            {
+                                resultCode = ConverterResultCode.ERROR_CDKLOAD
+                            };
 
                         if (convertParams.DestVersion > TDVersion.TD72 && convertParams.DestVersion < TDVersion.TD75)
                         {
-                            if (!TryGetFunctionDelegate(cdk_dll, "CDKSetUTF8Option", ref CDKSetUTF8Option))
-                                return ConverterResult.ERROR_CDKLOAD;
+                            if (!TryGetFunctionDelegate(TDInstallation + cdk_dll, "CDKSetUTF8Option", ref CDKSetUTF8Option))
+                                return new ConverterResult
+                                {
+                                    resultCode = ConverterResultCode.ERROR_CDKLOAD
+                                };
                         }
                     }
 
-                    if (!TryGetFunctionDelegate(cdk_dll, "CDKReleaseApp", ref CDKReleaseApp))
-                        return ConverterResult.ERROR_CDKLOAD;
+                    if (!TryGetFunctionDelegate(TDInstallation + cdk_dll, "CDKReleaseApp", ref CDKReleaseApp))
+                        return new ConverterResult
+                        {
+                            resultCode = ConverterResultCode.ERROR_CDKLOAD
+                        };
 
                     // TD72 up to TD74 could use registry to determine how to save sources (UTF8 or UTF16)
                     if (convertParams.DestVersion > TDVersion.TD71 && convertParams.DestVersion < TDVersion.TD75 && convertParams.DestFormat != TDOutlineFormat.NORMAL)
@@ -356,7 +389,10 @@ namespace TDVersionExplorer
                         if (isFileSaved && (convertParams.DestVersion > TDVersion.TD71 && convertParams.DestVersion < TDVersion.TD74) && (convertParams.DestFormat == TDOutlineFormat.TEXT || convertParams.DestFormat == TDOutlineFormat.TEXTINDENTED))
                         {
                             if (!ConvertFileEncodingInPlace(Path.Combine(convertParams.destinationfolder, DestinationFileName), convertParams.DestEncoding))
-                                return ConverterResult.ERROR_UTFCONVERSION;
+                                return new ConverterResult
+                                {
+                                    resultCode = ConverterResultCode.ERROR_UTFCONVERSION
+                                };
                         }
                     }
                 }
@@ -364,13 +400,19 @@ namespace TDVersionExplorer
                 {
                     MessageBoxCloser.Stop();
                     Logger.LogErrorEx($"Error Convert:", ex);
-                    return ConverterResult.ERROR_CALLCDK;
+                    return new ConverterResult
+                    {
+                        resultCode = ConverterResultCode.ERROR_CALLCDK
+                    };
                 }
                 catch (Exception ex)
                 {
                     MessageBoxCloser.Stop();
                     Logger.LogErrorEx($"Error Convert:", ex);
-                    return ConverterResult.ERROR_CALLCDK;
+                    return new ConverterResult
+                    {
+                        resultCode = ConverterResultCode.ERROR_CALLCDK
+                    };
                 }
 
                 if (convertParams.DestVersion > TDVersion.TD71 && convertParams.DestVersion < TDVersion.TD75)
@@ -384,17 +426,29 @@ namespace TDVersionExplorer
                 Logger.LogDebug($"Using CDK ASCII. Destination version is {convertParams.DestVersion}");
                 try
                 {
-                    if (!TryGetFunctionDelegate(cdk_dll, "CDKLoadApp", ref CDKLoadAppASCII))
-                        return ConverterResult.ERROR_CDKLOAD;
+                    if (!TryGetFunctionDelegate(TDInstallation + cdk_dll, "CDKLoadApp", ref CDKLoadAppASCII))
+                        return new ConverterResult
+                        {
+                            resultCode = ConverterResultCode.ERROR_CDKLOAD
+                        };
 
-                    if (!TryGetFunctionDelegate(cdk_dll, "CDKOutlineSave", ref CDKOutlineSaveASCII))
-                        return ConverterResult.ERROR_CDKLOAD;
+                    if (!TryGetFunctionDelegate(TDInstallation + cdk_dll, "CDKOutlineSave", ref CDKOutlineSaveASCII))
+                        return new ConverterResult
+                        {
+                            resultCode = ConverterResultCode.ERROR_CDKLOAD
+                        };
 
-                    if (!TryGetFunctionDelegate(cdk_dll, "CDKOutlineSaveAsText", ref CDKOutlineSaveAsTextASCII))
-                        return ConverterResult.ERROR_CDKLOAD;
+                    if (!TryGetFunctionDelegate(TDInstallation + cdk_dll, "CDKOutlineSaveAsText", ref CDKOutlineSaveAsTextASCII))
+                        return new ConverterResult
+                        {
+                            resultCode = ConverterResultCode.ERROR_CDKLOAD
+                        };
 
-                    if (!TryGetFunctionDelegate(cdk_dll, "CDKReleaseApp", ref CDKReleaseApp))
-                        return ConverterResult.ERROR_CDKLOAD;
+                    if (!TryGetFunctionDelegate(TDInstallation + cdk_dll, "CDKReleaseApp", ref CDKReleaseApp))
+                        return new ConverterResult
+                        {
+                            resultCode = ConverterResultCode.ERROR_CDKLOAD
+                        };
 
                     // Start the thread that closes message boxes
                     MessageBoxCloser.Start();
@@ -430,7 +484,10 @@ namespace TDVersionExplorer
                 {
                     MessageBoxCloser.Stop();
                     Logger.LogErrorEx($"Error Convert:", ex);
-                    return ConverterResult.ERROR_CALLCDK;
+                    return new ConverterResult
+                    {
+                        resultCode = ConverterResultCode.ERROR_CALLCDK
+                    };
                 }
             }
 
@@ -448,7 +505,10 @@ namespace TDVersionExplorer
             if (!(houtline > 0))
             {
                 Logger.LogError($"TD outline not loaded");
-                return ConverterResult.ERROR_CDKLOAD;
+                return new ConverterResult
+                {
+                    resultCode = ConverterResultCode.ERROR_CDKLOAD
+                };
             }
 
             if (isFileSaved)
@@ -465,15 +525,25 @@ namespace TDVersionExplorer
                     {
                         Logger.LogErrorEx($"Error saving .err file: {DestinationErrFileFullPath}", ex);
                     }
-                    return ConverterResult.CONVERTED_WITH_ERRORS;
+                    return new ConverterResult
+                    {
+                        resultCode = ConverterResultCode.CONVERTED_WITH_ERRORS,
+                        errFile = DestinationErrFileFullPath
+                    };
                 }
-                return ConverterResult.CONVERTED;
+                return new ConverterResult
+                {
+                    resultCode = ConverterResultCode.CONVERTED
+                };
             }
             else
-                return ConverterResult.ERROR_CDKSAVE;
+                return new ConverterResult
+                {
+                    resultCode = ConverterResultCode.ERROR_CDKSAVE
+                };
         }
 
-        private static ConverterResult SaveToTextIntermediate(TDFileBase TDFile, ConvertParameters convertParams, bool backport)
+        private static ConverterResult SaveToTextIntermediate(TDFileBase TDFile, ConverterParam convertParams, bool backport)
         {
             // The purpose of this method is to convert using multiple steps:
             // 1) Copy or convert source file to intermediate file (TEXT format) in temp folder
@@ -488,7 +558,7 @@ namespace TDVersionExplorer
             Encoding IntermediateEncoding = Encoding.Unicode;
             Encoding DestEncoding;
 
-            ConvertParameters convertParamsNew;
+            ConverterParam convertParamsNew;
 
             if (TDFile.TDOutLineFormat == TDOutlineFormat.TEXT || TDFile.TDOutLineFormat == TDOutlineFormat.TEXTINDENTED)
             {
@@ -512,14 +582,17 @@ namespace TDVersionExplorer
                 catch (IOException ioEx)
                 {
                     Logger.LogErrorEx($"Error SaveToTextIntermediate:", ioEx);
-                    return ConverterResult.ERROR_COPYINTERMEDIATE;
+                    return new ConverterResult
+                    {
+                        resultCode = ConverterResultCode.ERROR_COPYINTERMEDIATE
+                    };
                 }
             }
             else if (TDFile.TDOutLineFormat == TDOutlineFormat.NORMAL || TDFile.TDOutLineFormat == TDOutlineFormat.COMPILED)
             {
                 // File must first be converted from NORMAL to TEXT format before we can convert it to the destination format
                 Logger.LogDebug($"File has NORMAL outline format. Start converting to TEXT intermediate.");
-                convertParamsNew = new ConvertParameters()
+                convertParamsNew = new ConverterParam()
                 {
                     source = convertParams.source,
                     OriginalFileName = convertParams.OriginalFileName,
@@ -544,20 +617,23 @@ namespace TDVersionExplorer
                 {
                     // We do not need to start another converter process. This one is already the correct converter
                     ConverterResult result = ExecuteConversion(convertParamsNew);
-                    if (result < ConverterResult.CONVERTED)
+                    if (result.resultCode < ConverterResultCode.CONVERTED)
                         return result;
                 }
                 else
                 {
                     // Do the actual conversion by the dedicated converter, not his one
                     ConverterResult result = TDFileBase.ExecuteConverterProcess(convertParamsNew);
-                    if (result < ConverterResult.CONVERTED)
+                    if (result.resultCode < ConverterResultCode.CONVERTED)
                         return result;
                 }
 
                 TDFileBase TDFileTmp = new TDFileBase();
                 if (!TDFileTmp.AnalyseFile(InterFileNameFullPath))
-                    return ConverterResult.ERROR_ANALYZE;
+                    return new ConverterResult
+                    {
+                        resultCode = ConverterResultCode.ERROR_ANALYZE
+                    };
 
                 IntermediateEncoding = TDFileTmp.encoding;
             }
@@ -565,7 +641,7 @@ namespace TDVersionExplorer
             if (backport)
             {
                 Logger.LogDebug($"Backporting. Reading source and find TD version line to replace: {InterFileNameFullPath}");
-                if (convertParams.DestEncoding == TDEncoding.UTF16)
+                if (convertParams.DestEncoding == TDEncoding.UTF16 && convertParams.DestVersion > TDVersion.TD41_TD42)
                     DestEncoding = Encoding.Unicode;
                 else
                     DestEncoding = Encoding.ASCII;
@@ -573,9 +649,9 @@ namespace TDVersionExplorer
                 try
                 {
                     string versionlineOldT = ".head 1 -  Outline Version - " + TDFile.TDVersionInfo.OutlineVersion;
-                    string versionlineNewT = ".head 1 -  Outline Version - 4.0.26";
+                    string versionlineNewT = ".head 1 -  Outline Version - 4.0.00";
                     string versionlineOldTI = "\tOutline Version - " + TDFile.TDVersionInfo.OutlineVersion;
-                    string versionlineNewTI = "\tOutline Version - 4.0.26";
+                    string versionlineNewTI = "\tOutline Version - 4.0.00";
 
                     // Open the ASCII file for reading
                     using (StreamReader reader = new StreamReader(InterFileNameFullPath, IntermediateEncoding))
@@ -610,13 +686,19 @@ namespace TDVersionExplorer
                 catch (IOException ioEx)
                 {
                     Logger.LogErrorEx($"Error SaveToTextIntermediate:", ioEx);
-                    return ConverterResult.ERROR_INSERTVERSIONLINE;
+                    return new ConverterResult
+                    {
+                        resultCode = ConverterResultCode.ERROR_INSERTVERSIONLINE
+                    };
                 }
 
                 if (!LowerVersionInserted)
                 {
                     Logger.LogError($"Error SaveToTextIntermediate: versionline not inserted");
-                    return ConverterResult.ERROR_INSERTVERSIONLINE;
+                    return new ConverterResult
+                    {
+                        resultCode = ConverterResultCode.ERROR_INSERTVERSIONLINE
+                    };
                 }
             }
             else

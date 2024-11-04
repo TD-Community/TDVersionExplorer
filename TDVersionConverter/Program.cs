@@ -57,7 +57,7 @@ namespace TDVersionExplorer
                 args[17] = "3";
             }
 
-            ConvertParameters convertParams = ProcessArguments(args, string.Empty);
+            ConverterParam convertParams = ProcessArguments(args, string.Empty);
             Logger.SetLogFile();
             Logger.SetLogLevel(convertParams.loglevel);
             GlobalContext.Properties["ServerName"] = $"{convertParams.DestVersion}";
@@ -70,36 +70,36 @@ namespace TDVersionExplorer
             {
                 ConverterResult result = TDConvert.ExecuteConversion(convertParams);
 
-                Environment.Exit((int)result);
+                Environment.Exit((int)result.resultCode);
             }
         }
 
-        static ConvertParameters ProcessArguments(string[] args, string pipecommand)
+        static ConverterParam ProcessArguments(string[] args, string pipecommand)
         {
             if (string.IsNullOrEmpty(pipecommand))
             {
                 var parsedArgs = ParseArgs(args);
 
                 if (!parsedArgs.TryGetValue("-s", out string source))
-                    Environment.Exit((int)ConverterResult.ERROR_INVALIDARG);
+                    Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
 
                 if (!(parsedArgs.TryGetValue("-v", out string tdversionstr)))
-                    Environment.Exit((int)ConverterResult.ERROR_INVALIDARG);
+                    Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
                 if (!(Enum.TryParse<TDVersion>(tdversionstr, true, out TDVersion tdversion)))
-                    Environment.Exit((int)ConverterResult.ERROR_INVALIDARG);
+                    Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
 
                 if (!parsedArgs.TryGetValue("-d", out string destinationfolder))
-                    Environment.Exit((int)ConverterResult.ERROR_INVALIDARG);
+                    Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
 
                 if (!parsedArgs.TryGetValue("-o", out string formatstr))
                     formatstr = "KEEP_ORIGINAL";
                 if (!(Enum.TryParse<TDOutlineFormat>(formatstr, true, out TDOutlineFormat outlineformat)))
-                    Environment.Exit((int)ConverterResult.ERROR_INVALIDARG);
+                    Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
 
                 if (!parsedArgs.TryGetValue("-e", out string encodingstr))
                     encodingstr = "KEEP_ORIGINAL";
                 if (!(Enum.TryParse<TDEncoding>(encodingstr, true, out TDEncoding encoding)))
-                    Environment.Exit((int)ConverterResult.ERROR_INVALIDARG);
+                    Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
 
                 parsedArgs.TryGetValue("-a", out string alternativestr);
 
@@ -123,7 +123,7 @@ namespace TDVersionExplorer
                     loglevelstr = "OFF";
 
 
-                return new ConvertParameters()
+                return new ConverterParam()
                 {
                     source = source,
                     OriginalFileName = originalstr,
@@ -140,7 +140,7 @@ namespace TDVersionExplorer
             }
             else
             {
-                ConvertParameters convertParams = new ConvertParameters();
+                ConverterParam convertParams = new ConverterParam();
                 convertParams.FromPipeMsg(pipecommand);
                 if (string.IsNullOrEmpty(convertParams.OriginalFileName))
                     convertParams.OriginalFileName = Path.GetFileName(convertParams.source);
@@ -168,7 +168,7 @@ namespace TDVersionExplorer
             return parsedArgs;
         }
 
-        static void StartNamedPipeServer(ConvertParameters convertParams)
+        static void StartNamedPipeServer(ConverterParam convertParams)
         {
             string pipename = convertParams.DestVersion.ToString();
             string previousloglevel = convertParams.loglevel;
@@ -216,7 +216,7 @@ namespace TDVersionExplorer
                     Console.WriteLine($"Command received:\n{clientCommand}");
                     Logger.LogDebug($"Command received:\n{clientCommand}");
 
-                    ConvertParameters convertParamsNew = new ConvertParameters();
+                    ConverterParam convertParamsNew = new ConverterParam();
                     convertParamsNew = ProcessArguments(new string[0], clientCommand);
                     if (previousloglevel != convertParamsNew.loglevel)
                     {
@@ -228,7 +228,7 @@ namespace TDVersionExplorer
                     Console.WriteLine($"Executing command...");
                     Logger.LogDebug($"Executing command...");
                     ConverterResult conversionresult = TDConvert.ExecuteConversion(convertParamsNew);
-                    string result = $"{conversionresult}";
+                    string result = conversionresult.ToPipeMsg();
 
                     // Send result
                     byte[] resultBytes = Encoding.UTF8.GetBytes(result);
