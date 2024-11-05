@@ -70,6 +70,9 @@ namespace TDVersionExplorer
             ManageDestinationFolder();
 
             ClearFiles(true);
+
+            StartProgressWindow(false);
+            StopProgressWindow();
         }
 
         private void ReadWriteRegistry(bool read)
@@ -464,7 +467,7 @@ namespace TDVersionExplorer
 
         private async void ButtonConvert_Click(object sender, EventArgs e)
         {
-            StartProgressWindow();
+            StartProgressWindow(true);
             var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
             XmlConfigurator.Configure(logRepository);
             Logger.DeleteLogFile();
@@ -593,7 +596,7 @@ namespace TDVersionExplorer
         private async void ButtonGetFiles_Click(object sender, EventArgs e)
         {
             ReadWriteRegistry(false);
-            StartProgressWindow();
+            StartProgressWindow(true);
 
             try
             {
@@ -616,7 +619,7 @@ namespace TDVersionExplorer
             }
         }
 
-        private void StartProgressWindow()
+        private void StartProgressWindow(bool show)
         {
             // Show the progress form as a non-blocking (non-modal) window
             SetControlsEnabled(this, false);
@@ -643,7 +646,8 @@ namespace TDVersionExplorer
             // Set the CancelAction to trigger cancellation when the "Cancel" button is clicked
             progressForm.CancelAction = () => cancellationTokenSource.Cancel();
 
-            progressForm.Show();
+            if (show)
+                progressForm.Show();
         }
 
         private void InvokeStopProgressWindow()

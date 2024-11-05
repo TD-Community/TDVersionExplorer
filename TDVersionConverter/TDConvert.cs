@@ -12,7 +12,7 @@ namespace TDVersionExplorer
 {
     internal static partial class TDConvert
     {
-        public static bool UseLocalConverter = true;      // When true, no new process is started. All debugging in the same source
+        public static bool UseLocalConverter = false;      // When true, no new process is started. All debugging in the same source
         public static string MyNamedPipe = string.Empty;
 
         public static ConverterResult ExecuteConversion(ConverterParam convertParams)
@@ -37,6 +37,9 @@ namespace TDVersionExplorer
                 {
                     resultCode = ConverterResultCode.ERROR_ANALYZE
                 };
+
+            if (TDFile.TDOutlineVersionStr == "4.0.00")
+                Logger.LogDebug($"Convert: This is a backported version having 4.0.00 version line");
 
             // Ok. Issue here. When source version is TD10 or TD11 and format is NORMAL we can not convert as we do not have those CDK's.
             // Solution is to take TD15 as source. So force that here
@@ -649,9 +652,9 @@ namespace TDVersionExplorer
                 try
                 {
                     string versionlineOldT = ".head 1 -  Outline Version - " + TDFile.TDVersionInfo.OutlineVersion;
-                    string versionlineNewT = ".head 1 -  Outline Version - 4.0.00";
+                    string versionlineNewT = ".head 1 -  Outline Version - 4.0.25";
                     string versionlineOldTI = "\tOutline Version - " + TDFile.TDVersionInfo.OutlineVersion;
-                    string versionlineNewTI = "\tOutline Version - 4.0.00";
+                    string versionlineNewTI = "\tOutline Version - 4.0.25";
 
                     // Open the ASCII file for reading
                     using (StreamReader reader = new StreamReader(InterFileNameFullPath, IntermediateEncoding))
