@@ -88,10 +88,23 @@ These options are available:
 - Force conversion:
   
 When the source file is the same as the destionation file (eg TD version, outline format and encoding) by default the conversion will be skipped.
-This option will force conversion even when the source and destination are the same
+This option will force conversion even when the source and destination are the same.
+
 - Full CDK errors:
   
+During conversion, the CDK may display messageboxes showing outline errors. When you want to have all of the errors saved to .err file, enable this option.
+This may slow down the conversion significantly. Keep this option disabled to minimize CDK errors for performance.
 
+- Rename file extension
+
+When converting a NORMAL (app) file to TEXT and visaversa, this option will automatically change the file extension to .apt or .app.
+Libraries (.apl) will not be renamed.
+
+- KEEP ORIGINAL options
+
+For TD version, outline format and encoding the option KEEP ORIGINAL is available.
+This will mean that the destination file will take the same attribute as the original. So for example, KEEP ORIGINAL for outline format will mean that if a source is saved in TEXT format, the destination file will also be in TEXT format.
+This option gives the opportinity to convert multiple files from one TD version to another but keeing the original format or encoding.
 
 ### Limitations
 
