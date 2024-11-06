@@ -1,3 +1,5 @@
+![Language](https://img.shields.io/badge/Gupta_Team_Developer-SqlWindows_TD%201.0%20and%20up-red?style=plastic&labelColor=blue)
+
 # TDVersionExplorer
 
 **TDVersionExplorer** is a .NET application developed for analyzing and converting Gupta Team Developer (TD) files. It serves two main purposes: analyzing the contents of a folder for TD-related files and converting files between different TD versions.
