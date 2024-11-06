@@ -34,6 +34,16 @@ Having this feature, installations and folders containing sources can quickly be
 - **Filter Options:** Filter results to show all files or specific types, such as TD DLL/EXE files, TD sources, Dynalibs, or reports.
 - **Version Filtering:** Limit displayed results by specific TD versions.
 
+### Example TD files
+
+TDVersionExplorer comes with an extensive list of TD sample files.  
+It contains several examples for each released TD version, from TD 1.0 up to TD 7.x.  
+
+The subfolder TDSampleFiles holds sources in all formats, build executables, dll's and dynalibs.  
+Alomng with that also QRP for each TD version.
+
+The main form has a checkbox "TD Sample Files" which will automatically select the folder to be analyzed.  
+Having this option you can quickly inspect the file details for each TD version and use this for testing.
 
 ## 2. Converting TD Files
 
