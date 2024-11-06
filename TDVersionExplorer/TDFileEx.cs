@@ -9,7 +9,7 @@ namespace TDVersionExplorer
     {
         public void StartConvert(ConverterParam convertParams)
         {
-            TDFileBase.ShowNamedPipeServers = (convertParams.debugMode & DebugMode.SHOW_SERVERS) == DebugMode.SHOW_SERVERS;
+            TDFileBase.ShowNamedPipeServers = convertParams.IsAttributeSet(ConverterAttribs.SHOW_SERVERS);
             
             // When KEEPORIGINAL version, take the version of the original file
             if (convertParams.DestVersion == TDVersion.KEEP_ORIGINAL)
@@ -162,10 +162,7 @@ namespace TDVersionExplorer
         public TDVersion DestVersion;
         public TDOutlineFormat DestFormat;
         public TDEncoding DestEncoding;
-        public bool forceConversion;
-        public bool renameExtension;
         public string destinationfolder;
-        public DebugMode debugMode;
-        public string loglevel;
+        public ConverterAttribs attributes;
     }
 }

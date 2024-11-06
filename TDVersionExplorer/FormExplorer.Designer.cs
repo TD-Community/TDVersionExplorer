@@ -77,6 +77,7 @@
             this.linkLabelFolder = new System.Windows.Forms.LinkLabel();
             this.linkLabelDestination = new System.Windows.Forms.LinkLabel();
             this.buttonOnlineInfo = new System.Windows.Forms.Button();
+            this.checkBoxFullCDKErrors = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.groupBoxAnalyze.SuspendLayout();
             this.groupBoxFilter.SuspendLayout();
@@ -242,9 +243,9 @@
             // 
             // buttonConvert
             // 
-            this.buttonConvert.Location = new System.Drawing.Point(18, 20);
+            this.buttonConvert.Location = new System.Drawing.Point(14, 19);
             this.buttonConvert.Name = "buttonConvert";
-            this.buttonConvert.Size = new System.Drawing.Size(113, 35);
+            this.buttonConvert.Size = new System.Drawing.Size(113, 40);
             this.buttonConvert.TabIndex = 6;
             this.buttonConvert.Text = "Convert";
             this.buttonConvert.UseVisualStyleBackColor = true;
@@ -350,7 +351,7 @@
             // 
             this.comboBoxDestVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDestVersion.FormattingEnabled = true;
-            this.comboBoxDestVersion.Location = new System.Drawing.Point(78, 20);
+            this.comboBoxDestVersion.Location = new System.Drawing.Point(81, 20);
             this.comboBoxDestVersion.Name = "comboBoxDestVersion";
             this.comboBoxDestVersion.Size = new System.Drawing.Size(120, 21);
             this.comboBoxDestVersion.Sorted = true;
@@ -359,7 +360,7 @@
             // labelDestTDVersion
             // 
             this.labelDestTDVersion.AutoSize = true;
-            this.labelDestTDVersion.Location = new System.Drawing.Point(16, 23);
+            this.labelDestTDVersion.Location = new System.Drawing.Point(19, 23);
             this.labelDestTDVersion.Name = "labelDestTDVersion";
             this.labelDestTDVersion.Size = new System.Drawing.Size(56, 13);
             this.labelDestTDVersion.TabIndex = 17;
@@ -368,7 +369,7 @@
             // labelDestTextEncoding
             // 
             this.labelDestTextEncoding.AutoSize = true;
-            this.labelDestTextEncoding.Location = new System.Drawing.Point(428, 23);
+            this.labelDestTextEncoding.Location = new System.Drawing.Point(228, 48);
             this.labelDestTextEncoding.Name = "labelDestTextEncoding";
             this.labelDestTextEncoding.Size = new System.Drawing.Size(75, 13);
             this.labelDestTextEncoding.TabIndex = 19;
@@ -378,7 +379,7 @@
             // 
             this.comboBoxDestEncoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDestEncoding.FormattingEnabled = true;
-            this.comboBoxDestEncoding.Location = new System.Drawing.Point(509, 20);
+            this.comboBoxDestEncoding.Location = new System.Drawing.Point(309, 45);
             this.comboBoxDestEncoding.Name = "comboBoxDestEncoding";
             this.comboBoxDestEncoding.Size = new System.Drawing.Size(120, 21);
             this.comboBoxDestEncoding.Sorted = true;
@@ -387,17 +388,17 @@
             // checkBoxForceConversion
             // 
             this.checkBoxForceConversion.AutoSize = true;
-            this.checkBoxForceConversion.Location = new System.Drawing.Point(141, 30);
+            this.checkBoxForceConversion.Location = new System.Drawing.Point(146, 20);
             this.checkBoxForceConversion.Name = "checkBoxForceConversion";
-            this.checkBoxForceConversion.Size = new System.Drawing.Size(53, 17);
+            this.checkBoxForceConversion.Size = new System.Drawing.Size(108, 17);
             this.checkBoxForceConversion.TabIndex = 20;
-            this.checkBoxForceConversion.Text = "Force";
+            this.checkBoxForceConversion.Text = "Force conversion";
             this.checkBoxForceConversion.UseVisualStyleBackColor = true;
             // 
             // labelDestFormat
             // 
             this.labelDestFormat.AutoSize = true;
-            this.labelDestFormat.Location = new System.Drawing.Point(212, 23);
+            this.labelDestFormat.Location = new System.Drawing.Point(228, 21);
             this.labelDestFormat.Name = "labelDestFormat";
             this.labelDestFormat.Size = new System.Drawing.Size(75, 13);
             this.labelDestFormat.TabIndex = 22;
@@ -407,7 +408,7 @@
             // 
             this.comboBoxDestFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDestFormat.FormattingEnabled = true;
-            this.comboBoxDestFormat.Location = new System.Drawing.Point(293, 20);
+            this.comboBoxDestFormat.Location = new System.Drawing.Point(309, 18);
             this.comboBoxDestFormat.Name = "comboBoxDestFormat";
             this.comboBoxDestFormat.Size = new System.Drawing.Size(120, 21);
             this.comboBoxDestFormat.Sorted = true;
@@ -475,7 +476,7 @@
             // checkBoxShowServers
             // 
             this.checkBoxShowServers.AutoSize = true;
-            this.checkBoxShowServers.Location = new System.Drawing.Point(295, 47);
+            this.checkBoxShowServers.Location = new System.Drawing.Point(827, 678);
             this.checkBoxShowServers.Name = "checkBoxShowServers";
             this.checkBoxShowServers.Size = new System.Drawing.Size(90, 17);
             this.checkBoxShowServers.TabIndex = 31;
@@ -491,11 +492,10 @@
             this.groupBoxDestination.Controls.Add(this.labelDestTDVersion);
             this.groupBoxDestination.Controls.Add(this.labelDestFormat);
             this.groupBoxDestination.Controls.Add(this.comboBoxDestEncoding);
-            this.groupBoxDestination.Controls.Add(this.checkBoxShowServers);
             this.groupBoxDestination.Controls.Add(this.labelDestTextEncoding);
-            this.groupBoxDestination.Location = new System.Drawing.Point(220, 646);
+            this.groupBoxDestination.Location = new System.Drawing.Point(326, 638);
             this.groupBoxDestination.Name = "groupBoxDestination";
-            this.groupBoxDestination.Size = new System.Drawing.Size(640, 74);
+            this.groupBoxDestination.Size = new System.Drawing.Size(454, 74);
             this.groupBoxDestination.TabIndex = 32;
             this.groupBoxDestination.TabStop = false;
             this.groupBoxDestination.Text = "Destination";
@@ -503,7 +503,7 @@
             // checkBoxRenameExt
             // 
             this.checkBoxRenameExt.AutoSize = true;
-            this.checkBoxRenameExt.Location = new System.Drawing.Point(78, 47);
+            this.checkBoxRenameExt.Location = new System.Drawing.Point(81, 47);
             this.checkBoxRenameExt.Name = "checkBoxRenameExt";
             this.checkBoxRenameExt.Size = new System.Drawing.Size(130, 17);
             this.checkBoxRenameExt.TabIndex = 35;
@@ -512,11 +512,12 @@
             // 
             // groupBoxConvert
             // 
+            this.groupBoxConvert.Controls.Add(this.checkBoxFullCDKErrors);
             this.groupBoxConvert.Controls.Add(this.buttonConvert);
             this.groupBoxConvert.Controls.Add(this.checkBoxForceConversion);
-            this.groupBoxConvert.Location = new System.Drawing.Point(15, 646);
+            this.groupBoxConvert.Location = new System.Drawing.Point(15, 638);
             this.groupBoxConvert.Name = "groupBoxConvert";
-            this.groupBoxConvert.Size = new System.Drawing.Size(199, 74);
+            this.groupBoxConvert.Size = new System.Drawing.Size(279, 74);
             this.groupBoxConvert.TabIndex = 33;
             this.groupBoxConvert.TabStop = false;
             this.groupBoxConvert.Text = "Conversion";
@@ -527,8 +528,7 @@
             this.comboBoxLogLevel.FormattingEnabled = true;
             this.comboBoxLogLevel.Items.AddRange(new object[] {
             "DEBUG",
-            "INFO",
-            "OFF"});
+            "INFO"});
             this.comboBoxLogLevel.Location = new System.Drawing.Point(934, 646);
             this.comboBoxLogLevel.Name = "comboBoxLogLevel";
             this.comboBoxLogLevel.Size = new System.Drawing.Size(90, 21);
@@ -586,6 +586,16 @@
             this.buttonOnlineInfo.UseVisualStyleBackColor = true;
             this.buttonOnlineInfo.Click += new System.EventHandler(this.ButtonOnlineInfo_Click);
             // 
+            // checkBoxFullCDKErrors
+            // 
+            this.checkBoxFullCDKErrors.AutoSize = true;
+            this.checkBoxFullCDKErrors.Location = new System.Drawing.Point(146, 43);
+            this.checkBoxFullCDKErrors.Name = "checkBoxFullCDKErrors";
+            this.checkBoxFullCDKErrors.Size = new System.Drawing.Size(96, 17);
+            this.checkBoxFullCDKErrors.TabIndex = 21;
+            this.checkBoxFullCDKErrors.Text = "Full CDK errors";
+            this.checkBoxFullCDKErrors.UseVisualStyleBackColor = true;
+            // 
             // FormExplorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -597,6 +607,7 @@
             this.Controls.Add(this.buttonOpenLog);
             this.Controls.Add(this.labelLogLevel);
             this.Controls.Add(this.comboBoxLogLevel);
+            this.Controls.Add(this.checkBoxShowServers);
             this.Controls.Add(this.checkBoxTDSampleFiles);
             this.Controls.Add(this.checkBoxCustomPath);
             this.Controls.Add(this.buttonSelectDestination);
@@ -678,6 +689,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnResultTxt;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnObject;
         private System.Windows.Forms.Button buttonOnlineInfo;
+        private System.Windows.Forms.CheckBox checkBoxFullCDKErrors;
     }
 }
 

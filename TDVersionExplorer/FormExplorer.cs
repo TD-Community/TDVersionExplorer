@@ -18,7 +18,7 @@ namespace TDVersionExplorer
     {
         private FormProgress progressForm;
         private CancellationTokenSource cancellationTokenSource;
-        private Dictionary<Control, bool> controlStates = new Dictionary<Control, bool>();
+        private readonly Dictionary<Control, bool> controlStates = new Dictionary<Control, bool>();
         private double totalTimeInSeconds = 0;
         private double itemsPerSecond = 0;
         private DataGridViewCell clickedCell;
@@ -421,7 +421,7 @@ namespace TDVersionExplorer
             {
                 DataGridViewCheckBoxCell cell = (DataGridViewCheckBoxCell)dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
-                if (cell.Value == null || cell.Value == "" || !(bool)cell.Value)
+                if (cell.Value == null || (string)cell.Value == "" || !(bool)cell.Value)
                 {
                     cell.Value = true;
                 }
@@ -455,16 +455,6 @@ namespace TDVersionExplorer
             }
         }
 
-        private DebugMode CalculateDebugMode()
-        {
-            DebugMode debugMode = DebugMode.NONE;
-
-            if (checkBoxShowServers.Checked)
-                debugMode |= DebugMode.SHOW_SERVERS;
-
-            return debugMode;
-        }
-
         private async void ButtonConvert_Click(object sender, EventArgs e)
         {
             StartProgressWindow(true);
@@ -480,11 +470,19 @@ namespace TDVersionExplorer
                 DestVersion = (TDVersion)Enum.Parse(typeof(TDVersion), comboBoxDestVersion.Text),
                 DestFormat = (TDOutlineFormat)Enum.Parse(typeof(TDOutlineFormat), comboBoxDestFormat.Text),
                 DestEncoding = (TDEncoding)Enum.Parse(typeof(TDEncoding), comboBoxDestEncoding.Text),
-                forceConversion = checkBoxForceConversion.Checked,
-                renameExtension = checkBoxRenameExt.Checked,
-                debugMode = CalculateDebugMode(),
-                loglevel = comboBoxLogLevel.Text
+                attributes = ConverterAttribs.NONE
             };
+
+            if (checkBoxForceConversion.Checked)
+                settings.attributes |= ConverterAttribs.FORCE_CONVERSION;
+            if (checkBoxRenameExt.Checked)
+                settings.attributes |= ConverterAttribs.RENAME_EXTENSION;
+            if (checkBoxShowServers.Checked)
+                settings.attributes |= ConverterAttribs.SHOW_SERVERS;
+            if (comboBoxLogLevel.Text == "DEBUG")
+                settings.attributes |= ConverterAttribs.LOGLEVEL_DEBUG;
+            if (checkBoxFullCDKErrors.Checked)
+                settings.attributes |= ConverterAttribs.CDK_FULL_ERRORS;
 
             try
             {
@@ -540,10 +538,7 @@ namespace TDVersionExplorer
                                 DestVersion = settings.DestVersion,
                                 DestFormat = settings.DestFormat,
                                 DestEncoding = settings.DestEncoding,
-                                forceConversion = settings.forceConversion,
-                                renameExtension = settings.renameExtension,
-                                debugMode = settings.debugMode,
-                                loglevel = settings.loglevel
+                                attributes = settings.attributes
                             };
 
                             count += 1;

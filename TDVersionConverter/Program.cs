@@ -59,7 +59,10 @@ namespace TDVersionExplorer
 
             ConverterParam convertParams = ProcessArguments(args, string.Empty);
             Logger.SetLogFile();
-            Logger.SetLogLevel(convertParams.loglevel);
+            if (convertParams.IsAttributeSet(ConverterAttribs.LOGLEVEL_DEBUG))
+                Logger.SetLogLevel("DEBUG");
+            else
+                Logger.SetLogLevel("INFO");
             GlobalContext.Properties["ServerName"] = $"{convertParams.DestVersion}";
 
             Logger.LogInfo($"TDVersionConverter.exe started");
@@ -107,21 +110,6 @@ namespace TDVersionExplorer
                 if (string.IsNullOrEmpty(originalstr))
                     originalstr = Path.GetFileName(source);
 
-                parsedArgs.TryGetValue("-f", out string forceconversionstr);
-                bool forceconversion = (forceconversionstr == "1");
-
-                parsedArgs.TryGetValue("-r", out string renameextensionstr);
-                bool renameExtension = (renameextensionstr == "1");
-
-                if (!parsedArgs.TryGetValue("-m", out string debugmodestr))
-                    debugmodestr = "NONE";
-                if (!(Enum.TryParse<DebugMode>(debugmodestr, true, out DebugMode debugMode)))
-                    debugMode = DebugMode.NONE;
-
-                parsedArgs.TryGetValue("-l", out string loglevelstr);
-                if (string.IsNullOrEmpty(loglevelstr))
-                    loglevelstr = "OFF";
-
 
                 return new ConverterParam()
                 {
@@ -131,11 +119,7 @@ namespace TDVersionExplorer
                     DestVersion = tdversion,
                     DestFormat = outlineformat,
                     DestEncoding = encoding,
-                    alternativeFileName = alternativestr,
-                    forceConversion = forceconversion,
-                    renameExtension = renameExtension,
-                    debugMode = debugMode,
-                    loglevel = loglevelstr
+                    alternativeFileName = alternativestr
                 };
             }
             else
@@ -171,9 +155,9 @@ namespace TDVersionExplorer
         static void StartNamedPipeServer(ConverterParam convertParams)
         {
             string pipename = convertParams.DestVersion.ToString();
-            string previousloglevel = convertParams.loglevel;
+            bool logleveldebug = convertParams.IsAttributeSet(ConverterAttribs.LOGLEVEL_DEBUG);
 
-            TDFileBase.ShowNamedPipeServers = (convertParams.debugMode & DebugMode.SHOW_SERVERS) == DebugMode.SHOW_SERVERS;
+            TDFileBase.ShowNamedPipeServers = convertParams.IsAttributeSet(ConverterAttribs.SHOW_SERVERS);
 
             if(TDFileBase.ShowNamedPipeServers)
             {
@@ -218,10 +202,13 @@ namespace TDVersionExplorer
 
                     ConverterParam convertParamsNew = new ConverterParam();
                     convertParamsNew = ProcessArguments(new string[0], clientCommand);
-                    if (previousloglevel != convertParamsNew.loglevel)
+                    if (logleveldebug != convertParamsNew.IsAttributeSet(ConverterAttribs.LOGLEVEL_DEBUG))
                     {
-                        Logger.SetLogLevel(convertParamsNew.loglevel);
-                        previousloglevel = convertParamsNew.loglevel;
+                        logleveldebug = convertParamsNew.IsAttributeSet(ConverterAttribs.LOGLEVEL_DEBUG);
+                        if (logleveldebug)
+                            Logger.SetLogLevel("DEBUG");
+                        else
+                            Logger.SetLogLevel("INFO");
                     }
 
                     // Execute command

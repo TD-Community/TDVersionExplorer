@@ -17,7 +17,7 @@ namespace TDVersionExplorer
 
         public static ConverterResult ExecuteConversion(ConverterParam convertParams)
         {
-            TDFileBase.ShowNamedPipeServers = (convertParams.debugMode & DebugMode.SHOW_SERVERS) == DebugMode.SHOW_SERVERS;
+            TDFileBase.ShowNamedPipeServers = convertParams.IsAttributeSet(ConverterAttribs.SHOW_SERVERS);
 
             ConverterResult result = Convert(convertParams);
 
@@ -37,9 +37,6 @@ namespace TDVersionExplorer
                 {
                     resultCode = ConverterResultCode.ERROR_ANALYZE
                 };
-
-            if (TDFile.TDOutlineVersionStr == "4.0.00")
-                Logger.LogDebug($"Convert: This is a backported version having 4.0.00 version line");
 
             // Ok. Issue here. When source version is TD10 or TD11 and format is NORMAL we can not convert as we do not have those CDK's.
             // Solution is to take TD15 as source. So force that here
@@ -71,7 +68,7 @@ namespace TDVersionExplorer
             string DestinationFileName = convertParams.OriginalFileName;
             bool isFileSaved = false;
 
-            if (convertParams.renameExtension)
+            if (convertParams.IsAttributeSet(ConverterAttribs.RENAME_EXTENSION))
             {
                 // Rename the extension based on the outline format. Libraries (apl) will not be renamed.
                 switch (convertParams.DestFormat)
@@ -175,27 +172,33 @@ namespace TDVersionExplorer
                 }
             }
 
-            if (TDFile.TDVersionInfo.NormalVersion == convertParams.DestVersion &&
-                TDFile.TDOutLineFormat == convertParams.DestFormat &&
-                TDFile.TDEncoding == convertParams.DestEncoding)
+            if (convertParams.IsAttributeSet(ConverterAttribs.ISBACKPORT))
             {
-                Logger.LogDebug($"Source attr: {TDFile.TDVersionInfo.NormalVersion},{TDFile.TDOutLineFormat},{TDFile.TDEncoding} equals destination attr {convertParams.DestVersion},{convertParams.DestFormat},{convertParams.DestEncoding}");
-                // Seems original file is already in the desired destination attributes
-                if (!convertParams.forceConversion)
-                {
-                    Logger.LogDebug($"Convert: forceConversion = false. Do not convert");
-                    return new ConverterResult
-                    {
-                        resultCode = ConverterResultCode.ALREADYPORTED
-                    };
-                }
-                Logger.LogDebug($"Convert: forceConversion = true. So do convert");
+                Logger.LogDebug($"Convert: ISBACKPORT is set. Convert using destination {convertParams.DestVersion}");
             }
-
-            if (!string.IsNullOrEmpty(convertParams.alternativeFileName))
+            else if (!string.IsNullOrEmpty(convertParams.alternativeFileName))
             {
                 DestinationFileName = convertParams.alternativeFileName;
                 Logger.LogDebug($"Convert: Alternative filename is set. Use for destination: {DestinationFileName}");
+            }
+            else
+            {
+                if (TDFile.TDVersionInfo.NormalVersion == convertParams.DestVersion &&
+                                TDFile.TDOutLineFormat == convertParams.DestFormat &&
+                                TDFile.TDEncoding == convertParams.DestEncoding)
+                {
+                    Logger.LogDebug($"Source attr: {TDFile.TDVersionInfo.NormalVersion},{TDFile.TDOutLineFormat},{TDFile.TDEncoding} equals destination attr {convertParams.DestVersion},{convertParams.DestFormat},{convertParams.DestEncoding}");
+                    // Seems original file is already in the desired destination attributes
+                    if (!convertParams.IsAttributeSet(ConverterAttribs.FORCE_CONVERSION))
+                    {
+                        Logger.LogDebug($"Convert: forceConversion = false. Do not convert");
+                        return new ConverterResult
+                        {
+                            resultCode = ConverterResultCode.ALREADYPORTED
+                        };
+                    }
+                    Logger.LogDebug($"Convert: forceConversion = true. So do convert");
+                }
             }
 
             if (TDFile.TDVersionInfo.NormalVersion != convertParams.DestVersion)
@@ -604,10 +607,7 @@ namespace TDVersionExplorer
                     DestVersion = TDFile.TDVersionInfo.NormalVersion,
                     DestFormat = TDOutlineFormat.TEXT,
                     DestEncoding = convertParams.DestEncoding,
-                    forceConversion = convertParams.forceConversion,
-                    renameExtension = convertParams.renameExtension,
-                    debugMode = convertParams.debugMode,
-                    loglevel = convertParams.loglevel
+                    attributes = convertParams.attributes
                 };
 
                 // Ok. Issue here. When dest version is TD10 or TD11 we can not convert as we do not have those CDK's.
@@ -652,9 +652,22 @@ namespace TDVersionExplorer
                 try
                 {
                     string versionlineOldT = ".head 1 -  Outline Version - " + TDFile.TDVersionInfo.OutlineVersion;
-                    string versionlineNewT = ".head 1 -  Outline Version - 4.0.25";
                     string versionlineOldTI = "\tOutline Version - " + TDFile.TDVersionInfo.OutlineVersion;
-                    string versionlineNewTI = "\tOutline Version - 4.0.25";
+                    string versioncode = string.Empty;
+                    if (convertParams.IsAttributeSet(ConverterAttribs.CDK_FULL_ERRORS))
+                    {
+                        TDVersionInfo version = TDVersionRepository.GetByTDVersion(convertParams.DestVersion);
+                        versioncode = version.OutlineVersion;
+                        Logger.LogDebug($"CDK_FULL_ERRORS is set. Use destination versioncode: {versioncode}");
+                    }
+                    else
+                    {
+                        // Trick to reduce CDK error reporting. Use a very low TD version which suppresses most CDK error reporting
+                        versioncode = "4.0.25";
+                        Logger.LogDebug($"CDK_FULL_ERRORS is not set. Use destination versioncode: {versioncode}");
+                    }
+                    string versionlineNewT = $".head 1 -  Outline Version - {versioncode}";
+                    string versionlineNewTI = $"\tOutline Version - {versioncode}";
 
                     // Open the ASCII file for reading
                     using (StreamReader reader = new StreamReader(InterFileNameFullPath, IntermediateEncoding))
@@ -710,6 +723,7 @@ namespace TDVersionExplorer
             convertParamsNew = convertParams.Clone();
             convertParamsNew.source = InterFileNameLVFullPath;
             convertParamsNew.alternativeFileName = string.Empty;
+            convertParamsNew.SetAttribute(ConverterAttribs.ISBACKPORT);
 
             if (MyNamedPipe == convertParamsNew.DestVersion.ToString() || UseLocalConverter)
                 return ExecuteConversion(convertParamsNew);

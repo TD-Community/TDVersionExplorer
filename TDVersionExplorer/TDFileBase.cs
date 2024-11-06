@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Text;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using System.IO.Pipes;
 using log4net;
 using log4net.Appender;
@@ -33,11 +32,16 @@ namespace TDVersionExplorer
         ERROR_UTFCONVERSION = -15
     }
 
-    public enum DebugMode
+    [Flags]
+    public enum ConverterAttribs
     {
-        NONE            = 0,
-        SHOW_MSGBOX     = 1,
-        SHOW_SERVERS    = 2
+        NONE = 0,
+        SHOW_SERVERS = 2,
+        FORCE_CONVERSION = 4,
+        RENAME_EXTENSION = 8,
+        LOGLEVEL_DEBUG = 16,
+        CDK_FULL_ERRORS = 32,
+        ISBACKPORT = 64
     }
 
     public class ConverterParam
@@ -49,10 +53,7 @@ namespace TDVersionExplorer
         public TDVersion DestVersion = new TDVersion();
         public TDOutlineFormat DestFormat = new TDOutlineFormat();
         public TDEncoding DestEncoding = new TDEncoding();
-        public bool forceConversion = false;
-        public bool renameExtension = false;
-        public DebugMode debugMode = new DebugMode();
-        public string loglevel = string.Empty;
+        public ConverterAttribs attributes = new ConverterAttribs();
 
         public string ToStr()
         {
@@ -64,10 +65,7 @@ namespace TDVersionExplorer
             sb.AppendLine(string.Format("{0,-16} {1}", "DestVersion:", $"{DestVersion}"));
             sb.AppendLine(string.Format("{0,-16} {1}", "DestFormat:", $"{DestFormat}"));
             sb.AppendLine(string.Format("{0,-16} {1}", "DestEncoding:", $"{DestEncoding}"));
-            sb.AppendLine(string.Format("{0,-16} {1}", "ForceConv:", $"{forceConversion}"));
-            sb.AppendLine(string.Format("{0,-16} {1}", "RenameExt:", $"{renameExtension}"));
-            sb.AppendLine(string.Format("{0,-16} {1}", "DebugMode:", $"{debugMode}"));
-            sb.AppendLine(string.Format("{0,-16} {1}", "Loglevel:", $"{loglevel}"));
+            sb.AppendLine(string.Format("{0,-16} {1}", "Attributes:", $"{attributes}"));
             sb.AppendLine(string.Format("{0,-16} {1}", "Alternative:", $"{alternativeFileName}"));
             return sb.ToString();
         }
@@ -82,11 +80,8 @@ namespace TDVersionExplorer
             parameters += $" -o \"{DestFormat}\"";
             parameters += $" -e \"{DestEncoding}\"";
             parameters += $" -a \"{alternativeFileName}\"";
-            parameters += $" -f \"{(forceConversion ? 1 : 0)}\"";
-            parameters += $" -r \"{(renameExtension ? 1 : 0)}\"";
             parameters += $" -d \"{destinationfolder.TrimEnd('\\')}\"";
-            parameters += $" -m \"{debugMode}\"";
-            parameters += $" -l \"{loglevel}\"";
+            parameters += $" -c \"{(int)attributes}\"";
 
             return parameters;
         }
@@ -99,7 +94,7 @@ namespace TDVersionExplorer
 
         public string ToPipeMsg()
         {
-            return $"{source}|{destinationfolder}|{alternativeFileName}|{OriginalFileName}|{DestVersion}|{DestFormat}|{DestEncoding}|{forceConversion}|{renameExtension}|{debugMode}|{loglevel}";
+            return $"{source}|{destinationfolder}|{alternativeFileName}|{OriginalFileName}|{DestVersion}|{DestFormat}|{DestEncoding}|{(int)attributes}";
         }
 
         public void FromPipeMsg(string serialized)
@@ -112,10 +107,31 @@ namespace TDVersionExplorer
             DestVersion = (TDVersion)Enum.Parse(typeof(TDVersion), parts[4]);
             DestFormat = (TDOutlineFormat)Enum.Parse(typeof(TDOutlineFormat), parts[5]);
             DestEncoding = (TDEncoding)Enum.Parse(typeof(TDEncoding), parts[6]);
-            forceConversion = bool.Parse(parts[7]);
-            renameExtension = bool.Parse(parts[8]);
-            debugMode = (DebugMode)Enum.Parse(typeof(DebugMode), parts[9]);
-            loglevel = parts[10];
+            attributes = (ConverterAttribs)Enum.Parse(typeof(ConverterAttribs), parts[7]);
+        }
+
+        // 1) Set an attribute (add attribute to existing ones)
+        public void SetAttribute(ConverterAttribs attribute)
+        {
+            attributes |= attribute;
+        }
+
+        // 2) Remove an attribute
+        public void RemoveAttribute(ConverterAttribs attribute)
+        {
+            attributes &= ~attribute;
+        }
+
+        // 3) Clear all attributes (set to NONE)
+        public void ClearAttributes()
+        {
+            attributes = ConverterAttribs.NONE;
+        }
+
+        // 4) Check if an attribute is set
+        public bool IsAttributeSet(ConverterAttribs attribute)
+        {
+            return (attributes & attribute) != 0;
         }
     }
 
@@ -463,7 +479,7 @@ namespace TDVersionExplorer
 
             if (UseNamedPipes)
             {
-                bool DoShow = (convertParams.debugMode & DebugMode.SHOW_SERVERS) == DebugMode.SHOW_SERVERS;
+                bool DoShow = convertParams.IsAttributeSet(ConverterAttribs.SHOW_SERVERS);
 
                 if (PreviousShowNamedPipeServers == -1)
                     PreviousShowNamedPipeServers = DoShow ? 1 : 0;
