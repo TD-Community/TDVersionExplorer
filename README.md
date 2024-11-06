@@ -1,19 +1,19 @@
 # TDVersionExplorer
 
-**TDVersionExplorer** is a .NET application developed for analyzing and managing Gupta Team Developer (TD) files. It serves two main purposes: analyzing the contents of a folder for TD-related files and converting files between different TD versions.
+**TDVersionExplorer** is a .NET application developed for analyzing and converting Gupta Team Developer (TD) files. It serves two main purposes: analyzing the contents of a folder for TD-related files and converting files between different TD versions.
 
 ## Key Features
 
-- Analyze TD files to identify their version, format, encoding, and other attributes.
+- Analyze TD files (apt/app/apl/exe/dll/apd/qrp) to identify their version, file type, outline format, encoding, and bitness.
 - Convert TD source files between different versions, including both upgrades to newer versions and backports to older ones.
-- Filter and view specific types of TD files, such as DLLs, EXEs, and source files.
-- Display detailed file attributes like TD Version, file type, outline format, encoding, and bitness.
 
 ---
 
 ## 1. Analyzing TD Files
 
-TDVersionExplorer allows users to analyze a folder's contents to quickly understand which Gupta Team Developer files it contains and retrieve key information about each file.
+TDVersionExplorer allows to analyze a folder's contents to quickly understand which Gupta Team Developer files it contains and retrieve key information about each file.
+This is done by checking key parts of the file contents. Both text and binary files are inspected.
+Having this feature, installations and folders containing sources can quickly be inspected to check TD specific files.
 
 ### Analysis Details
 
@@ -23,19 +23,22 @@ TDVersionExplorer allows users to analyze a folder's contents to quickly underst
   - **Version Code:** Shows the exact version code, providing finer granularity within versions.
   - **File Type:** Indicates the file type.
   - **Outline Format:** Identifies the outline format of the file (TEXT, INDENTED TEXT, NORMAL or COMPILED).
-  - **Bitness:** Specifies whether the (binary) file is for x86 or x64 architectures.
-  - **Encoding:** Displays the text encoding of each file (e.g., UTF8/ASCII or UTF16).
+  - **Bitness:** Specifies whether the (binary) file is in x86 or x64 architectures.
+  - **Encoding:** Displays the text encoding of each source file (e.g., UTF8/ASCII or UTF16).
 
 ### Analysis Options
 
 - **Folder Selection:** Choose the source folder for analysis.
 - **Filter Options:** Filter results to show all files or specific types, such as TD DLL/EXE files, TD sources, Dynalibs, or reports.
 - **Version Filtering:** Limit displayed results by specific TD versions.
-- **Log Level:** Set the logging level for detailed debugging or general info.
+
 
 ## 2. Converting TD Files
 
 TDVersionExplorer also supports converting source files between different TD versions. This includes the ability to upgrade source files to newer versions or backport them to older versions as needed.
+Only files identified as TD sources with outline format TEXT, INDENTED TEXT and NORMAL (only x86) can be converted.
+
+There is no need to have Team Developer installed. 
 
 ### Conversion Details
 
