@@ -421,7 +421,7 @@ namespace TDVersionExplorer
             {
                 DataGridViewCheckBoxCell cell = (DataGridViewCheckBoxCell)dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
-                if (cell.Value == null || (string)cell.Value == "" || !(bool)cell.Value)
+                if (cell.Value == null || cell.Value == "" || !(bool)cell.Value)
                 {
                     cell.Value = true;
                 }

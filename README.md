@@ -10,6 +10,9 @@ Its main functions include analyzing folders for TD-related files and converting
 - **Analyze TD Files**: Supports analysis of various TD file types (APT, APP, APL, EXE, DLL, APD, QRP), identifying attributes such as version, file type, outline format, encoding, and bitness.
 - **Convert TD Source Files**: Allows upgrades to newer TD versions or backports to older versions, supporting seamless version transitions.
 
+
+![Screenshot of the application](Images/TDVersionExplorer_Screenshot.png)
+
 ---
 
 ### 1. Analyzing TD Files
