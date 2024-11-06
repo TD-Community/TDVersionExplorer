@@ -82,10 +82,23 @@ By clicking OK until all errors are dismissed the file is opened and can then be
 
 TDVersionExplorer will also automate this. So all messageboxes will be automatically closed when popping up. This will be much faster and less RSI inducing.
 
+### Conversion options
+
+These options are available:
+- Force conversion
+When the source file is the same as the destionation file (eg TD version, outline format and encoding) by default the conversion will be skipped.
+This option will force conversion even when the source and destination are the same
+- Full CDK errors
+
+
 ### Limitations
 
 Because TDVersionExplorer uses the original TD CDK's, it will encounter the same issues which might occur when converting manually.
 Currupted sources may crash the conversion process. When the TD IDE is unable to load a source, TDVersionExplorer will not either.
+
+To avoid TDVersionExplorer crashing, the actiual conversion using the CDK is done by a separate process (TDVersionConverter.exe).
+Each TD version will have it's own instance of this process running. So when it crashes, the main application will not crash but restart the process when needed.
+This separate process is also needed because TDVersionExplorer is unable to load multiple TD CDK's at once in the same process.
 
 At this time only x86 sources can be converted. No support (yet) to convert between NORMAL x64 format and NORMAL x86 format.
 
