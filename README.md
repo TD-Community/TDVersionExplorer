@@ -85,10 +85,12 @@ TDVersionExplorer will also automate this. So all messageboxes will be automatic
 ### Conversion options
 
 These options are available:
-- Force conversion
+- Force conversion:
+  
 When the source file is the same as the destionation file (eg TD version, outline format and encoding) by default the conversion will be skipped.
 This option will force conversion even when the source and destination are the same
-- Full CDK errors
+- Full CDK errors:
+  
 
 
 ### Limitations
