@@ -114,5 +114,24 @@ As TDVersionExplorer relies on original TD CDKs, it faces the same limitations a
 ### Additional Information
 
 - **Log Level Control**: Set the log level to capture either standard information or debug-level details during analysis and conversion.
-- **Open Log Feature**: Easily access logs for reviewing actions and identifying any issues. 
+- **Open Log Feature**: Easily access logs for reviewing actions and identifying any issues.
+- **Working (temp) folder: the TD CDK libraries and temp files are stored in %temp%\TDVersionExplorer
 
+### Possible issues
+
+As TDVersionExplorer uses TD CDK libraries, which is a small subset of the TD runtime, it might occur that referenced dll's like vc runtime could be missing.  
+For most CDK archives which are included as resources in the main executable the needed dependancies are included.  
+
+When conversion fails due to errors ERROR_CDKLOAD or ERROR_CALLCDK, this is an indication the needed dependancies are not yet present.  
+To get it working, copy the complete TD runtime installation to the subfolder in the temp folder mentioned above to see the conversion works. If so, please report this so the missing files can be added in the officisl archive.
+
+## TD Community Forum
+Join the TD Community Forum for everything related to Gupta Team Developer for questions, answers and info.
+
+https://forum.tdcommunity.net
+
+If you like this project and want to enhance/improve it please do so.
+Any help is appreciated. Changes to this project can be done by pull request.
+Like to be an official contributor, contact me to be added as contributor of this project.
+
+Find me as Dave Rabelink on the forum mentioned above.
