@@ -126,7 +126,11 @@ As TDVersionExplorer relies on original TD CDKs, it faces the same limitations a
 
 - **Log Level Control**: Set the log level to capture either standard information or debug-level details during analysis and conversion.
 - **Open Log Feature**: Easily access logs for reviewing actions and identifying any issues.
-- **Working (temp) folder: the TD CDK libraries and temp files are stored in %temp%\TDVersionExplorer
+- **Working (temp) folder**: the TD CDK libraries and temp files are extracted and stored in (`%temp%\TDVersionExplorer`). You can delete this folder to cleanup but this will cause TDVersionExplorer to extract the CDK which may redure performance. Also for new versions of TDVersionExplorer it is advised to delete the folder to be sure any changes to CDK runtimes will be exracted.
+- During conversion multiple helper processes (`TDVersionConverter.exe`) may be running. They keep running until the main application is closed. This is to improve performance between multiple conversion sessions.
+- **Installation of TDVersionExplorer**: extract the archive anywhere on your system. Make sure to keep all files and folders at that location as they are needed for correct functioning of the application.
+- Your system may "block" extracted files from the TDVersionExplorer archive. Be sure to unblock or allow to be sure TDVersionExplorer works properly.
+- Have .NET 4.8 installed on your system when not yet present. TDVersionExplorer is designed to work in that .NET framework version.
 
 ### Possible issues
 
