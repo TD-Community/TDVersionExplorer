@@ -55,18 +55,27 @@ namespace TDVersionExplorer
         public TDEncoding DestEncoding = new TDEncoding();
         public ConverterAttribs attributes = new ConverterAttribs();
 
-        public string ToStr()
+        public string ToStr(bool forExeParam)
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine(string.Format("{0,-16} {1}", "Source:", $"{source}"));
-            sb.AppendLine(string.Format("{0,-16} {1}", "Destfolder:", $"{destinationfolder}"));
-            sb.AppendLine(string.Format("{0,-16} {1}", "Orig file:", $"{OriginalFileName}"));
-            sb.AppendLine(string.Format("{0,-16} {1}", "DestVersion:", $"{DestVersion}"));
-            sb.AppendLine(string.Format("{0,-16} {1}", "DestFormat:", $"{DestFormat}"));
-            sb.AppendLine(string.Format("{0,-16} {1}", "DestEncoding:", $"{DestEncoding}"));
-            sb.AppendLine(string.Format("{0,-16} {1}", "Attributes:", $"{attributes}"));
-            sb.AppendLine(string.Format("{0,-16} {1}", "Alternative:", $"{alternativeFileName}"));
+            if (forExeParam)
+            {
+                sb.AppendLine(string.Format("{0,-16} {1}", "DestVersion:", $"{DestVersion}"));
+                sb.AppendLine(string.Format("{0,-16} {1}", "Attributes:", $"{attributes}"));
+            }
+            else
+            {
+                sb.AppendLine(string.Format("{0,-16} {1}", "Source:", $"{source}"));
+                sb.AppendLine(string.Format("{0,-16} {1}", "Destfolder:", $"{destinationfolder}"));
+                sb.AppendLine(string.Format("{0,-16} {1}", "Orig file:", $"{OriginalFileName}"));
+                sb.AppendLine(string.Format("{0,-16} {1}", "DestVersion:", $"{DestVersion}"));
+                sb.AppendLine(string.Format("{0,-16} {1}", "DestFormat:", $"{DestFormat}"));
+                sb.AppendLine(string.Format("{0,-16} {1}", "DestEncoding:", $"{DestEncoding}"));
+                sb.AppendLine(string.Format("{0,-16} {1}", "Attributes:", $"{attributes}"));
+                sb.AppendLine(string.Format("{0,-16} {1}", "Alternative:", $"{alternativeFileName}"));
+            }
+            
             return sb.ToString();
         }
 
@@ -74,14 +83,8 @@ namespace TDVersionExplorer
         {
             string parameters = " ";    // start with a space
 
-            parameters += $" -s \"{source}\"";
-            parameters += $" -n \"{OriginalFileName}\"";
-            parameters += $" -v \"{DestVersion}\"";
-            parameters += $" -o \"{DestFormat}\"";
-            parameters += $" -e \"{DestEncoding}\"";
-            parameters += $" -a \"{alternativeFileName}\"";
-            parameters += $" -d \"{destinationfolder.TrimEnd('\\')}\"";
-            parameters += $" -c \"{(int)attributes}\"";
+            parameters += $" -d \"{DestVersion}\"";
+            parameters += $" -a \"{(int)attributes}\"";
 
             return parameters;
         }
@@ -284,7 +287,7 @@ namespace TDVersionExplorer
 
         public bool Initialised = false;
         public bool CanBeConverted = false;
-        public ConverterResult converterResult = new ConverterResult { resultCode = ConverterResultCode.ERROR_UTFCONVERSION };
+        public ConverterResult converterResult = new ConverterResult();
 
         public static bool UseNamedPipes = true;
         public static bool ShowNamedPipeServers = false;
@@ -561,7 +564,7 @@ namespace TDVersionExplorer
                     byte[] buffer = new byte[1024];
                     // Send command to server
                     byte[] commandBytes = Encoding.UTF8.GetBytes(convertParams.ToPipeMsg());
-                    Logger.LogDebug($"Write to named pipe {convertParams.DestVersion}: {convertParams.ToPipeMsg()}");
+                    Logger.LogDebug($"Write to named pipe {convertParams.DestVersion}:\n{convertParams.ToPipeMsg()}");
                     pipeClient.Write(commandBytes, 0, commandBytes.Length);
 
                     // Read result from server
@@ -626,11 +629,14 @@ namespace TDVersionExplorer
         }
 
         // Terminate all processes in the job object
-        private static void TerminateAllProcesses()
+        public static void TerminateAllProcesses()
         {
-            TerminateJobObject(jobHandle, 0);
-            jobHandle = IntPtr.Zero;
-            Logger.LogDebug($"TerminateAllProcesses executed");
+            if (jobHandle != IntPtr.Zero)
+            {
+                TerminateJobObject(jobHandle, 0);
+                jobHandle = IntPtr.Zero;
+                Logger.LogDebug($"TerminateAllProcesses executed");
+            }
         }
 
         public static string GetRunningExecutable()

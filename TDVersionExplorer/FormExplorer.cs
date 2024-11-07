@@ -21,11 +21,14 @@ namespace TDVersionExplorer
         private readonly Dictionary<Control, bool> controlStates = new Dictionary<Control, bool>();
         private double totalTimeInSeconds = 0;
         private double itemsPerSecond = 0;
+        private int itemsConverted = 0;
+        private int itemsError = 0;
         private DataGridViewCell clickedCell;
         private DataGridViewRow clickedRow;
         private readonly ContextMenuStrip headerMenu;
         private ContextMenuStrip contextMenu;
         private readonly ContextMenuStrip onlineMenu;
+        private readonly ContextMenuStrip adminToolsMenu;
 
         private List<TDFileEx> TDFiles = new List<TDFileEx>();
 
@@ -56,6 +59,12 @@ namespace TDVersionExplorer
             onlineMenu.Items.Add(new ToolStripSeparator());
             onlineMenu.Items.Add("TD forum", null, (s, e) => OnlineMenuExecute("https://forum.tdcommunity.net/"));
 
+            adminToolsMenu = new ContextMenuStrip();
+            adminToolsMenu.Items.Add("Open log", null, (s, e) => OpenLog());
+            adminToolsMenu.Items.Add("Open temp folder", null, (s, e) => OpenTempFolder());
+            adminToolsMenu.Items.Add("Delete temp folder", null, (s, e) => DeleteTempFolder());
+            adminToolsMenu.Items.Add("Terminate helper processes", null, (s, e) => TerminateAllProcesses());
+
             // Handle right-click on the DataGridView column headers
             dataGridView.ColumnHeaderMouseClick += DataGridView_ColumnHeaderMouseClick;
 
@@ -70,9 +79,6 @@ namespace TDVersionExplorer
             ManageDestinationFolder();
 
             ClearFiles(true);
-
-            StartProgressWindow(false);
-            StopProgressWindow();
         }
 
         private void ReadWriteRegistry(bool read)
@@ -238,6 +244,26 @@ namespace TDVersionExplorer
                 ReshowDelay = 100 // Delay before the tooltip appears again
             };
             toolTip.SetToolTip(checkBoxTDSampleFiles, "Predefined list of TD related files");
+
+            toolTip = new ToolTip
+            {
+                AutomaticDelay = 200, // Delay before the tooltip appears
+                AutoPopDelay = 5000, // Duration the tooltip remains visible
+                InitialDelay = 100, // Delay before the tooltip appears for the first time
+                IsBalloon = false,
+                ReshowDelay = 100 // Delay before the tooltip appears again
+            };
+            toolTip.SetToolTip(checkBoxFullCDKErrors, "Report all CDK errors. Can reduce performance significantly");
+
+            toolTip = new ToolTip
+            {
+                AutomaticDelay = 200, // Delay before the tooltip appears
+                AutoPopDelay = 5000, // Duration the tooltip remains visible
+                InitialDelay = 100, // Delay before the tooltip appears for the first time
+                IsBalloon = false,
+                ReshowDelay = 100 // Delay before the tooltip appears again
+            };
+            toolTip.SetToolTip(checkBoxInclDLLEXE, "Also analyze exe and dll files. May reduce performance");
         }
 
         private void PopulateFiles()
@@ -455,6 +481,22 @@ namespace TDVersionExplorer
             }
         }
 
+        private void ButtonSelectDestination_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+            {
+                if (string.IsNullOrEmpty(textBoxDestinationFolder.Text))
+                    folderBrowserDialog.SelectedPath = Environment.CurrentDirectory;
+                else
+                    folderBrowserDialog.SelectedPath = textBoxDestinationFolder.Text;
+
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                {
+                    textBoxDestinationFolder.Text = folderBrowserDialog.SelectedPath;
+                }
+            }
+        }
+
         private async void ButtonConvert_Click(object sender, EventArgs e)
         {
             StartProgressWindow(true);
@@ -489,7 +531,7 @@ namespace TDVersionExplorer
                 // Run the folder analysis in the background with the cancellation token
                 await Task.Run(() => ExecuteConversion(settings, cancellationTokenSource.Token), cancellationTokenSource.Token);
                 PopulateConvertResults();
-                MessageBox.Show($"Converting finished:\n\nTotal time: {totalTimeInSeconds}\nItems per second: {itemsPerSecond}");
+                MessageBox.Show($"Total processed items : {itemsConverted}\nConversion errors: {itemsError}\n\nTotal time: {totalTimeInSeconds:F1} seconds\nItems per second: {itemsPerSecond:F1}", "Conversion finished", MessageBoxButtons.OK, itemsError > 0 ? MessageBoxIcon.Error : MessageBoxIcon.Information);
             }
             catch (OperationCanceledException)
             {
@@ -505,7 +547,11 @@ namespace TDVersionExplorer
         private void ExecuteConversion(ConvertSettings settings, CancellationToken cancellationToken)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            int processed = 0;
+            itemsConverted = 0;
+            itemsError = 0;
+            totalTimeInSeconds = 0;
+            itemsPerSecond = 0;
+
             int totalrows = GetCheckedRowCount();
 
             progressForm.Invoke((Action)(() =>
@@ -515,8 +561,6 @@ namespace TDVersionExplorer
 
             try
             {
-                int count = 0;
-
                 foreach (DataGridViewRow row in dataGridView.Rows)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -541,15 +585,17 @@ namespace TDVersionExplorer
                                 attributes = settings.attributes
                             };
 
-                            count += 1;
-                            progressForm.Invoke((Action)(() =>
+                            progressForm.BeginInvoke((Action)(() =>
                             {
-                                progressForm.UpdateProgress(count, file.FileName);
+                                progressForm.UpdateProgress(itemsConverted, file.FileName);
                             }));
 
                             file.StartConvert(convertParams);
 
-                            processed += 1;
+                            if (!(file.converterResult.resultCode == ConverterResultCode.CONVERTED || file.converterResult.resultCode == ConverterResultCode.ALREADYPORTED))
+                                itemsError += 1;
+
+                            itemsConverted += 1;
                         }
                     }
                 }
@@ -568,7 +614,7 @@ namespace TDVersionExplorer
             stopwatch.Stop();
             // Calculate total time taken and items per second
             totalTimeInSeconds = stopwatch.Elapsed.TotalSeconds;
-            itemsPerSecond = processed / totalTimeInSeconds;
+            itemsPerSecond = itemsConverted / totalTimeInSeconds;
             InvokeStopProgressWindow();
         }
 
@@ -645,6 +691,25 @@ namespace TDVersionExplorer
                 progressForm.Show();
         }
 
+        private void StopProgressWindow()
+        {
+            try
+            {
+                // Close the progress window and re-enable the main form
+                if (progressForm != null)
+                {
+                    progressForm.Close();
+                    progressForm = null;
+                }
+            }
+            catch (Exception)
+            {
+                //
+            }
+
+            SetControlsEnabled(this, true);
+        }
+
         private void InvokeStopProgressWindow()
         {
             // Check if we're not on the UI thread
@@ -691,31 +756,10 @@ namespace TDVersionExplorer
                 controlStates.Clear();
         }
 
-        private void StopProgressWindow()
-        {
-            try
-            {
-                // Close the progress window and re-enable the main form
-                if (progressForm != null)
-                {
-                    progressForm.Close();
-                    progressForm = null;
-                }
-            }
-            catch (Exception)
-            {
-                //
-            }
-
-            SetControlsEnabled(this, true);
-        }
-
         private void AnalyzeFolder(string folderPath, CancellationToken cancellationToken)
         {
             try
             {
-                
-
                 // Get all files from the directory
                 var files = Directory.EnumerateFiles(folderPath, "*", SearchOption.TopDirectoryOnly)
                              .Where(file => !IsHiddenOrSystem(file) &&
@@ -746,7 +790,7 @@ namespace TDVersionExplorer
                         TDFiles.Add(tdfile);
 
                     count += 1;
-                    progressForm.Invoke((Action)(() =>
+                    progressForm.BeginInvoke((Action)(() =>
                     {
                         progressForm.UpdateProgress(count, tdfile.FileName);
                     }));
@@ -808,36 +852,33 @@ namespace TDVersionExplorer
             ManageDestinationFolder();
         }
 
-        private void ButtonSelectDestination_Click(object sender, EventArgs e)
-        {
-            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
-            {
-                if (string.IsNullOrEmpty(textBoxDestinationFolder.Text))
-                    folderBrowserDialog.SelectedPath = Environment.CurrentDirectory;
-                else
-                    folderBrowserDialog.SelectedPath = textBoxDestinationFolder.Text;
-
-                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                {
-                    textBoxDestinationFolder.Text = folderBrowserDialog.SelectedPath;
-                }
-            }
-        }
-
         private void CheckBoxTDSampleFiles_CheckedChanged(object sender, EventArgs e)
         {
-            buttonSelectFolder.Enabled = !checkBoxTDSampleFiles.Checked;
-            textBoxFolder.ReadOnly = checkBoxTDSampleFiles.Checked;
+            string samplesfolder = AppDomain.CurrentDomain.BaseDirectory + "TDSampleFiles";
 
-            if (checkBoxTDSampleFiles.Checked)
+            if (Directory.Exists(samplesfolder))
             {
-                SelectedFolderTmp = textBoxFolder.Text;
-                textBoxFolder.Text = AppDomain.CurrentDomain.BaseDirectory + "TDSampleFiles";
+                buttonSelectFolder.Enabled = !checkBoxTDSampleFiles.Checked;
+                textBoxFolder.ReadOnly = checkBoxTDSampleFiles.Checked;
+
+                if (checkBoxTDSampleFiles.Checked)
+                {
+                    SelectedFolderTmp = textBoxFolder.Text;
+                    textBoxFolder.Text = samplesfolder;
+                }
+                else
+                    textBoxFolder.Text = SelectedFolderTmp;
+
+                ManageDestinationFolder();
             }
             else
-                textBoxFolder.Text = SelectedFolderTmp;
+            {
+                checkBoxTDSampleFiles.CheckedChanged -= CheckBoxTDSampleFiles_CheckedChanged;
+                checkBoxTDSampleFiles.Checked = false;
+                checkBoxTDSampleFiles.CheckedChanged += CheckBoxTDSampleFiles_CheckedChanged;
 
-            ManageDestinationFolder();
+                MessageBox.Show($"TDSamples folder does not exist:\n\n{samplesfolder}\n\nMake sure to copy the TDSampleFiles folder to the application folder.", "TD Samples Folder error");
+            }
         }
 
         private void DataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -859,40 +900,40 @@ namespace TDVersionExplorer
             }
         }
 
-        private void ButtonOpenLog_Click(object sender, EventArgs e)
-        {
-            if (!Logger.OpenLogFile())
-                MessageBox.Show("Logfile not found!", "Open logfile error");
-        }
-
         private void LinkLabelFolder_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             string folderPath = textBoxFolder.Text;
 
-            try
-            {
-                // Open the folder in Windows Explorer
-                Process.Start("explorer.exe", folderPath);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error:\n{ex.Message}", "Open folder error");
-            }
+            if (Directory.Exists(folderPath))
+                try
+                {
+                    // Open the folder in Windows Explorer
+                    Process.Start("explorer.exe", folderPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error:\n{ex.Message}", "Open folder error");
+                }
+            else
+                MessageBox.Show($"Folder does not exist:\n\n{folderPath}", "Open folder");
         }
 
         private void LinkLabelDestination_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             string folderPath = textBoxDestinationFolder.Text;
 
-            try
-            {
-                // Open the folder in Windows Explorer
-                Process.Start("explorer.exe", folderPath);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error:\n{ex.Message}", "Open destination folder error");
-            }
+            if (Directory.Exists(folderPath))
+                try
+                {
+                    // Open the folder in Windows Explorer
+                    Process.Start("explorer.exe", folderPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error:\n{ex.Message}", "Open destination folder error");
+                }
+            else
+                MessageBox.Show($"Destination folder does not exist:\n\n{folderPath}", "Open folder");
         }
 
         private void DataGridView_MouseDown(object sender, MouseEventArgs argEvent)
@@ -1036,6 +1077,59 @@ namespace TDVersionExplorer
         private void ButtonOnlineInfo_Click(object sender, EventArgs argEvent)
         {
             onlineMenu.Show(buttonOnlineInfo, new Point(buttonOnlineInfo.Width / 2, buttonOnlineInfo.Height / 2));
+        }
+
+        private void ButtonAdminTools_Click(object sender, EventArgs e)
+        {
+            adminToolsMenu.Show(buttonAdminTools, new Point(buttonAdminTools.Width / 2, buttonAdminTools.Height / 2));
+        }
+
+        private void OpenLog()
+        {
+            if (!Logger.OpenLogFile())
+                MessageBox.Show("Logfile not found!", "Open logfile error");
+        }
+
+        private void TerminateAllProcesses()
+        {
+            TDFileBase.TerminateAllProcesses();
+        }
+
+        private void OpenTempFolder()
+        {
+            try
+            {
+                if (Directory.Exists(TDFileBase.TempfolderBase))
+                    Process.Start("explorer.exe", TDFileBase.TempfolderBase);
+                else
+                    MessageBox.Show($"Temp folder does not exist:\n\n{TDFileBase.TempfolderBase}", "Open temp folder");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error:\n{ex.Message}", "Open temp folder error");
+            }
+        }
+
+        private void DeleteTempFolder()
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            try
+            {
+                TerminateAllProcesses();
+                // Wait a while so all processes are killed.
+                Thread.Sleep(1000);
+
+                if (Directory.Exists(TDFileBase.TempfolderBase))
+                {
+                    Directory.Delete(TDFileBase.TempfolderBase, true);
+                    MessageBox.Show($"Temp folder deleted:\n\n{TDFileBase.TempfolderBase}", "Delete temp folder");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error:\n{ex.Message}", "Delete temp folder error");
+            }
+            Cursor.Current = Cursors.Default;
         }
     }
 

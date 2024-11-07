@@ -19,16 +19,14 @@ namespace TDVersionExplorer
         {
             TDFileBase.ShowNamedPipeServers = convertParams.IsAttributeSet(ConverterAttribs.SHOW_SERVERS);
 
-            ConverterResult result = Convert(convertParams);
-
-            return result;
+            return Convert(convertParams); ;
         }
 
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         private static ConverterResult Convert(ConverterParam convertParams)
         {
-            Logger.LogDebug($"Convert with params:\n\n{convertParams.ToStr()}");
+            Logger.LogDebug($"Convert with params:\n\n{convertParams.ToStr(false)}");
 
             TDFileBase TDFile = new TDFileBase();
 
@@ -56,7 +54,7 @@ namespace TDVersionExplorer
                 
             string TDVersionStr = convertParams.DestVersion.ToString();
 
-            // Combined TD versions (having _): take the later one
+            // Combined TD versions (having _): take the last one
             // Eg TD41_TD42 uses the same TD version codes. We can just take the most recent runtime then. So here that would be TD42
             int lastIndex = TDVersionStr.LastIndexOf('_');
 
@@ -94,7 +92,7 @@ namespace TDVersionExplorer
             string DestinationFileNameFullPath = Path.Combine(convertParams.destinationfolder, DestinationFileName);
             string DestinationErrFileFullPath = Path.Combine(convertParams.destinationfolder, DestinationFileName + ".err");
 
-            // Now first delete destination files to clean up...
+            // Now first delete destination file and .err file to clean up...
             try
             {
                 if (File.Exists(DestinationFileNameFullPath))
@@ -136,7 +134,7 @@ namespace TDVersionExplorer
             // When KEEPORIGINAL encoding, take the encoding of the original file
             if (convertParams.DestEncoding == TDEncoding.KEEP_ORIGINAL)
             {
-                if (TDFile.TDEncoding == TDEncoding.UNKNOWN)
+                if (TDFile.TDEncoding == TDEncoding.UNKNOWN && !(convertParams.DestFormat == TDOutlineFormat.NORMAL))
                 {
                     // Probably NORMAL format. Assume the correct destination encoding
                     if (convertParams.DestVersion < TDVersion.TD51)
@@ -229,7 +227,7 @@ namespace TDVersionExplorer
             string TDInstallation = TDFileBase.GetTempTDRuntimeFolder(convertParams.DestVersion);
             string cdk_dll = $"cdki{TDVersionStr.Substring(TDVersionStr.Length - 2)}.dll";
 
-            if (!System.IO.File.Exists(TDInstallation + cdk_dll))
+            if (!File.Exists(TDInstallation + cdk_dll))
             {
                 Logger.LogError($"Error Convert: TD runtime file not found {TDInstallation + cdk_dll}");
                 return new ConverterResult

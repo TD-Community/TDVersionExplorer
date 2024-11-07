@@ -71,13 +71,13 @@
             this.groupBoxDestination = new System.Windows.Forms.GroupBox();
             this.checkBoxRenameExt = new System.Windows.Forms.CheckBox();
             this.groupBoxConvert = new System.Windows.Forms.GroupBox();
+            this.checkBoxFullCDKErrors = new System.Windows.Forms.CheckBox();
             this.comboBoxLogLevel = new System.Windows.Forms.ComboBox();
             this.labelLogLevel = new System.Windows.Forms.Label();
-            this.buttonOpenLog = new System.Windows.Forms.Button();
+            this.buttonAdminTools = new System.Windows.Forms.Button();
             this.linkLabelFolder = new System.Windows.Forms.LinkLabel();
             this.linkLabelDestination = new System.Windows.Forms.LinkLabel();
             this.buttonOnlineInfo = new System.Windows.Forms.Button();
-            this.checkBoxFullCDKErrors = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.groupBoxAnalyze.SuspendLayout();
             this.groupBoxFilter.SuspendLayout();
@@ -143,7 +143,7 @@
             this.ColumnFileName.HeaderText = "File Name";
             this.ColumnFileName.Name = "ColumnFileName";
             this.ColumnFileName.ReadOnly = true;
-            this.ColumnFileName.Width = 300;
+            this.ColumnFileName.Width = 270;
             // 
             // ColumnIcon
             // 
@@ -206,7 +206,7 @@
             this.ColumnResultTxt.HeaderText = "Conversion result";
             this.ColumnResultTxt.Name = "ColumnResultTxt";
             this.ColumnResultTxt.ReadOnly = true;
-            this.ColumnResultTxt.Width = 150;
+            this.ColumnResultTxt.Width = 180;
             // 
             // ColumnObject
             // 
@@ -247,7 +247,7 @@
             this.buttonConvert.Name = "buttonConvert";
             this.buttonConvert.Size = new System.Drawing.Size(113, 40);
             this.buttonConvert.TabIndex = 6;
-            this.buttonConvert.Text = "Convert";
+            this.buttonConvert.Text = "&Convert";
             this.buttonConvert.UseVisualStyleBackColor = true;
             this.buttonConvert.Click += new System.EventHandler(this.ButtonConvert_Click);
             // 
@@ -324,7 +324,7 @@
             this.buttonGetFiles.Name = "buttonGetFiles";
             this.buttonGetFiles.Size = new System.Drawing.Size(113, 23);
             this.buttonGetFiles.TabIndex = 13;
-            this.buttonGetFiles.Text = "Analyze folder";
+            this.buttonGetFiles.Text = "&Analyze folder";
             this.buttonGetFiles.UseVisualStyleBackColor = true;
             this.buttonGetFiles.Click += new System.EventHandler(this.ButtonGetFiles_Click);
             // 
@@ -476,7 +476,7 @@
             // checkBoxShowServers
             // 
             this.checkBoxShowServers.AutoSize = true;
-            this.checkBoxShowServers.Location = new System.Drawing.Point(827, 678);
+            this.checkBoxShowServers.Location = new System.Drawing.Point(815, 685);
             this.checkBoxShowServers.Name = "checkBoxShowServers";
             this.checkBoxShowServers.Size = new System.Drawing.Size(90, 17);
             this.checkBoxShowServers.TabIndex = 31;
@@ -522,6 +522,16 @@
             this.groupBoxConvert.TabStop = false;
             this.groupBoxConvert.Text = "Conversion";
             // 
+            // checkBoxFullCDKErrors
+            // 
+            this.checkBoxFullCDKErrors.AutoSize = true;
+            this.checkBoxFullCDKErrors.Location = new System.Drawing.Point(146, 43);
+            this.checkBoxFullCDKErrors.Name = "checkBoxFullCDKErrors";
+            this.checkBoxFullCDKErrors.Size = new System.Drawing.Size(96, 17);
+            this.checkBoxFullCDKErrors.TabIndex = 21;
+            this.checkBoxFullCDKErrors.Text = "Full CDK errors";
+            this.checkBoxFullCDKErrors.UseVisualStyleBackColor = true;
+            // 
             // comboBoxLogLevel
             // 
             this.comboBoxLogLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -529,7 +539,7 @@
             this.comboBoxLogLevel.Items.AddRange(new object[] {
             "DEBUG",
             "INFO"});
-            this.comboBoxLogLevel.Location = new System.Drawing.Point(934, 646);
+            this.comboBoxLogLevel.Location = new System.Drawing.Point(922, 653);
             this.comboBoxLogLevel.Name = "comboBoxLogLevel";
             this.comboBoxLogLevel.Size = new System.Drawing.Size(90, 21);
             this.comboBoxLogLevel.Sorted = true;
@@ -538,21 +548,21 @@
             // labelLogLevel
             // 
             this.labelLogLevel.AutoSize = true;
-            this.labelLogLevel.Location = new System.Drawing.Point(878, 649);
+            this.labelLogLevel.Location = new System.Drawing.Point(866, 656);
             this.labelLogLevel.Name = "labelLogLevel";
             this.labelLogLevel.Size = new System.Drawing.Size(50, 13);
             this.labelLogLevel.TabIndex = 34;
             this.labelLogLevel.Text = "Log level";
             // 
-            // buttonOpenLog
+            // buttonAdminTools
             // 
-            this.buttonOpenLog.Location = new System.Drawing.Point(934, 674);
-            this.buttonOpenLog.Name = "buttonOpenLog";
-            this.buttonOpenLog.Size = new System.Drawing.Size(90, 23);
-            this.buttonOpenLog.TabIndex = 35;
-            this.buttonOpenLog.Text = "Open log";
-            this.buttonOpenLog.UseVisualStyleBackColor = true;
-            this.buttonOpenLog.Click += new System.EventHandler(this.ButtonOpenLog_Click);
+            this.buttonAdminTools.Location = new System.Drawing.Point(922, 681);
+            this.buttonAdminTools.Name = "buttonAdminTools";
+            this.buttonAdminTools.Size = new System.Drawing.Size(90, 23);
+            this.buttonAdminTools.TabIndex = 35;
+            this.buttonAdminTools.Text = "Admin &Tools";
+            this.buttonAdminTools.UseVisualStyleBackColor = true;
+            this.buttonAdminTools.Click += new System.EventHandler(this.ButtonAdminTools_Click);
             // 
             // linkLabelFolder
             // 
@@ -582,29 +592,18 @@
             this.buttonOnlineInfo.Name = "buttonOnlineInfo";
             this.buttonOnlineInfo.Size = new System.Drawing.Size(75, 23);
             this.buttonOnlineInfo.TabIndex = 38;
-            this.buttonOnlineInfo.Text = "Online info";
+            this.buttonOnlineInfo.Text = "&Online info";
             this.buttonOnlineInfo.UseVisualStyleBackColor = true;
             this.buttonOnlineInfo.Click += new System.EventHandler(this.ButtonOnlineInfo_Click);
             // 
-            // checkBoxFullCDKErrors
-            // 
-            this.checkBoxFullCDKErrors.AutoSize = true;
-            this.checkBoxFullCDKErrors.Location = new System.Drawing.Point(146, 43);
-            this.checkBoxFullCDKErrors.Name = "checkBoxFullCDKErrors";
-            this.checkBoxFullCDKErrors.Size = new System.Drawing.Size(96, 17);
-            this.checkBoxFullCDKErrors.TabIndex = 21;
-            this.checkBoxFullCDKErrors.Text = "Full CDK errors";
-            this.checkBoxFullCDKErrors.UseVisualStyleBackColor = true;
-            // 
             // FormExplorer
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1036, 741);
             this.Controls.Add(this.buttonOnlineInfo);
             this.Controls.Add(this.linkLabelDestination);
             this.Controls.Add(this.linkLabelFolder);
-            this.Controls.Add(this.buttonOpenLog);
+            this.Controls.Add(this.buttonAdminTools);
             this.Controls.Add(this.labelLogLevel);
             this.Controls.Add(this.comboBoxLogLevel);
             this.Controls.Add(this.checkBoxShowServers);
@@ -620,6 +619,7 @@
             this.Controls.Add(this.groupBoxDestination);
             this.Controls.Add(this.groupBoxConvert);
             this.DoubleBuffered = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "FormExplorer";
@@ -672,10 +672,12 @@
         private System.Windows.Forms.ComboBox comboBoxLogLevel;
         private System.Windows.Forms.Label labelLogLevel;
         private System.Windows.Forms.CheckBox checkBoxRenameExt;
-        private System.Windows.Forms.Button buttonOpenLog;
+        private System.Windows.Forms.Button buttonAdminTools;
         private System.Windows.Forms.CheckBox checkBoxTDDllExe;
         private System.Windows.Forms.LinkLabel linkLabelFolder;
         private System.Windows.Forms.LinkLabel linkLabelDestination;
+        private System.Windows.Forms.Button buttonOnlineInfo;
+        private System.Windows.Forms.CheckBox checkBoxFullCDKErrors;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnResult;
         private System.Windows.Forms.DataGridViewCheckBoxColumn ColumnSelect;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnFileName;
@@ -688,8 +690,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnEncoding;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnResultTxt;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnObject;
-        private System.Windows.Forms.Button buttonOnlineInfo;
-        private System.Windows.Forms.CheckBox checkBoxFullCDKErrors;
     }
 }
 

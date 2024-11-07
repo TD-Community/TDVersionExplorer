@@ -32,7 +32,7 @@ namespace TDVersionExplorer
 
             if (DebugArgs)
             {                
-                args = new string[18];
+                args = new string[16];
                 args[0] = "-s";
                 //args[1] = "K:\\Github\\TDVersionExplorer\\TDSampleFiles\\TD75_Text.apt";
                 //args[1] = "K:\\Github\\TDVersionExplorer\\TDSampleFiles\\TD15_Compiled.app";
@@ -51,13 +51,18 @@ namespace TDVersionExplorer
                 args[11] = "";
                 args[12] = "-n";
                 args[13] = "";
-                args[14] = "-f";
+                args[14] = "-c";
                 args[15] = "0";
-                args[16] = "-m";
-                args[17] = "3";
+            }
+
+            if (args.Length == 0)
+            {
+                MessageBox.Show("This helper application can not be started standalone.\nStart TDVersionExplorer.exe instead.", "TDVersionConverter");
+                Environment.Exit(0);
             }
 
             ConverterParam convertParams = ProcessArguments(args, string.Empty);
+
             Logger.SetLogFile();
             if (convertParams.IsAttributeSet(ConverterAttribs.LOGLEVEL_DEBUG))
                 Logger.SetLogLevel("DEBUG");
@@ -66,6 +71,7 @@ namespace TDVersionExplorer
             GlobalContext.Properties["ServerName"] = $"{convertParams.DestVersion}";
 
             Logger.LogInfo($"TDVersionConverter.exe started");
+            Logger.LogDebug($"TDVersionConverter.exe with params:\n\n{convertParams.ToStr(true)}");
 
             if (TDFileBase.UseNamedPipes)
                 StartNamedPipeServer(convertParams);
@@ -83,43 +89,20 @@ namespace TDVersionExplorer
             {
                 var parsedArgs = ParseArgs(args);
 
-                if (!parsedArgs.TryGetValue("-s", out string source))
-                    Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
-
-                if (!(parsedArgs.TryGetValue("-v", out string tdversionstr)))
+                if (!(parsedArgs.TryGetValue("-d", out string tdversionstr)))
                     Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
                 if (!(Enum.TryParse<TDVersion>(tdversionstr, true, out TDVersion tdversion)))
                     Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
 
-                if (!parsedArgs.TryGetValue("-d", out string destinationfolder))
+                if (!parsedArgs.TryGetValue("-a", out string attributeStr))
                     Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
-
-                if (!parsedArgs.TryGetValue("-o", out string formatstr))
-                    formatstr = "KEEP_ORIGINAL";
-                if (!(Enum.TryParse<TDOutlineFormat>(formatstr, true, out TDOutlineFormat outlineformat)))
+                if (!(Enum.TryParse<ConverterAttribs>(attributeStr, true, out ConverterAttribs attributes)))
                     Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
-
-                if (!parsedArgs.TryGetValue("-e", out string encodingstr))
-                    encodingstr = "KEEP_ORIGINAL";
-                if (!(Enum.TryParse<TDEncoding>(encodingstr, true, out TDEncoding encoding)))
-                    Environment.Exit((int)ConverterResultCode.ERROR_INVALIDARG);
-
-                parsedArgs.TryGetValue("-a", out string alternativestr);
-
-                parsedArgs.TryGetValue("-n", out string originalstr);
-                if (string.IsNullOrEmpty(originalstr))
-                    originalstr = Path.GetFileName(source);
-
 
                 return new ConverterParam()
                 {
-                    source = source,
-                    OriginalFileName = originalstr,
-                    destinationfolder = destinationfolder.TrimEnd('\\'),
                     DestVersion = tdversion,
-                    DestFormat = outlineformat,
-                    DestEncoding = encoding,
-                    alternativeFileName = alternativestr
+                    attributes = attributes
                 };
             }
             else
