@@ -27,16 +27,22 @@ This feature helps inspect installations or folders containing source files to l
 - **Attributes Identified**:
   - **TD Version**: Detects the TD version associated with each file, supporting versions from TD 1.0 through TD 7.x.
   - **Version Code**: Displays precise version codes for greater detail.
-  - **File Type**: Identifies the file type.
+  - **File Type**: Identifies the file type (source, exe, dll, apd and qrp) for both x86 and x64
   - **Outline Format**: Recognizes the outline format (TEXT, INDENTED TEXT, NORMAL, or COMPILED).
   - **Bitness**: Specifies whether the file (for binary files) is x86 or x64.
-  - **Encoding**: Shows the encoding of text files (e.g., UTF8/ASCII or UTF16).
+  - **Encoding**: Shows the encoding of source text files (e.g., UTF8/ASCII or UTF16).
 
 #### Analysis Options
 
 - **Folder Selection**: Choose the folder to analyze.
 - **Filter Options**: Filter results by file type, such as TD DLL/EXE files, TD sources, Dynalibs, or reports.
 - **Version Filtering**: Restrict results to specific TD versions.
+- Context menu on filename:
+  - Open the source file location in explorer
+  - Opem the source in TD IDE (when installed)
+  - Open the .err file after conversion (when available)
+- Context menu on selection column to select all/deselect all files to convert
+- Open source and destination folders in explorer
 
 #### Example TD Files
 
