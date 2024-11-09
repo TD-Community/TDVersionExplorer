@@ -80,10 +80,8 @@ namespace TDVersionExplorer
                 return true;
             }
 
-            // Get the current assembly
             var assembly = Assembly.GetExecutingAssembly();
 
-            // Get the list of embedded resources
             string[] resourceNames = assembly.GetManifestResourceNames();
 
             // Extract ZIP resource needed
@@ -105,7 +103,6 @@ namespace TDVersionExplorer
             {
                 try
                 {
-                    // If the folder does not exist, create it
                     Directory.CreateDirectory(Tempfolder);
                 }
                 catch (Exception ex)
@@ -115,7 +112,7 @@ namespace TDVersionExplorer
                 }
                 
             }
-            // Get the temporary directory to extract the ZIP
+
             string FullPathZipFile = Path.Combine(Tempfolder, zipfile);
 
             // Check if the ZIP is already extracted
@@ -150,9 +147,7 @@ namespace TDVersionExplorer
                     return false;
                 }
             }
-            {
-                Logger.LogDebug($"ZipFile already present. No need to extract: {FullPathZipFile}");
-            }
+            Logger.LogDebug($"ZipFile already present. No need to extract: {FullPathZipFile}");
             return true;
         }
     }

@@ -12,7 +12,6 @@ namespace TDVersionExplorer
             InitializeComponent();
         }
 
-        // Method to update progress bar value and label
         public void UpdateProgress(int progress, string msg)
         {
             progressBar.Value = progress;

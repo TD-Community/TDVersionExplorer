@@ -783,18 +783,15 @@ namespace TDVersionExplorer
             string version = tdversion.ToString();
             string versionNr = version.Substring(version.Length - 1);
 
-            // Define the registry path and the value name
             string registryPath = $@"Software\Gupta\SQLWindows 7.{versionNr}\Settings";
             string valueName = "PreferUTF8Encoding";
 
             try
             {
-                // Retrieve the current value of the registry key
                 object currentValue = Registry.GetValue(@"HKEY_CURRENT_USER\" + registryPath, valueName, null);
 
                 if (currentValue != null && currentValue is int v)
                 {
-                    // Store the current value (casting to int because it's a DWORD)
                     option = v;
                     string flagname = string.Empty;
 
@@ -827,7 +824,6 @@ namespace TDVersionExplorer
             string version = tdversion.ToString();
             string versionNr = version.Substring(version.Length - 1);
 
-            // Define the registry path and the value name
             string registryPath = $@"Software\Gupta\SQLWindows 7.{versionNr}\Settings";
             string valueName = "PreferUTF8Encoding";
 
@@ -846,12 +842,10 @@ namespace TDVersionExplorer
 
             try
             {
-                // Retrieve the current value of the registry key
                 object currentValue = Registry.GetValue(@"HKEY_CURRENT_USER\" + registryPath, valueName, null);
 
                 if (currentValue != null && currentValue is int)
                 {
-                    // Update the value
                     using (RegistryKey key = Registry.CurrentUser.CreateSubKey(registryPath))
                     {
                         if (key != null)
@@ -864,7 +858,6 @@ namespace TDVersionExplorer
                 }
                 else
                 {
-                    // Create or set the new value
                     using (RegistryKey key = Registry.CurrentUser.CreateSubKey(registryPath))
                     {
                         if (key != null)
@@ -911,7 +904,7 @@ namespace TDVersionExplorer
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
-        private const uint BM_CLICK = 0x00F5;  // Button click message
+        private const uint BM_CLICK = 0x00F5;
 
         public static List<string> messageBoxTexts = new List<string>();
 
@@ -921,7 +914,7 @@ namespace TDVersionExplorer
             _stopRequested = false;
             _closeThread = new Thread(CloseMessageBoxes)
             {
-                IsBackground = true // Optional: Makes the thread stop when the app closes
+                IsBackground = true
             };
             _closeThread.Start();
         }
@@ -944,7 +937,7 @@ namespace TDVersionExplorer
                 CloseSQLWindowsMessageBox();
 
                 // Sleep for a short time to avoid busy-waiting
-                Thread.Sleep(20);
+                Thread.Sleep(30);
             }
         }
 
@@ -1006,23 +999,15 @@ namespace TDVersionExplorer
                 if (className.ToString() == "Button")
                 {
                     buttonCount++;
-                    // Retrieve the button text to determine if it's "OK" or "Cancel"
-                    StringBuilder buttonText = new StringBuilder(256);
-                    GetWindowText(childWindow, buttonText, buttonText.Capacity);
 
-                    if (buttonText.ToString() == "OK")
-                    {
+                    if (buttonCount == 1)
                         okButtonHandle = childWindow;
-                    }
-                    else if (buttonText.ToString() != "Cancel")
-                    {
-                        // Some other button. So this can not be the needed TD msgbox
-                        return false;
-                    }
                 }
                 else if (className.ToString() == "Static")
                 {
-                    if(string.IsNullOrEmpty(msgtext))
+                    staticCount++;
+
+                    if (string.IsNullOrEmpty(msgtext))
                     {
                         StringBuilder sText = new StringBuilder(512);
 
@@ -1030,12 +1015,9 @@ namespace TDVersionExplorer
 
                         string textContent = sText.ToString().Trim();
 
-                        // Check if the text has meaningful content (non-whitespace)
                         if (!string.IsNullOrEmpty(textContent))
                             msgtext = textContent.Replace("\t", "");
                     }
-
-                    staticCount++;
                 }
 
                 // If more than the required count is detected, exit early

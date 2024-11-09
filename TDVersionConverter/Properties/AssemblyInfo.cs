@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TDVersionConverter")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Helper process for TDVersionExplorer")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("RablinQ ICT")]
-[assembly: AssemblyProduct("TDVersionConverter")]
+[assembly: AssemblyProduct("TDVersionExplorer")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

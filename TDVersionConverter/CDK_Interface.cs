@@ -97,12 +97,12 @@ namespace TDVersionExplorer
             catch (AccessViolationException ex)
             {
                 Logger.LogErrorEx($"Error TryGetFunctionDelegate:", ex);
-                return false; // Return false on AccessViolationException
+                return false;
             }
             catch (Exception ex)
             {
                 Logger.LogErrorEx($"Error TryGetFunctionDelegate:", ex);
-                return false; // Return false on any other exception
+                return false;
             }
         }
     }

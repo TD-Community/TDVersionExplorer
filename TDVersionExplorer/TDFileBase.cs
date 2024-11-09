@@ -113,25 +113,21 @@ namespace TDVersionExplorer
             attributes = (ConverterAttribs)Enum.Parse(typeof(ConverterAttribs), parts[7]);
         }
 
-        // 1) Set an attribute (add attribute to existing ones)
         public void SetAttribute(ConverterAttribs attribute)
         {
             attributes |= attribute;
         }
 
-        // 2) Remove an attribute
         public void RemoveAttribute(ConverterAttribs attribute)
         {
             attributes &= ~attribute;
         }
 
-        // 3) Clear all attributes (set to NONE)
         public void ClearAttributes()
         {
             attributes = ConverterAttribs.NONE;
         }
 
-        // 4) Check if an attribute is set
         public bool IsAttributeSet(ConverterAttribs attribute)
         {
             return (attributes & attribute) != 0;
@@ -214,7 +210,6 @@ namespace TDVersionExplorer
         {
             string logDirectory = TDFileBase.TempfolderBase;
 
-            // Ensure the directory exists
             if (!Directory.Exists(logDirectory))
             {
                 try
@@ -227,16 +222,13 @@ namespace TDVersionExplorer
                 }
             }
 
-            // Retrieve the current repository (log4net configuration)
             var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
 
-            // Find the RollingFileAppender from the configured appenders
             var appenders = ((Hierarchy)logRepository).Root.Appenders;
             foreach (var appender in appenders)
             {
                 if (appender is RollingFileAppender rollingFileAppender)
                 {
-                    // Set the new file path with the dynamic filename
                     rollingFileAppender.File = logFile;
                     rollingFileAppender.ActivateOptions();  // Apply changes
                 }
@@ -260,13 +252,8 @@ namespace TDVersionExplorer
 
         public static void SetLogLevel(string levelName)
         {
-            // Get the hierarchy for the logger repository
             Hierarchy hierarchy = (Hierarchy)LogManager.GetRepository();
-
-            // Set the level for the root logger to OFF
             hierarchy.Root.Level = hierarchy.LevelMap[levelName];
-
-            // Apply the changes
             hierarchy.RaiseConfigurationChanged(EventArgs.Empty);
         }
     }
@@ -594,7 +581,6 @@ namespace TDVersionExplorer
                 if (jobHandle == IntPtr.Zero)
                     CreateJobObject();
 
-                // Define the process start info
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = workerExePath, // Use the full path to the worker executable
@@ -617,7 +603,6 @@ namespace TDVersionExplorer
 
                 process.WaitForExit();
 
-                // Get the exit code
                 int exitCode = process.ExitCode;
 
                 return new ConverterResult
@@ -641,25 +626,18 @@ namespace TDVersionExplorer
 
         public static string GetRunningExecutable()
         {
-            // Get the entry (executable) assembly
             Assembly entryAssembly = Assembly.GetEntryAssembly();
-
-            // Get just the name of the executable assembly
             string entryAssemblyName = entryAssembly.GetName().Name;
-
             return entryAssemblyName;
         }
 
         private static bool StartsWith(byte[] buffer, string prefix)
         {
-            // Convert the prefix string to a byte array
             byte[] prefixBytes = Encoding.ASCII.GetBytes(prefix);
 
-            // Check if the buffer has enough bytes
             if (buffer.Length < prefixBytes.Length)
                 return false;
 
-            // Compare the bytes in the buffer with the prefix
             for (int i = 0; i < prefixBytes.Length; i++)
             {
                 if (buffer[i] != prefixBytes[i])
@@ -675,11 +653,9 @@ namespace TDVersionExplorer
             bitness = TDBitness.UNKNOWN;
             tdversion = TDVersion.UNKNOWN;
 
-            // Check if file exists
             if (!File.Exists(filePath))
                 return false;
 
-            // Get the file size
             long fileSize = new FileInfo(filePath).Length;
             if (fileSize < 64) // Less than 64 bytes, cannot be a valid executable
                 return false;
@@ -744,9 +720,9 @@ namespace TDVersionExplorer
                             bitness = TDBitness.x64;
                     }
                     else
-                        return false; // Not enough data to read the bitness
+                        return false;
 
-                    return true; // Successfully checked executable requirements
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -760,20 +736,11 @@ namespace TDVersionExplorer
         {
             // Check for BOM (Byte Order Mark)
             if (bytesRead >= 3 && buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF)
-            {
-                // UTF-8 BOM
                 return Encoding.UTF8;
-            }
             if (bytesRead >= 2 && buffer[0] == 0xFF && buffer[1] == 0xFE)
-            {
-                // UTF-16 LE BOM
                 return Encoding.Unicode;
-            }
             if (bytesRead >= 2 && buffer[0] == 0xFE && buffer[1] == 0xFF)
-            {
-                // UTF-16 BE BOM
                 return Encoding.BigEndianUnicode;
-            }
 
             // Default to ASCII/ANSI if no BOM is found
             // For ANSI, ASCII is used to read as 1-byte characters
@@ -831,7 +798,6 @@ namespace TDVersionExplorer
             IntPtr extendedInfoPtr = Marshal.AllocHGlobal(length);
             Marshal.StructureToPtr(extendedLimits, extendedInfoPtr, false);
 
-            // Set the job limits for the JobObject
             SetInformationJobObject(job, JobObjectInfoType.ExtendedLimitInformation, extendedInfoPtr, (uint)length);
 
             // No need to free extendedInfoPtr here, we leave it until the application exits

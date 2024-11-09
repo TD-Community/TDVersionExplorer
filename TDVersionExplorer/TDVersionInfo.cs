@@ -13,7 +13,6 @@ namespace TDVersionExplorer
         // Dictionary to store installed TD versions
         public static Dictionary<string, InstalledTDVersionInfo> InstalledVersions = new Dictionary<string, InstalledTDVersionInfo>();
 
-        // Constructor to initialize the dictionary with data.
         static TDVersionRepository()
         {
             Versions = new Dictionary<TDVersion, TDVersionInfo>
@@ -45,7 +44,7 @@ namespace TDVersionExplorer
                 { TDVersion.TD74,           new TDVersionInfo(TDVersion.TD74, "4.0.57") },
                 { TDVersion.TD750,          new TDVersionInfo(TDVersion.TD750, "4.0.58") },
                 { TDVersion.TD75,           new TDVersionInfo(TDVersion.TD75, "4.0.59") }
-                // Add more TD versions here...
+                // Add future TD versions here...
             };
         }
 
@@ -130,9 +129,7 @@ namespace TDVersionExplorer
             foreach (var version in Versions.Values)
             {
                 if (version.OutlineVersion == outlineVersion)
-                {
                     return version;
-                }
             }
             // Return the 'UNKNOWN' version if not found.
             return Versions[TDVersion.UNKNOWN];

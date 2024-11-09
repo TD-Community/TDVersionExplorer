@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -64,8 +65,8 @@ namespace TDVersionExplorer
             adminToolsMenu.Items.Add("Open temp folder", null, (s, e) => OpenTempFolder());
             adminToolsMenu.Items.Add("Delete temp folder", null, (s, e) => DeleteTempFolder());
             adminToolsMenu.Items.Add("Terminate helper processes", null, (s, e) => TerminateAllProcesses());
+            adminToolsMenu.Items.Add("Export gridview to html", null, (s, e) => ExportGridViewToHtml());
 
-            // Handle right-click on the DataGridView column headers
             dataGridView.ColumnHeaderMouseClick += DataGridView_ColumnHeaderMouseClick;
 
             PopulateTDVersionCombos();
@@ -106,7 +107,6 @@ namespace TDVersionExplorer
                 {
                     if (!checkBoxTDSampleFiles.Checked)
                     {
-                        //storing the values  
                         RegistryKey key = Registry.CurrentUser.CreateSubKey(KeyPath);
                         key.SetValue("Folder", textBoxFolder.Text);
                         key.SetValue("UseCustomDestinationFolder", checkBoxCustomPath.Checked ? 1 : 0, RegistryValueKind.DWord);
@@ -374,23 +374,23 @@ namespace TDVersionExplorer
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 TDFileEx file = (TDFileEx)row.Cells["columnObject"].Value;
-                System.Drawing.Color color = System.Drawing.Color.White;
-                System.Drawing.Color colorTxt = System.Drawing.Color.Black;
+                Color color = Color.White;
+                Color colorTxt = Color.Black;
                 string resultTxt = string.Empty;
 
                 if (file.converterResult.resultCode != ConverterResultCode.UNKNOWN )
                 {
                     resultTxt = file.converterResult.resultCode.ToString();
                     if (file.converterResult.resultCode == ConverterResultCode.CONVERTED)
-                        color = System.Drawing.Color.LightGreen;
+                        color = Color.LightGreen;
                     else if (file.converterResult.resultCode == ConverterResultCode.ALREADYPORTED)
-                        color = System.Drawing.Color.LightBlue;
+                        color = Color.LightBlue;
                     else if (file.converterResult.resultCode == ConverterResultCode.CONVERTED_WITH_ERRORS)
-                        color = System.Drawing.Color.Salmon;
+                        color = Color.Salmon;
                     else
                     {
-                        color = System.Drawing.Color.Red;
-                        colorTxt = System.Drawing.Color.White;
+                        color = Color.Red;
+                        colorTxt = Color.White;
                     }
                 }
 
@@ -405,7 +405,6 @@ namespace TDVersionExplorer
         {
             if (e.Button == MouseButtons.Right)
             {
-                // Check if the right-click is on the checkbox (Select) column
                 if (dataGridView.Columns[e.ColumnIndex].Name == "ColumnSelect")
                     headerMenu.Show(Cursor.Position);
             }
@@ -442,19 +441,14 @@ namespace TDVersionExplorer
         private void DataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             dataGridView.EndEdit();
-            // Check if the clicked cell is a CheckBoxCell
             if (dataGridView.Columns[e.ColumnIndex] is DataGridViewCheckBoxColumn && e.RowIndex >= 0)
             {
                 DataGridViewCheckBoxCell cell = (DataGridViewCheckBoxCell)dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
                 if (cell.Value == null || cell.Value == "" || !(bool)cell.Value)
-                {
                     cell.Value = true;
-                }
                 else
-                {
                     cell.Value = false;
-                }
 
                 dataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
                 dataGridView.InvalidateCell(cell);
@@ -464,7 +458,6 @@ namespace TDVersionExplorer
 
         private void ButtonSelectFolder_Click(object sender, EventArgs e)
         {
-            // Create a new instance of FolderBrowserDialog
             using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
             {
                 if (string.IsNullOrEmpty( textBoxFolder.Text ))
@@ -491,9 +484,7 @@ namespace TDVersionExplorer
                     folderBrowserDialog.SelectedPath = textBoxDestinationFolder.Text;
 
                 if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                {
                     textBoxDestinationFolder.Text = folderBrowserDialog.SelectedPath;
-                }
             }
         }
 
@@ -567,10 +558,8 @@ namespace TDVersionExplorer
                     TDFileEx file = (TDFileEx)row.Cells["columnObject"].Value;
                     file.converterResult.resultCode = ConverterResultCode.UNKNOWN;
 
-                    // Check if the row is not a new row
                     if (!row.IsNewRow && row.Cells["ColumnSelect"].Value is bool)
                     {
-                        // Check if the first cell (checkbox column) is checked
                         bool isChecked = Convert.ToBoolean(row.Cells["ColumnSelect"].Value);
 
                         if (isChecked)
@@ -607,12 +596,11 @@ namespace TDVersionExplorer
             }
             catch (Exception ex)
             {
-                // Handle any other exception
                 MessageBox.Show($"Error:\n{ex.Message}");
             }
 
             stopwatch.Stop();
-            // Calculate total time taken and items per second
+
             totalTimeInSeconds = stopwatch.Elapsed.TotalSeconds;
             itemsPerSecond = itemsConverted / totalTimeInSeconds;
             InvokeStopProgressWindow();
@@ -655,36 +643,28 @@ namespace TDVersionExplorer
             }
             finally
             {
-                // Ensure that the progress window is closed regardless of the outcome
                 StopProgressWindow();
             }
         }
 
         private void StartProgressWindow(bool show)
         {
-            // Show the progress form as a non-blocking (non-modal) window
             SetControlsEnabled(this, false);
 
-            // Initialize and show the progress form
             progressForm = new FormProgress
             {
                 StartPosition = FormStartPosition.Manual
             };
 
-            // Calculate the center of the main form
             int x = this.Location.X + (this.Width - progressForm.Width) / 2;
             int y = this.Location.Y + (this.Height - progressForm.Height) / 2;
 
-            // Set the new form's location to the calculated center
             progressForm.Location = new Point(x, y);
 
-            // Set the main form as the owner of the new form (keeps it on top)
             progressForm.Owner = this;
 
-            // Create a CancellationTokenSource to manage cancellation requests
             cancellationTokenSource = new CancellationTokenSource();
 
-            // Set the CancelAction to trigger cancellation when the "Cancel" button is clicked
             progressForm.CancelAction = () => cancellationTokenSource.Cancel();
 
             if (show)
@@ -695,7 +675,6 @@ namespace TDVersionExplorer
         {
             try
             {
-                // Close the progress window and re-enable the main form
                 if (progressForm != null)
                 {
                     progressForm.Close();
@@ -712,17 +691,10 @@ namespace TDVersionExplorer
 
         private void InvokeStopProgressWindow()
         {
-            // Check if we're not on the UI thread
             if (this.InvokeRequired)
-            {
-                // Use Invoke to marshal the call to the UI thread
                 this.Invoke(new Action(StopProgressWindow));
-            }
             else
-            {
-                // If already on the UI thread, call the method directly
                 StopProgressWindow();
-            }
         }
 
         private void SetControlsEnabled(Control parent, bool enabled)
@@ -738,20 +710,16 @@ namespace TDVersionExplorer
                 {
                     if (control.Enabled)
                     {
-                        // If disabling, store the current enabled state if not already stored
                         if (!controlStates.ContainsKey(control))
                             controlStates.Add(control, control.Enabled);
-                        // Disable the control
                         control.Enabled = false;
                     }
                 }
 
-                // Recursively process child controls (e.g., controls in a Panel, GroupBox)
                 if (control.HasChildren)
                     SetControlsEnabled(control, enabled);
             }
 
-            // Clear the state dictionary only after all controls have been re-enabled
             if (enabled && parent == this)
                 controlStates.Clear();
         }
@@ -760,7 +728,6 @@ namespace TDVersionExplorer
         {
             try
             {
-                // Get all files from the directory
                 var files = Directory.EnumerateFiles(folderPath, "*", SearchOption.TopDirectoryOnly)
                              .Where(file => !IsHiddenOrSystem(file) &&
                                             (checkBoxInclDLLEXE.Checked || !IsExecutable(file)));
@@ -883,7 +850,6 @@ namespace TDVersionExplorer
 
         private void DataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            // Check if the clicked cell is a checkbox in the first column
             if (e.ColumnIndex == 1 && e.RowIndex >= 0)
             {
                 ManageGUI();
@@ -892,12 +858,8 @@ namespace TDVersionExplorer
 
         private void DataGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
-            // Check if the current cell is dirty and if it's a checkbox cell
             if (dataGridView.IsCurrentCellDirty && dataGridView.CurrentCell is DataGridViewCheckBoxCell)
-            {
-                // Commit the edit to trigger the CellValueChanged event
                 dataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
-            }
         }
 
         private void LinkLabelFolder_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -907,7 +869,6 @@ namespace TDVersionExplorer
             if (Directory.Exists(folderPath))
                 try
                 {
-                    // Open the folder in Windows Explorer
                     Process.Start("explorer.exe", folderPath);
                 }
                 catch (Exception ex)
@@ -925,7 +886,6 @@ namespace TDVersionExplorer
             if (Directory.Exists(folderPath))
                 try
                 {
-                    // Open the folder in Windows Explorer
                     Process.Start("explorer.exe", folderPath);
                 }
                 catch (Exception ex)
@@ -938,10 +898,8 @@ namespace TDVersionExplorer
 
         private void DataGridView_MouseDown(object sender, MouseEventArgs argEvent)
         {
-            // Check if the right mouse button was clicked
             if (argEvent.Button == MouseButtons.Right)
             {
-                // Get the clicked cell under the mouse
                 var hitTestInfo = dataGridView.HitTest(argEvent.X, argEvent.Y);
 
                 if (hitTestInfo.Type == DataGridViewHitTestType.Cell)
@@ -952,7 +910,6 @@ namespace TDVersionExplorer
                         DataGridViewCell cell = dataGridView[hitTestInfo.ColumnIndex, hitTestInfo.RowIndex];
                         cell.Selected = true;
 
-                        // Store the clicked cell and row objects
                         clickedCell = cell;
                         clickedRow = dataGridView.Rows[hitTestInfo.RowIndex];
 
@@ -978,7 +935,7 @@ namespace TDVersionExplorer
                             {
                                 ToolStripMenuItem unavailableOption = new ToolStripMenuItem($"{file.TDVersionInfo.NormalVersion} IDE not installed")
                                 {
-                                    Enabled = false // This will gray out the item
+                                    Enabled = false
                                 };
                                 contextMenu.Items.Add(unavailableOption);
                             }
@@ -989,7 +946,6 @@ namespace TDVersionExplorer
                             contextMenu.Items.Add($"Open err file", null, (s, e) => FileContextMenuExecute(FileContextMenu.FILE_OPEN_ERR, null));
                         }
 
-                        // Show the context menu
                         contextMenu.Show(dataGridView, argEvent.Location);
                     }
                 }
@@ -1005,7 +961,6 @@ namespace TDVersionExplorer
                 case FileContextMenu.FILE_SHOWLOC:
                     try
                     {
-                        // Start the explorer process with the /select argument
                         Process.Start("explorer.exe", $"/select,\"{file.FileFullPath}\"");
                     }
                     catch (Exception ex)
@@ -1130,6 +1085,83 @@ namespace TDVersionExplorer
                 MessageBox.Show($"Error:\n{ex.Message}", "Delete temp folder error");
             }
             Cursor.Current = Cursors.Default;
+        }
+
+        public void ExportGridViewToHtml()
+        {
+            string filePath = string.Empty;
+
+            try
+            {
+                string tempFolder = Path.Combine(Path.GetTempPath(), "TDVersionExplorer");
+                Directory.CreateDirectory(tempFolder);
+                filePath = Path.Combine(tempFolder, "TDVersionExplorer_Export.html");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error creating file path: " + ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var html = new StringBuilder();
+            html.AppendLine("<html><head><style>");
+            html.AppendLine("table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; }");
+            html.AppendLine("th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }");
+            html.AppendLine("th { background-color: #4CAF50; color: white; }");
+            html.AppendLine("tr:nth-child(even) { background-color: #f2f2f2; }");
+            html.AppendLine("tr:hover { background-color: #ddd; }");
+            html.AppendLine("</style></head><body><table>");
+
+            try
+            {
+                html.AppendLine("<tr>");
+                for (int i = 0; i < dataGridView.Columns.Count; i++)
+                {
+                    if (dataGridView.Columns[i].Visible && i != 0 && i != 1 && i != 3)
+                        html.AppendFormat("<th>{0}</th>", dataGridView.Columns[i].HeaderText);
+                }
+                html.AppendLine("</tr>");
+
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (!row.IsNewRow)
+                    {
+                        html.AppendLine("<tr>");
+                        for (int i = 0; i < row.Cells.Count; i++)
+                        {
+                            if (row.Cells[i].Visible && i != 0 && i != 1 && i != 3)
+                                html.AppendFormat("<td>{0}</td>", row.Cells[i].Value?.ToString() ?? string.Empty);
+                        }
+                        html.AppendLine("</tr>");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error while building HTML content: " + ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            html.AppendLine("</table></body></html>");
+
+            try
+            {
+                File.WriteAllText(filePath, html.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving HTML file: " + ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+                 Process.Start(filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error opening HTML file in browser: " + ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 
