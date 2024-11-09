@@ -134,21 +134,34 @@ As TDVersionExplorer relies on original TD CDKs, it faces the same limitations a
 
 ### Possible issues
 
-As TDVersionExplorer uses TD CDK libraries, which is a small subset of the TD runtime, it might occur that referenced dll's like vc runtime could be missing.  
-For most CDK archives which are included as resources in the main executable the needed dependancies are included.  
+- Missing Microsoft c++ redistributables
+As TDVersionExplorer uses TD CDK libraries, which is a small subset of the TD runtime, it might occur that referenced dll's like Microsoft c++ runtime could be missing or is incomplete.  
+For most CDK archives in TDVersionExpolorer which are included as resources in the main executable the needed dependancies are included.  
 
-When conversion fails due to errors ERROR_CDKLOAD or ERROR_CALLCDK, this is an indication the needed dependancies are not yet present.  
-To get it working, copy the complete TD runtime installation to the subfolder in the temp folder mentioned above to see the conversion works.  
-Also check Microsoft Visual C++ runtime DLLs. They are mostly available as separate files in the TD Deploy setup.  
+When conversion fails due to errors ERROR_CDKLOAD or ERROR_CALLCDK, this is an indication the needed dependancies are not yet present on your system.  
+To get it working, copy the complete TD runtime installation to the subfolder in the temp folder mentioned above to see the conversion works. They are mostly available as separate files in the TD Deploy setup.   
 If so, please report this so the missing files can be added in the officisl archive.
+
+- Crashing TDVersionExplorerConverter helper process
+On some versions of Windows, the helper process may abruptly terminate during CDK loading of the source, resulting in an ERROR_NAMEDPIPE error.
+This error indicates that CDK has encountered outline-related issues, causing both the CDK and helper processes to crash.
+
+If this occurs, try running the conversion with the "Full CDK errors" option unchecked.  
+Disabling this option minimizes the likelihood of CDK encountering outline errors, reducing the chances of a crash.
+
+## Help to improve this project
+
+If you enjoy this project and want to enhance it, contributions are welcome. Any assistance is appreciated, and changes can be submitted via pull requests.
+
+If you'd like to become an official contributor, please contact me to be added to the project.
+
+System Compatibility:
+TDVersionExplorer has been tested on a limited range of systems with different versions of Windows OS and Microsoft C++ redistributables.  
+If you encounter issues on your setup, your feedback can help improve TDVersionExplorer’s stability and compatibility across a broader range of systems in the future.
 
 ## TD Community Forum
 Join the TD Community Forum for everything related to Gupta Team Developer for questions, answers and info.
 
 https://forum.tdcommunity.net
-
-If you like this project and want to enhance/improve it please do so.  
-Any help is appreciated. Changes to this project can be done by pull request.  
-Like to be an official contributor, contact me to be added as contributor of this project.
 
 Find me as Dave Rabelink on the forum mentioned above.
