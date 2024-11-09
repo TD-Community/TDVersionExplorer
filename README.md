@@ -135,6 +135,7 @@ As TDVersionExplorer relies on original TD CDKs, it faces the same limitations a
 ### Possible issues
 
 - Missing Microsoft c++ redistributables
+
 As TDVersionExplorer uses TD CDK libraries, which is a small subset of the TD runtime, it might occur that referenced dll's like Microsoft c++ runtime could be missing or is incomplete.  
 For most CDK archives in TDVersionExpolorer which are included as resources in the main executable the needed dependancies are included.  
 
@@ -143,6 +144,7 @@ To get it working, copy the complete TD runtime installation to the subfolder in
 If so, please report this so the missing files can be added in the officisl archive.
 
 - Crashing TDVersionExplorerConverter helper process
+
 On some versions of Windows, the helper process may abruptly terminate during CDK loading of the source, resulting in an ERROR_NAMEDPIPE error.
 This error indicates that CDK has encountered outline-related issues, causing both the CDK and helper processes to crash.
 
