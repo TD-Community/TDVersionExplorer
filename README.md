@@ -61,13 +61,13 @@ Only TD source files with outline formats TEXT, INDENTED TEXT, or NORMAL (x86 on
 
 #### Conversion Key Features
 
-- **Source Conversion Only**: Converts only source files, excluding DLLs, EXEs, and other binaries.
-- **Bidirectional Conversion**: Supports both upgrades to newer versions and backports to older versions.
-- **Outline Format Options**: Choose the output format for the converted file (NORMAL, TEXT, or INDENTED TEXT).
-- **Text Encoding Options**: Specify encoding for the conversion, such as UTF8 or UTF16.
-- **Rename File Extension**: Optionally change file extensions based on TD conventions (e.g., APP vs APT).
+- **Source conversion only**: Converts only source files, excluding DLLs, EXEs, and other binaries.
+- **Bidirectional conversion**: Supports both upgrades to newer versions and backports to older versions.
+- **Outline format**: Choose the output format for the converted file (NORMAL, TEXT, or INDENTED TEXT).
+- **Text encoding**: Specify encoding for the conversion, such as UTF8 or UTF16.
+- **Rename file extension**: Optionally change file extensions based on TD conventions (e.g., APP vs APT).
 - **Report CDK outline errors**: Outline errors found during CDK load are saved to .err file along with the converted file
-- **Independent of TD Installation**: Conversion does not require any TD IDE or TD runtime version to be installed.
+- **Independent of TD installation**: Conversion does not require any TD IDE or TD runtime version to be installed.
 - **Supports All Versions**: Handles conversions between all TD versions, including both ANSI and Unicode. Only x86.
 
 ---
@@ -78,8 +78,8 @@ Conversion of TD sources is the process of adjusting the internal outline format
 It does not automatically adjust or rewrite code for compatibility with specific TD versions.  
 TDVersionExplorer mimics the manual steps developers typically follow:
 
-- **Upgrading to Newer Versions**: Open the source file in the TD IDE or CDK and allow it to be converted.
-- **Backporting to Older Versions**: Open the source file in a text editor, adjust the outline version and encoding, and open the modified file in the desired TD IDE version.
+- **Upgrading to newer versions**: Open the source file in the TD IDE or CDK and allow it to be converted.
+- **Backporting to older versions**: Open the source file in a text editor, adjust the outline version and encoding, and open the modified file in the desired TD IDE version.
 
 These manual actions, especially backporting, can be tedious. The TD IDE and CDK often display error messages for outline issues, which must be dismissed manually.  
 TDVersionExplorer automates these processes, making conversion faster and less prone to repetitive strain.
@@ -100,49 +100,49 @@ For backporting, TDVersionExplorer replicates the developer process by:
 3. Setting the correct encoding (UTF8/ANSI or UTF16).
 4. Opening the modified file in the target TD version, letting it adjust the outline format, and dismissing any message boxes.
 
-Backporting can be time-consuming due to message boxes that appear when incompatible outline items are found.  
+Manual backporting can be time-consuming due to message boxes that appear when incompatible outline items are found.  
 TDVersionExplorer automates these steps, closing message boxes automatically and significantly reducing manual effort.
 
-The outline errors reported in the messageboxes captured and saved to an .err file along with the converted file.  
+The outline errors reported in the messageboxes are captured and saved to an .err file along with the converted file.  
 The conversion result will show **CONVERTED_WITH_ERRORS**. Open this .err file using the file context menu.
 
 ---
 
 ### Conversion Options
 
-- **Force Conversion**: Normally, conversion is skipped if the source and destination match in version, format, and encoding. This option forces conversion even if they are identical.
-- **Full CDK Errors**: Enables saving of all CDK-generated errors to an `.err` file, though this may slow down conversion significantly.
-- **Rename File Extension**: Automatically renames file extensions based on conversion rules (e.g., converting from NORMAL to TEXT or vice versa changes `.app` to `.apt`). Libraries (`.apl`) are not renamed.
-- **KEEP ORIGINAL Options**: Allows preserving original attributes for TD version, outline format, and encoding during conversion. This option is useful for bulk conversions while maintaining the original format or encoding.
+- **Force conversion**: Normally, conversion is skipped if the source and destination match in version, format, and encoding. This option forces conversion even if they are identical.
+- **Full CDK errors**: Enables saving of all CDK-generated errors to an `.err` file, though this may slow down conversion significantly.
+- **Rename file extension**: Automatically renames file extensions based on conversion rules (e.g., converting from NORMAL to TEXT or vice versa changes `.app` to `.apt`). Libraries (`.apl`) are never renamed.
+- **KEEP ORIGINAL options**: Allows preserving original attributes for TD version, outline format, and encoding during conversion. This option is useful for bulk conversions while maintaining the original format or encoding.
 
 ---
 
 ### Limitations
 
 As TDVersionExplorer relies on original TD CDKs, it faces the same limitations as manual conversions:
-- **Corrupted Files**: Damaged files may crash the CDK during conversion. If the TD IDE cannot load a file, TDVersionExplorer won’t be able to either.
-- **Separate Process for CDK Operations**: To avoid crashing the main application, each conversion is handled in a separate process (`TDVersionConverter.exe`). Each TD version has a dedicated process, allowing for restarts if necessary. This design is also needed because multiple CDK versions cannot load simultaneously in the same process.
-- **Architecture and Format Restrictions**: Only x86 files can be converted; NORMAL x64 formats are not yet supported. COMPILED sources are also unsupported—save them as TEXT format before converting.
+- **Corrupted files**: Damaged files may crash the CDK during conversion. If the TD IDE cannot load a file, TDVersionExplorer won’t be able to either.
+- **Separate process for CDK operations**: To avoid crashing the main application, each conversion is handled in a separate process (`TDVersionConverter.exe`). Each TD version has a dedicated process, allowing for restarts if necessary. This design is also needed because multiple CDK versions cannot load simultaneously in the same process.
+- **Architecture and format restrictions**: Only x86 files can be converted; NORMAL x64 formats are not yet supported. COMPILED sources are also unsupported—save them as TEXT format before converting.
 
 ---
 
 ### Additional Information
 
-- **Log Level Control**: Set the log level to capture either standard information or debug-level details during analysis and conversion.
-- **Open Log Feature**: Easily access logs for reviewing actions and identifying any issues.
+- **Installation of TDVersionExplorer**: extract the archive anywhere on your system. Make sure to keep all files and folders at that location as they are needed for correct functioning of the application.
+- **Log level control**: Set the log level to capture either standard information or debug-level details during conversion.
+- **Open log**: Easily access logs for reviewing action details and identifying any issues.
 - **Working (temp) folder**: the TD CDK libraries and temp files are extracted and stored in (`%temp%\TDVersionExplorer`). You can delete this folder to cleanup but this will cause TDVersionExplorer to extract the CDK which may reduce performance. Also for new versions of TDVersionExplorer it is advised to delete the folder to be sure any changes to CDK runtimes will be extracted.
 - During conversion multiple helper processes (`TDVersionConverter.exe`) may be running. They keep running until the main application is closed. This is to improve performance between multiple conversion sessions.
-- **Installation of TDVersionExplorer**: extract the archive anywhere on your system. Make sure to keep all files and folders at that location as they are needed for correct functioning of the application.
 - Your system may "block" extracted files from the TDVersionExplorer archive. Be sure to unblock or allow to be sure TDVersionExplorer works properly.
 - Have .NET 4.8 installed on your system when not yet present. TDVersionExplorer is designed to work in that .NET framework version.
 
 ### Possible issues
 
-- Missing Microsoft c++ redistributables
+- Missing Microsoft C++ redistributables
 
 Since TDVersionExplorer relies on TD CDK libraries, which are a limited subset of the full TD runtime, some referenced DLLs, such as the Microsoft C++ runtime, may be missing or incomplete.  
 For most CDK archives within TDVersionExplorer (included as resources in the main executable), the necessary dependencies are included.  
-However, if conversion fails with ERROR_CDKLOAD or ERROR_CALLCDK errors, this indicates that required dependencies are not present on your system.
+However, if conversion fails with ERROR_CDKLOAD or ERROR_CALLCDK errors, this indicates that required dependencies are not (yet) present on your system.
 
 To resolve this, copy the complete TD runtime installation into the specified subfolder in the temporary directory, then check if the conversion works.  
 These files are generally available as separate redist files in the TD Deploy setup.
@@ -151,7 +151,7 @@ If additional files are required, please report this so they can be added to the
 
 - Crashing TDVersionExplorerConverter helper process
 
-On some versions of Windows, the helper process may abruptly terminate during CDK loading of the source, resulting in an ERROR_NAMEDPIPE error.
+On some versions of Windows, the helper process may abruptly terminate during CDK loading of the source, resulting in an **ERROR_NAMEDPIPE** error.
 This error indicates that CDK has encountered outline-related issues, causing both the CDK and helper processes to crash.
 
 If this occurs, try running the conversion with the "Full CDK errors" option unchecked.  
