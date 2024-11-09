@@ -66,6 +66,7 @@ Only TD source files with outline formats TEXT, INDENTED TEXT, or NORMAL (x86 on
 - **Outline Format Options**: Choose the output format for the converted file (NORMAL, TEXT, or INDENTED TEXT).
 - **Text Encoding Options**: Specify encoding for the conversion, such as UTF8 or UTF16.
 - **Rename File Extension**: Optionally change file extensions based on TD conventions (e.g., APP vs APT).
+- **Report CDK outline errors**: Outline errors found during CDK load are saved to .err file along with the converted file
 - **Independent of TD Installation**: Conversion does not require any TD IDE or TD runtime version to be installed.
 - **Supports All Versions**: Handles conversions between all TD versions, including both ANSI and Unicode. Only x86.
 
@@ -102,6 +103,9 @@ For backporting, TDVersionExplorer replicates the developer process by:
 Backporting can be time-consuming due to message boxes that appear when incompatible outline items are found.  
 TDVersionExplorer automates these steps, closing message boxes automatically and significantly reducing manual effort.
 
+The outline errors reported in the messageboxes captured and saved to an .err file along with the converted file.  
+The conversion result will show **CONVERTED_WITH_ERRORS**. Open this .err file using the file context menu.
+
 ---
 
 ### Conversion Options
@@ -126,7 +130,7 @@ As TDVersionExplorer relies on original TD CDKs, it faces the same limitations a
 
 - **Log Level Control**: Set the log level to capture either standard information or debug-level details during analysis and conversion.
 - **Open Log Feature**: Easily access logs for reviewing actions and identifying any issues.
-- **Working (temp) folder**: the TD CDK libraries and temp files are extracted and stored in (`%temp%\TDVersionExplorer`). You can delete this folder to cleanup but this will cause TDVersionExplorer to extract the CDK which may redure performance. Also for new versions of TDVersionExplorer it is advised to delete the folder to be sure any changes to CDK runtimes will be exracted.
+- **Working (temp) folder**: the TD CDK libraries and temp files are extracted and stored in (`%temp%\TDVersionExplorer`). You can delete this folder to cleanup but this will cause TDVersionExplorer to extract the CDK which may reduce performance. Also for new versions of TDVersionExplorer it is advised to delete the folder to be sure any changes to CDK runtimes will be extracted.
 - During conversion multiple helper processes (`TDVersionConverter.exe`) may be running. They keep running until the main application is closed. This is to improve performance between multiple conversion sessions.
 - **Installation of TDVersionExplorer**: extract the archive anywhere on your system. Make sure to keep all files and folders at that location as they are needed for correct functioning of the application.
 - Your system may "block" extracted files from the TDVersionExplorer archive. Be sure to unblock or allow to be sure TDVersionExplorer works properly.
