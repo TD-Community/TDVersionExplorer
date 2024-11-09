@@ -136,12 +136,14 @@ As TDVersionExplorer relies on original TD CDKs, it faces the same limitations a
 
 - Missing Microsoft c++ redistributables
 
-As TDVersionExplorer uses TD CDK libraries, which is a small subset of the TD runtime, it might occur that referenced dll's like Microsoft c++ runtime could be missing or is incomplete.  
-For most CDK archives in TDVersionExpolorer which are included as resources in the main executable the needed dependancies are included.  
+Since TDVersionExplorer relies on TD CDK libraries, which are a limited subset of the full TD runtime, some referenced DLLs, such as the Microsoft C++ runtime, may be missing or incomplete.  
+For most CDK archives within TDVersionExplorer (included as resources in the main executable), the necessary dependencies are included.  
+However, if conversion fails with ERROR_CDKLOAD or ERROR_CALLCDK errors, this indicates that required dependencies are not present on your system.
 
-When conversion fails due to errors ERROR_CDKLOAD or ERROR_CALLCDK, this is an indication the needed dependancies are not yet present on your system.  
-To get it working, copy the complete TD runtime installation to the subfolder in the temp folder mentioned above to see the conversion works. They are mostly available as separate files in the TD Deploy setup.   
-If so, please report this so the missing files can be added in the officisl archive.
+To resolve this, copy the complete TD runtime installation into the specified subfolder in the temporary directory, then check if the conversion works.  
+These files are generally available as separate redist files in the TD Deploy setup.
+
+If additional files are required, please report this so they can be added to the official archive.
 
 - Crashing TDVersionExplorerConverter helper process
 
